@@ -26,7 +26,8 @@ def calculate_td_sequential(quotes: List[Dict[str, Any]]) -> List[Dict[str, Any]
 
     results = []
     for q in quotes:
-        results.append({
+        item = dict(q)
+        item.update({
             'date': q['date'],
             'open': float(q['open']),
             'high': float(q['high']),
@@ -41,6 +42,7 @@ def calculate_td_sequential(quotes: List[Dict[str, Any]]) -> List[Dict[str, Any]
             'td_label': None,
             'td_color': None
         })
+        results.append(item)
 
     # 1. 計算 TD Setup 9 (九轉序列)
     curr_buy_setup = 0

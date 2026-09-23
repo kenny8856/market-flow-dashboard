@@ -383,17 +383,27 @@ class StockPageGenerator:
         .chart-box {{
             position: relative;
             width: 100%;
-            height: 520px;
+            height: 400px;
             border-radius: 8px;
             background: #0f172a;
             border: 1px solid var(--border-light);
-            margin-bottom: 20px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }}
+        .chart-box-vol {{
+            position: relative;
+            width: 100%;
+            height: 140px;
+            border-radius: 8px;
+            background: #0f172a;
+            border: 1px solid var(--border-light);
+            margin-bottom: 16px;
             overflow: hidden;
         }}
         .chart-box-sub {{
             position: relative;
             width: 100%;
-            height: 260px;
+            height: 250px;
             border-radius: 8px;
             background: #0f172a;
             border: 1px solid var(--border-light);
@@ -549,9 +559,17 @@ class StockPageGenerator:
                 <div class="legend-item"><span class="legend-dot" style="background:#f59e0b;"></span> ★ 賣13 (終極頂部反轉)</div>
             </div>
             <div id="kline-chart-container" class="chart-box"></div>
+
+            <!-- 副圖 1：獨立成交量 (Volume) -->
+            <div class="chart-legend" style="margin-top: 14px; margin-bottom: 6px;">
+                <div class="legend-item" style="font-weight:700; color:var(--text-primary);">📊 每日成交量 (Volume) 副圖</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> 陽線量 (紅)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> 陰線量 (綠)</div>
+            </div>
+            <div id="volume-chart-container" class="chart-box-vol"></div>
         </div>
 
-        <!-- 副圖：每日權證多空資金流 (Warrant Flow) -->
+        <!-- 副圖 2：每日權證多空資金流 (Warrant Flow) -->
         <div class="card">
             <div class="card-header">
                 <div class="card-title">
@@ -562,7 +580,7 @@ class StockPageGenerator:
             <div class="chart-legend">
                 <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> 認購成交額 (多方買氣, 萬元)</div>
                 <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> 認售成交額 (空方避險, 萬元)</div>
-                <div class="legend-item"><span class="legend-dot" style="background:#3b82f6;"></span> 權證多空淨額曲線 (認購 - 認售)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#38bdf8;"></span> 權證多空淨額曲線 (認購 - 認售, 萬元)</div>
             </div>
             <div id="warrant-chart-container" class="chart-box-sub"></div>
         </div>
@@ -589,7 +607,7 @@ class StockPageGenerator:
             const warrantPutData = {json.dumps(chart_warrants_put)};
             const warrantNetData = {json.dumps(chart_warrants_net)};
 
-            // 1. 初始化 K 線主圖
+            // 1. 初始化 K 線主圖 (純 K 線 + 九轉標籤)
             const klineContainer = document.getElementById('kline-chart-container');
             const klineChart = LightweightCharts.createChart(klineContainer, {{
                 width: klineContainer.clientWidth,
@@ -621,23 +639,52 @@ class StockPageGenerator:
                 borderDownColor: '#10b981',
                 wickUpColor: '#ef4444',
                 wickDownColor: '#10b981',
+                priceFormat: {{
+                    type: 'price',
+                    precision: 1,
+                    minMove: 0.1,
+                }},
             }});
             candleSeries.setData(klineData);
             candleSeries.setMarkers(markersData);
 
-            // 成交量副柱狀圖
-            const volumeSeries = klineChart.addHistogramSeries({{
-                color: '#26a69a',
-                priceFormat: {{ type: 'volume' }},
-                priceScaleId: '', // 內嵌在底層
-                scaleMargins: {{
-                    top: 0.8,
-                    bottom: 0,
+            // 2. 初始化獨立成交量副圖 (解決重疊問題)
+            const volumeContainer = document.getElementById('volume-chart-container');
+            const volumeChart = LightweightCharts.createChart(volumeContainer, {{
+                width: volumeContainer.clientWidth,
+                height: volumeContainer.clientHeight,
+                layout: {{
+                    background: {{ color: '#0f172a' }},
+                    textColor: '#94a3b8',
                 }},
+                grid: {{
+                    vertLines: {{ color: '#1e293b' }},
+                    horzLines: {{ color: '#1e293b' }},
+                }},
+                rightPriceScale: {{
+                    borderColor: '#334155',
+                }},
+                timeScale: {{
+                    borderColor: '#334155',
+                    timeVisible: true,
+                }},
+            }});
+
+            const volumeSeries = volumeChart.addHistogramSeries({{
+                priceFormat: {{
+                    type: 'custom',
+                    formatter: function(val) {{
+                        if (Math.abs(val) >= 10000) {{
+                            return (val / 10000).toFixed(1) + ' 萬張';
+                        }}
+                        return Number(val).toFixed(0) + ' 張';
+                    }}
+                }},
+                title: '成交量'
             }});
             volumeSeries.setData(volumeData);
 
-            // 2. 初始化權證多空資金流副圖
+            // 3. 初始化權證多空資金流副圖 (嚴格限制 Y 軸頂多 1 位小數)
             const warrantContainer = document.getElementById('warrant-chart-container');
             const warrantChart = LightweightCharts.createChart(warrantContainer, {{
                 width: warrantContainer.clientWidth,
@@ -660,37 +707,59 @@ class StockPageGenerator:
             }});
 
             const callSeries = warrantChart.addHistogramSeries({{
-                color: 'rgba(239, 68, 68, 0.65)',
-                priceFormat: {{ type: 'custom', formatter: val => val + ' 萬' }},
+                color: 'rgba(239, 68, 68, 0.75)',
+                priceFormat: {{
+                    type: 'custom',
+                    formatter: function(val) {{
+                        return Number(val).toFixed(1) + ' 萬';
+                    }}
+                }},
                 title: '認購額(萬)',
             }});
             callSeries.setData(warrantCallData);
 
             const putSeries = warrantChart.addHistogramSeries({{
-                color: 'rgba(16, 185, 129, 0.65)',
-                priceFormat: {{ type: 'custom', formatter: val => val + ' 萬' }},
+                color: 'rgba(16, 185, 129, 0.75)',
+                priceFormat: {{
+                    type: 'custom',
+                    formatter: function(val) {{
+                        return Number(val).toFixed(1) + ' 萬';
+                    }}
+                }},
                 title: '認售額(萬)',
             }});
             putSeries.setData(warrantPutData);
 
             const netLineSeries = warrantChart.addLineSeries({{
-                color: '#3b82f6',
+                color: '#38bdf8',
                 lineWidth: 2,
-                title: '多空淨額',
+                priceFormat: {{
+                    type: 'custom',
+                    formatter: function(val) {{
+                        return Number(val).toFixed(1) + ' 萬';
+                    }}
+                }},
+                title: '多空淨額(萬)',
             }});
             netLineSeries.setData(warrantNetData);
 
-            // 雙圖時間軸連動
-            klineChart.timeScale().subscribeVisibleTimeRangeChange(range => {{
-                warrantChart.timeScale().setVisibleTimeRange(range);
-            }});
-            warrantChart.timeScale().subscribeVisibleTimeRangeChange(range => {{
-                klineChart.timeScale().setVisibleTimeRange(range);
+            // 三圖時間軸連動 (Smooth Logical Range Sync)
+            const allCharts = [klineChart, volumeChart, warrantChart];
+            allCharts.forEach(c1 => {{
+                c1.timeScale().subscribeVisibleLogicalRangeChange(range => {{
+                    if (!range) return;
+                    allCharts.forEach(c2 => {{
+                        if (c1 !== c2) {{
+                            c2.timeScale().setVisibleLogicalRange(range);
+                        }}
+                    }});
+                }});
             }});
 
             // 視窗縮放自適應
             window.addEventListener('resize', () => {{
                 klineChart.applyOptions({{ width: klineContainer.clientWidth }});
+                volumeChart.applyOptions({{ width: volumeContainer.clientWidth }});
                 warrantChart.applyOptions({{ width: warrantContainer.clientWidth }});
             }});
         }});
