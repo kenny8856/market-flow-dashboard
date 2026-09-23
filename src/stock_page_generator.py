@@ -58,7 +58,25 @@ class StockPageGenerator:
             ORDER BY date ASC
         """, (stock_id,))
         raw_warrants = c.fetchall()
+
+        # 3. 查詢該股每日外資與投信買賣超 (股數與張數)
+        c.execute("""
+            SELECT date, foreign_net, trust_net, foreign_net_lots, trust_net_lots
+            FROM daily_institutional
+            WHERE stock_id = ?
+            ORDER BY date ASC
+        """, (stock_id,))
+        raw_inst = c.fetchall()
         conn.close()
+
+        inst_map = {}
+        for r in raw_inst:
+            inst_map[r[0]] = {
+                'foreign_net_shares': float(r[1] or 0),
+                'trust_net_shares': float(r[2] or 0),
+                'foreign_net_lots': float(r[3] or 0),
+                'trust_net_lots': float(r[4] or 0)
+            }
 
         warrant_map = {}
         for r in raw_warrants:
@@ -81,20 +99,30 @@ class StockPageGenerator:
         quotes_list = []
         for r in raw_quotes:
             q_date = r[0]
+            close_p = float(r[4])
             w_info = warrant_map.get(q_date, {
                 'call_amt': 0, 'put_amt': 0, 'total_amt': 0,
                 'call_amt_wan': 0, 'put_amt_wan': 0, 'net_amt_wan': 0,
                 'call_ratio': 0, 'put_ratio': 0
             })
+            inst_info = inst_map.get(q_date, {
+                'foreign_net_shares': 0, 'trust_net_shares': 0,
+                'foreign_net_lots': 0, 'trust_net_lots': 0
+            })
+            # 計算多空金額 (萬元): 淨買賣股數 * 當日收盤價 / 10000
+            inst_info['foreign_amt_wan'] = round((inst_info['foreign_net_shares'] * close_p) / 10000.0, 1)
+            inst_info['trust_amt_wan'] = round((inst_info['trust_net_shares'] * close_p) / 10000.0, 1)
+
             quotes_list.append({
                 'date': q_date,
                 'open': float(r[1]),
                 'high': float(r[2]),
                 'low': float(r[3]),
-                'close': float(r[4]),
+                'close': close_p,
                 'volume': float(r[5]),
                 'amount': float(r[6] or 0),
-                'warrant': w_info
+                'warrant': w_info,
+                'inst': inst_info
             })
 
         return {
@@ -129,6 +157,8 @@ class StockPageGenerator:
         chart_candlesticks = []
         chart_volumes = []
         chart_markers = []
+        chart_inst_foreign = []
+        chart_inst_trust = []
         chart_warrants_call = []
         chart_warrants_put = []
         chart_warrants_net = []
@@ -188,6 +218,20 @@ class StockPageGenerator:
                         'shape': 'circle',
                         'text': '★賣13'
                     })
+
+            # 外資與投信多空金額數據
+            inst = q.get('inst', {})
+            f_amt_wan = inst.get('foreign_amt_wan', 0.0)
+            t_amt_wan = inst.get('trust_amt_wan', 0.0)
+            chart_inst_foreign.append({
+                'time': d_str,
+                'value': f_amt_wan,
+                'color': 'rgba(56, 189, 248, 0.75)' if f_amt_wan >= 0 else 'rgba(100, 116, 139, 0.75)'
+            })
+            chart_inst_trust.append({
+                'time': d_str,
+                'value': t_amt_wan
+            })
 
             # 權證副圖數據
             w = q.get('warrant', {})
@@ -379,11 +423,11 @@ class StockPageGenerator:
             line-height: 1.6;
         }}
         
-        /* 圖表容器 */
+        /* 圖表容器 (主圖與三大副圖) */
         .chart-box {{
             position: relative;
             width: 100%;
-            height: 400px;
+            height: 380px;
             border-radius: 8px;
             background: #0f172a;
             border: 1px solid var(--border-light);
@@ -393,21 +437,31 @@ class StockPageGenerator:
         .chart-box-vol {{
             position: relative;
             width: 100%;
+            height: 120px;
+            border-radius: 8px;
+            background: #0f172a;
+            border: 1px solid var(--border-light);
+            margin-bottom: 12px;
+            overflow: hidden;
+        }}
+        .chart-box-inst {{
+            position: relative;
+            width: 100%;
             height: 140px;
             border-radius: 8px;
             background: #0f172a;
             border: 1px solid var(--border-light);
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             overflow: hidden;
         }}
         .chart-box-sub {{
             position: relative;
             width: 100%;
-            height: 250px;
+            height: 150px;
             border-radius: 8px;
             background: #0f172a;
             border: 1px solid var(--border-light);
-            margin-bottom: 20px;
+            margin-bottom: 8px;
             overflow: hidden;
         }}
         .chart-legend {{
@@ -561,26 +615,28 @@ class StockPageGenerator:
             <div id="kline-chart-container" class="chart-box"></div>
 
             <!-- 副圖 1：獨立成交量 (Volume) -->
-            <div class="chart-legend" style="margin-top: 14px; margin-bottom: 6px;">
-                <div class="legend-item" style="font-weight:700; color:var(--text-primary);">📊 每日成交量 (Volume) 副圖</div>
+            <div class="chart-legend" style="margin-top: 10px; margin-bottom: 4px;">
+                <div class="legend-item" style="font-weight:700; color:var(--text-primary);">📊 每日成交量 (Volume)</div>
                 <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> 陽線量 (紅)</div>
                 <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> 陰線量 (綠)</div>
             </div>
             <div id="volume-chart-container" class="chart-box-vol"></div>
-        </div>
 
-        <!-- 副圖 2：每日權證多空資金流 (Warrant Flow) -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">
-                    <span>🎯 個股關聯權證每日多空資金流 (Warrant Money Flow History)</span>
-                </div>
-                <span style="font-size:12px; color:var(--text-secondary);">資料庫累計收錄 {data['warrant_history_days']} 個開盤日權證交易紀錄</span>
+            <!-- 副圖 2：外資與投信每日多空金額 (Institutional Flow) -->
+            <div class="chart-legend" style="margin-top: 10px; margin-bottom: 4px;">
+                <div class="legend-item" style="font-weight:700; color:var(--text-primary);">🏛️ 外資與投信每日多空金額 (萬元)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#38bdf8;"></span> 外資買超 (天藍柱)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#64748b;"></span> 外資賣超 (灰柱)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#f43f5e;"></span> 投信多空淨額 (桃紅線)</div>
             </div>
-            <div class="chart-legend">
+            <div id="inst-chart-container" class="chart-box-inst"></div>
+
+            <!-- 副圖 3：個股關聯權證每日多空資金流 (Warrant Flow) -->
+            <div class="chart-legend" style="margin-top: 10px; margin-bottom: 4px;">
+                <div class="legend-item" style="font-weight:700; color:var(--text-primary);">🎯 權證每日多空資金流 (萬元)</div>
                 <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> 認購成交額 (多方買氣, 萬元)</div>
                 <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> 認售成交額 (空方避險, 萬元)</div>
-                <div class="legend-item"><span class="legend-dot" style="background:#38bdf8;"></span> 權證多空淨額曲線 (認購 - 認售, 萬元)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#38bdf8;"></span> 權證多空淨額 (認購 - 認售, 萬元)</div>
             </div>
             <div id="warrant-chart-container" class="chart-box-sub"></div>
         </div>
@@ -603,6 +659,8 @@ class StockPageGenerator:
             const klineData = {json.dumps(chart_candlesticks)};
             const volumeData = {json.dumps(chart_volumes)};
             const markersData = {json.dumps(chart_markers)};
+            const instForeignData = {json.dumps(chart_inst_foreign)};
+            const instTrustData = {json.dumps(chart_inst_trust)};
             const warrantCallData = {json.dumps(chart_warrants_call)};
             const warrantPutData = {json.dumps(chart_warrants_put)};
             const warrantNetData = {json.dumps(chart_warrants_net)};
@@ -648,7 +706,7 @@ class StockPageGenerator:
             candleSeries.setData(klineData);
             candleSeries.setMarkers(markersData);
 
-            // 2. 初始化獨立成交量副圖 (解決重疊問題)
+            // 2. 初始化副圖 1：獨立成交量 (解決重疊問題)
             const volumeContainer = document.getElementById('volume-chart-container');
             const volumeChart = LightweightCharts.createChart(volumeContainer, {{
                 width: volumeContainer.clientWidth,
@@ -684,7 +742,53 @@ class StockPageGenerator:
             }});
             volumeSeries.setData(volumeData);
 
-            // 3. 初始化權證多空資金流副圖 (嚴格限制 Y 軸頂多 1 位小數)
+            // 3. 初始化副圖 2：外資與投信多空金額 (萬元)
+            const instContainer = document.getElementById('inst-chart-container');
+            const instChart = LightweightCharts.createChart(instContainer, {{
+                width: instContainer.clientWidth,
+                height: instContainer.clientHeight,
+                layout: {{
+                    background: {{ color: '#0f172a' }},
+                    textColor: '#94a3b8',
+                }},
+                grid: {{
+                    vertLines: {{ color: '#1e293b' }},
+                    horzLines: {{ color: '#1e293b' }},
+                }},
+                rightPriceScale: {{
+                    borderColor: '#334155',
+                }},
+                timeScale: {{
+                    borderColor: '#334155',
+                    timeVisible: true,
+                }},
+            }});
+
+            const foreignSeries = instChart.addHistogramSeries({{
+                priceFormat: {{
+                    type: 'custom',
+                    formatter: function(val) {{
+                        return Number(val).toFixed(1) + ' 萬';
+                    }}
+                }},
+                title: '外資多空金額'
+            }});
+            foreignSeries.setData(instForeignData);
+
+            const trustSeries = instChart.addLineSeries({{
+                color: '#f43f5e',
+                lineWidth: 2,
+                priceFormat: {{
+                    type: 'custom',
+                    formatter: function(val) {{
+                        return Number(val).toFixed(1) + ' 萬';
+                    }}
+                }},
+                title: '投信多空淨額'
+            }});
+            trustSeries.setData(instTrustData);
+
+            // 4. 初始化副圖 3：權證多空資金流 (嚴格限制 Y 軸頂多 1 位小數)
             const warrantContainer = document.getElementById('warrant-chart-container');
             const warrantChart = LightweightCharts.createChart(warrantContainer, {{
                 width: warrantContainer.clientWidth,
@@ -743,8 +847,8 @@ class StockPageGenerator:
             }});
             netLineSeries.setData(warrantNetData);
 
-            // 三圖時間軸連動 (Smooth Logical Range Sync)
-            const allCharts = [klineChart, volumeChart, warrantChart];
+            // 四圖時間軸連動 (Smooth Logical Range Sync)
+            const allCharts = [klineChart, volumeChart, instChart, warrantChart];
             allCharts.forEach(c1 => {{
                 c1.timeScale().subscribeVisibleLogicalRangeChange(range => {{
                     if (!range) return;
@@ -760,6 +864,7 @@ class StockPageGenerator:
             window.addEventListener('resize', () => {{
                 klineChart.applyOptions({{ width: klineContainer.clientWidth }});
                 volumeChart.applyOptions({{ width: volumeContainer.clientWidth }});
+                instChart.applyOptions({{ width: instContainer.clientWidth }});
                 warrantChart.applyOptions({{ width: warrantContainer.clientWidth }});
             }});
         }});

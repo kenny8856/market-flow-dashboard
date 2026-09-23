@@ -99,8 +99,8 @@ def deploy():
     print(f"[3/4] 遠端倉庫已連線: {remote_url}")
 
     # 5. Git 加入檔案與提交
-    # 僅追蹤必要網頁與設定檔，嚴格排除 db
-    run_cmd("git add docs/index.html index.html quant_regime.html .gitignore")
+    # 追蹤必要網頁、個股頁面、靜態資源與設定檔，嚴格排除 db
+    run_cmd("git add docs/ index.html quant_regime.html assets/ stock_*.html .gitignore")
     
     # 檢查是否有更動需要 commit
     code, diff_out, _ = run_cmd("git diff --cached --name-only")
