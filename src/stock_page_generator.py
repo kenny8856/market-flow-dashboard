@@ -1,0 +1,770 @@
+"""
+個股專屬量化分析頁面生成器 (Stock Detail Page Generator)
+================================================================================
+功能說明：
+1. 查詢個股歷史日 K 線 (OHLCV)
+2. 計算經典 Tom DeMark TD Sequential 9 (九轉序列) 與 TD Countdown 13 (13不連續計數)
+3. 統計每日個股關聯權證之認購、認售成交金額走勢 (Warrant Money Flow)
+4. 生成現代化金融交互儀表板 HTML (包含 TradingView 級互動 K 線圖、九轉標籤、成交量、權證資金流副圖與小哥推薦權證)
+5. 同步輸出至根目錄與 docs/ 目錄供 GitHub Pages 點擊跳轉
+================================================================================
+"""
+
+import os
+import json
+import sqlite3
+import datetime
+from typing import Dict, Any, List, Optional
+from src.td_indicator import calculate_td_sequential, get_current_td_summary
+
+
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+DOCS_DIR = os.path.join(ROOT_DIR, "docs")
+
+
+class StockPageGenerator:
+    def __init__(self, twse_db_path="db/twse_market.db", tpex_db_path="db/tpex_market.db"):
+        self.twse_db = os.path.join(ROOT_DIR, twse_db_path)
+        self.tpex_db = os.path.join(ROOT_DIR, tpex_db_path)
+
+    def fetch_stock_quotes_and_warrants(self, stock_id: str, market_type: str = "TWSE") -> Dict[str, Any]:
+        """
+        從資料庫查詢個股完整歷史 K 線與每日權證資金流數據
+        """
+        db_path = self.tpex_db if "TPEX" in market_type.upper() or "OTC" in market_type.upper() else self.twse_db
+        if not os.path.exists(db_path):
+            db_path = self.twse_db  # fallback
+
+        conn = sqlite3.connect(db_path)
+        c = conn.cursor()
+
+        # 1. 查詢日 K 線
+        c.execute("""
+            SELECT date, open_price, high_price, low_price, close_price, volume_lots, amount
+            FROM daily_quotes
+            WHERE stock_id = ? AND close_price > 0
+            ORDER BY date ASC
+        """, (stock_id,))
+        raw_quotes = c.fetchall()
+
+        # 2. 查詢該股每日認購/認售權證成交額
+        c.execute("""
+            SELECT date,
+                   SUM(CASE WHEN warrant_id NOT LIKE '%P' AND warrant_name NOT LIKE '%售%' AND warrant_name NOT LIKE '%熊%' THEN trade_amount ELSE 0 END) as call_amt,
+                   SUM(CASE WHEN warrant_id LIKE '%P' OR warrant_name LIKE '%售%' OR warrant_name LIKE '%熊%' THEN trade_amount ELSE 0 END) as put_amt
+            FROM daily_warrants
+            WHERE underlying_stock_id = ?
+            GROUP BY date
+            ORDER BY date ASC
+        """, (stock_id,))
+        raw_warrants = c.fetchall()
+        conn.close()
+
+        warrant_map = {}
+        for r in raw_warrants:
+            w_date, c_amt, p_amt = r[0], float(r[1] or 0), float(r[2] or 0)
+            total = c_amt + p_amt
+            c_ratio = (c_amt / total * 100.0) if total > 0 else 0.0
+            p_ratio = (p_amt / total * 100.0) if total > 0 else 0.0
+            net_amt = c_amt - p_amt
+            warrant_map[w_date] = {
+                'call_amt': c_amt,
+                'put_amt': p_amt,
+                'total_amt': total,
+                'call_amt_wan': round(c_amt / 10000.0, 1),
+                'put_amt_wan': round(p_amt / 10000.0, 1),
+                'net_amt_wan': round(net_amt / 10000.0, 1),
+                'call_ratio': round(c_ratio, 1),
+                'put_ratio': round(p_ratio, 1)
+            }
+
+        quotes_list = []
+        for r in raw_quotes:
+            q_date = r[0]
+            w_info = warrant_map.get(q_date, {
+                'call_amt': 0, 'put_amt': 0, 'total_amt': 0,
+                'call_amt_wan': 0, 'put_amt_wan': 0, 'net_amt_wan': 0,
+                'call_ratio': 0, 'put_ratio': 0
+            })
+            quotes_list.append({
+                'date': q_date,
+                'open': float(r[1]),
+                'high': float(r[2]),
+                'low': float(r[3]),
+                'close': float(r[4]),
+                'volume': float(r[5]),
+                'amount': float(r[6] or 0),
+                'warrant': w_info
+            })
+
+        return {
+            'quotes': quotes_list,
+            'warrant_history_days': len(raw_warrants)
+        }
+
+    def generate_page(self, stock_info: Dict[str, Any]) -> str:
+        """
+        為單一標的生成專屬 HTML 頁面並儲存
+        """
+        stock_id = stock_info['id']
+        stock_name = stock_info['name']
+        side = stock_info.get('side', 'LONG')
+        rank = stock_info.get('rank', 1)
+        market_type = stock_info.get('market_type', 'TWSE')
+        curr_price = stock_info.get('price', 0.0)
+        ret_5d = stock_info.get('ret_5d', 0.0)
+        vp = stock_info.get('vp', {})
+        inst = stock_info.get('inst_5d', {})
+        w_summary = stock_info.get('warrant_summary', {})
+        w_recommends = stock_info.get('warrant_recommends', [])
+
+        data = self.fetch_stock_quotes_and_warrants(stock_id, market_type)
+        quotes = data['quotes']
+
+        # 計算九轉序列與 13 不連續計數
+        td_quotes = calculate_td_sequential(quotes)
+        td_summary = get_current_td_summary(td_quotes)
+
+        # 整理 Lightweight Charts 所需 JSON 數據
+        chart_candlesticks = []
+        chart_volumes = []
+        chart_markers = []
+        chart_warrants_call = []
+        chart_warrants_put = []
+        chart_warrants_net = []
+
+        for q in td_quotes:
+            d_str = q['date']
+            o, h, l, c = q['open'], q['high'], q['low'], q['close']
+            vol = q['volume']
+            is_up = c >= o
+
+            chart_candlesticks.append({
+                'time': d_str,
+                'open': o,
+                'high': h,
+                'low': l,
+                'close': c
+            })
+
+            chart_volumes.append({
+                'time': d_str,
+                'value': vol,
+                'color': '#ef444488' if is_up else '#10b98188'
+            })
+
+            # TD 序列 Markers
+            if q.get('td_signal'):
+                sig = q['td_signal']
+                if sig == 'BUY_9':
+                    chart_markers.append({
+                        'time': d_str,
+                        'position': 'belowBar',
+                        'color': '#10b981',
+                        'shape': 'arrowUp',
+                        'text': '買9'
+                    })
+                elif sig == 'SELL_9':
+                    chart_markers.append({
+                        'time': d_str,
+                        'position': 'aboveBar',
+                        'color': '#ef4444',
+                        'shape': 'arrowDown',
+                        'text': '賣9'
+                    })
+                elif sig == 'BUY_13':
+                    chart_markers.append({
+                        'time': d_str,
+                        'position': 'belowBar',
+                        'color': '#06b6d4',
+                        'shape': 'circle',
+                        'text': '★買13'
+                    })
+                elif sig == 'SELL_13':
+                    chart_markers.append({
+                        'time': d_str,
+                        'position': 'aboveBar',
+                        'color': '#f59e0b',
+                        'shape': 'circle',
+                        'text': '★賣13'
+                    })
+
+            # 權證副圖數據
+            w = q.get('warrant', {})
+            c_amt_wan = w.get('call_amt_wan', 0)
+            p_amt_wan = w.get('put_amt_wan', 0)
+            net_amt_wan = w.get('net_amt_wan', 0)
+
+            chart_warrants_call.append({'time': d_str, 'value': c_amt_wan})
+            chart_warrants_put.append({'time': d_str, 'value': p_amt_wan})
+            chart_warrants_net.append({'time': d_str, 'value': net_amt_wan})
+
+        # 渲染權證推薦表格
+        warrant_table_html = self._render_warrant_table(w_recommends, side)
+
+        # 側向標籤與顏色
+        if side == 'LONG':
+            side_badge = f"<span class='badge-bull'>▲ LONG #{rank} 結構走強</span>"
+            side_theme_color = "#ef4444"
+        else:
+            side_badge = f"<span class='badge-bear'>▼ SHORT #{rank} 率先破位</span>"
+            side_theme_color = "#10b981"
+
+        ret_color = "text-bull" if ret_5d >= 0 else "text-bear"
+        ret_sign = "+" if ret_5d >= 0 else ""
+
+        # HTML 模板組裝
+        html = f"""<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{stock_id} {stock_name} 專業量化分析 (K線/九轉序列/13不連續/權證資金流) - 投行機構風控系統</title>
+    <style>
+        :root {{
+            --bg-base: #0a0e17;
+            --bg-card: #111827;
+            --bg-card-hover: #1f2937;
+            --border-color: #2d3748;
+            --border-light: #374151;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --bull-red: #ef4444;
+            --bear-green: #10b981;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
+            --accent-yellow: #f59e0b;
+        }}
+        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+        body {{
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", sans-serif;
+            line-height: 1.5;
+            padding-bottom: 60px;
+        }}
+        .container {{ max-width: 1380px; margin: 0 auto; padding: 20px 24px; }}
+        
+        /* 導航 Header */
+        .top-navbar {{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }}
+        .btn-back {{
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #1e293b;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid #3b82f6;
+            transition: all 0.2s;
+        }}
+        .btn-back:hover {{
+            background: #3b82f6;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+        }}
+        .header-title-box {{
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+        }}
+        .stock-main-title {{
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }}
+        .stock-price-box {{
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }}
+        .stock-price {{
+            font-size: 30px;
+            font-weight: 900;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }}
+        .stock-ret {{
+            font-size: 16px;
+            font-weight: 700;
+            font-family: ui-monospace, SFMono-Regular, monospace;
+        }}
+        
+        /* 通用 Card */
+        .card {{
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        }}
+        .card-header {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }}
+        .card-title {{
+            font-size: 17px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }}
+        
+        /* 網格統計欄 */
+        .stats-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }}
+        .stat-item {{
+            background: #172033;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px 16px;
+        }}
+        .stat-label {{
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }}
+        .stat-value {{
+            font-size: 18px;
+            font-weight: 800;
+            font-family: ui-monospace, SFMono-Regular, monospace;
+        }}
+        
+        /* TD 診斷卡片 */
+        .td-alert-box {{
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3b82f6;
+            background: rgba(30, 41, 59, 0.7);
+        }}
+        .td-alert-title {{
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }}
+        .td-alert-desc {{
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }}
+        
+        /* 圖表容器 */
+        .chart-box {{
+            position: relative;
+            width: 100%;
+            height: 520px;
+            border-radius: 8px;
+            background: #0f172a;
+            border: 1px solid var(--border-light);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }}
+        .chart-box-sub {{
+            position: relative;
+            width: 100%;
+            height: 260px;
+            border-radius: 8px;
+            background: #0f172a;
+            border: 1px solid var(--border-light);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }}
+        .chart-legend {{
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }}
+        .legend-item {{
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }}
+        .legend-dot {{
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            display: inline-block;
+        }}
+        
+        /* 標籤 Badge */
+        .badge-bull {{ background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; }}
+        .badge-bear {{ background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; }}
+        .badge-neutral {{ background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; }}
+        .text-bull {{ color: var(--bull-red); }}
+        .text-bear {{ color: var(--bear-green); }}
+        .text-muted {{ color: var(--text-muted); }}
+        
+        /* 表格樣式 */
+        .xiaoge-warrant-box {{
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 14px;
+        }}
+        .xiaoge-table {{
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }}
+        .xiaoge-table th {{
+            background: #1e293b;
+            color: var(--text-secondary);
+            padding: 10px 8px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }}
+        .xiaoge-table td {{
+            padding: 10px 8px;
+            border-bottom: 1px solid #1e293b;
+        }}
+        .badge-xiaoge-pass {{ background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; }}
+        .badge-xiaoge-relax {{ background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid #f59e0b; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; }}
+        .badge-diff-lever {{ background: rgba(16, 185, 129, 0.15); color: #10b981; font-weight: 700; padding: 2px 6px; border-radius: 4px; font-family: monospace; }}
+        .badge-diff-lever-relax {{ background: rgba(245, 158, 11, 0.15); color: #f59e0b; font-weight: 700; padding: 2px 6px; border-radius: 4px; font-family: monospace; }}
+        
+        /* 響應式 */
+        @media (max-width: 768px) {{
+            .top-navbar {{ flex-direction: column; align-items: flex-start; gap: 12px; }}
+            .chart-box {{ height: 420px; }}
+            .chart-box-sub {{ height: 220px; }}
+            .stats-grid {{ grid-template-columns: 1fr 1fr; }}
+        }}
+    </style>
+    <!-- 本地優先載入 Lightweight Charts，外網 CDN 雙重備援 -->
+    <script src="assets/lightweight-charts.standalone.production.js"></script>
+    <script>
+        if (typeof LightweightCharts === 'undefined') {{
+            document.write('<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"><\\/script>');
+        }}
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- 頂部導航 -->
+        <div class="top-navbar">
+            <div style="display:flex; align-items:center; gap:16px;">
+                <a href="index.html" class="btn-back">← 返回市場全域儀表板</a>
+                <div class="header-title-box">
+                    <span class="stock-main-title">{stock_id} {stock_name}</span>
+                    <span style="font-size:13px; color:var(--text-muted);">{market_type}</span>
+                    {side_badge}
+                </div>
+            </div>
+            <div class="stock-price-box">
+                <span class="stock-price {ret_color}">{curr_price:.2f}</span>
+                <span class="stock-ret {ret_color}">5日: {ret_sign}{ret_5d:.2f}%</span>
+            </div>
+        </div>
+
+        <!-- 關鍵量化指標卡片格 -->
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-label">🎯 POC 最大量核心價</div>
+                <div class="stat-value text-bull">{vp.get('poc_price', 0):.2f} 元</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">🛡️ 價值區間 (Value Area 70%)</div>
+                <div class="stat-value" style="font-size:15px;">{vp.get('val_price', 0):.2f} ~ {vp.get('vah_price', 0):.2f} 元</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">⚡ 投信 5日淨買賣</div>
+                <div class="stat-value" style="color:var(--accent-cyan);">{inst.get('trust_5d', 0):+d} 張</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">🌐 外資 5日淨買賣</div>
+                <div class="stat-value" style="color:var(--accent-blue);">{inst.get('foreign_5d', 0):+d} 張</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">📊 融資 5日增減</div>
+                <div class="stat-value" style="color:var(--accent-yellow);">{inst.get('margin_5d', 0):+d} 張</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">🔥 今日權證多空比</div>
+                <div class="stat-value" style="font-size:15px;">認購 {w_summary.get('call_ratio', 0)}% : 認售 {w_summary.get('put_ratio', 0)}%</div>
+            </div>
+        </div>
+
+        <!-- TD Sequential & Countdown 序列診斷狀態卡 -->
+        <div class="card" style="border-left: 5px solid {side_theme_color};">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>⏱️ Tom DeMark 九轉序列 (TD Setup 9) 與 13 不連續計數診斷</span>
+                </div>
+                <span class="{td_summary['badge_class']}">{td_summary['status']}</span>
+            </div>
+            <div class="td-alert-box">
+                <div class="td-alert-title">
+                    <span>💡 當前 K 線計數解讀：</span>
+                </div>
+                <div class="td-alert-desc">
+                    {td_summary['detail']}<br>
+                    • <strong>九轉結構 (TD Setup 9)</strong>：當連續 9 日收盤價低於前第 4 日收盤價即觸發【買9】，代表空方動能竭盡轉折點；反之連續 9 日高於前第 4 日收盤價即觸發【賣9】。<br>
+                    • <strong>13 不連續序列 (TD Countdown 13)</strong>：九轉成立後，統計收盤價與前第 2 日極值（Close &lt;= Low[t-2] 或 Close &gt;= High[t-2]），累計滿 13 根觸發極限背離訊號！
+                </div>
+            </div>
+
+            <!-- 主圖：K線與九轉標籤 -->
+            <div class="chart-legend">
+                <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> 上漲K棒 (紅)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> 下跌K棒 (綠)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> ▲ 買9 (空頭力竭買點)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> ▼ 賣9 (多頭超買賣點)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#06b6d4;"></span> ★ 買13 (終極底部背離)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#f59e0b;"></span> ★ 賣13 (終極頂部反轉)</div>
+            </div>
+            <div id="kline-chart-container" class="chart-box"></div>
+        </div>
+
+        <!-- 副圖：每日權證多空資金流 (Warrant Flow) -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>🎯 個股關聯權證每日多空資金流 (Warrant Money Flow History)</span>
+                </div>
+                <span style="font-size:12px; color:var(--text-secondary);">資料庫累計收錄 {data['warrant_history_days']} 個開盤日權證交易紀錄</span>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> 認購成交額 (多方買氣, 萬元)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> 認售成交額 (空方避險, 萬元)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#3b82f6;"></span> 權證多空淨額曲線 (認購 - 認售)</div>
+            </div>
+            <div id="warrant-chart-container" class="chart-box-sub"></div>
+        </div>
+
+        <!-- 權證小哥 5 大指標推薦名單 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>⚡ 權證小哥 5 大指標嚴選標的 (實戰交易優先推薦)</span>
+                </div>
+                <span style="font-size:12px; color:var(--text-secondary);">每日 16:00 元大權證網直連 ｜ 天數 &gt; 120天 ｜ 差槓比 &lt; 0.3%~0.7%</span>
+            </div>
+            {warrant_table_html}
+        </div>
+    </div>
+
+    <!-- 圖表初始化腳本 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {{
+            const klineData = {json.dumps(chart_candlesticks)};
+            const volumeData = {json.dumps(chart_volumes)};
+            const markersData = {json.dumps(chart_markers)};
+            const warrantCallData = {json.dumps(chart_warrants_call)};
+            const warrantPutData = {json.dumps(chart_warrants_put)};
+            const warrantNetData = {json.dumps(chart_warrants_net)};
+
+            // 1. 初始化 K 線主圖
+            const klineContainer = document.getElementById('kline-chart-container');
+            const klineChart = LightweightCharts.createChart(klineContainer, {{
+                width: klineContainer.clientWidth,
+                height: klineContainer.clientHeight,
+                layout: {{
+                    background: {{ color: '#0f172a' }},
+                    textColor: '#94a3b8',
+                }},
+                grid: {{
+                    vertLines: {{ color: '#1e293b' }},
+                    horzLines: {{ color: '#1e293b' }},
+                }},
+                crosshair: {{
+                    mode: LightweightCharts.CrosshairMode.Normal,
+                }},
+                rightPriceScale: {{
+                    borderColor: '#334155',
+                }},
+                timeScale: {{
+                    borderColor: '#334155',
+                    timeVisible: true,
+                }},
+            }});
+
+            const candleSeries = klineChart.addCandlestickSeries({{
+                upColor: '#ef4444',
+                downColor: '#10b981',
+                borderUpColor: '#ef4444',
+                borderDownColor: '#10b981',
+                wickUpColor: '#ef4444',
+                wickDownColor: '#10b981',
+            }});
+            candleSeries.setData(klineData);
+            candleSeries.setMarkers(markersData);
+
+            // 成交量副柱狀圖
+            const volumeSeries = klineChart.addHistogramSeries({{
+                color: '#26a69a',
+                priceFormat: {{ type: 'volume' }},
+                priceScaleId: '', // 內嵌在底層
+                scaleMargins: {{
+                    top: 0.8,
+                    bottom: 0,
+                }},
+            }});
+            volumeSeries.setData(volumeData);
+
+            // 2. 初始化權證多空資金流副圖
+            const warrantContainer = document.getElementById('warrant-chart-container');
+            const warrantChart = LightweightCharts.createChart(warrantContainer, {{
+                width: warrantContainer.clientWidth,
+                height: warrantContainer.clientHeight,
+                layout: {{
+                    background: {{ color: '#0f172a' }},
+                    textColor: '#94a3b8',
+                }},
+                grid: {{
+                    vertLines: {{ color: '#1e293b' }},
+                    horzLines: {{ color: '#1e293b' }},
+                }},
+                rightPriceScale: {{
+                    borderColor: '#334155',
+                }},
+                timeScale: {{
+                    borderColor: '#334155',
+                    timeVisible: true,
+                }},
+            }});
+
+            const callSeries = warrantChart.addHistogramSeries({{
+                color: 'rgba(239, 68, 68, 0.65)',
+                priceFormat: {{ type: 'custom', formatter: val => val + ' 萬' }},
+                title: '認購額(萬)',
+            }});
+            callSeries.setData(warrantCallData);
+
+            const putSeries = warrantChart.addHistogramSeries({{
+                color: 'rgba(16, 185, 129, 0.65)',
+                priceFormat: {{ type: 'custom', formatter: val => val + ' 萬' }},
+                title: '認售額(萬)',
+            }});
+            putSeries.setData(warrantPutData);
+
+            const netLineSeries = warrantChart.addLineSeries({{
+                color: '#3b82f6',
+                lineWidth: 2,
+                title: '多空淨額',
+            }});
+            netLineSeries.setData(warrantNetData);
+
+            // 雙圖時間軸連動
+            klineChart.timeScale().subscribeVisibleTimeRangeChange(range => {{
+                warrantChart.timeScale().setVisibleTimeRange(range);
+            }});
+            warrantChart.timeScale().subscribeVisibleTimeRangeChange(range => {{
+                klineChart.timeScale().setVisibleTimeRange(range);
+            }});
+
+            // 視窗縮放自適應
+            window.addEventListener('resize', () => {{
+                klineChart.applyOptions({{ width: klineContainer.clientWidth }});
+                warrantChart.applyOptions({{ width: warrantContainer.clientWidth }});
+            }});
+        }});
+    </script>
+</body>
+</html>
+"""
+
+        # 輸出至本地根目錄與 docs/
+        out_filename = f"stock_{stock_id}.html"
+        out_root = os.path.join(ROOT_DIR, out_filename)
+        out_docs = os.path.join(DOCS_DIR, out_filename)
+
+        os.makedirs(DOCS_DIR, exist_ok=True)
+        with open(out_root, "w", encoding="utf-8") as f:
+            f.write(html)
+        with open(out_docs, "w", encoding="utf-8") as f:
+            f.write(html)
+
+        return out_root
+
+    def _render_warrant_table(self, warrants: List[Dict[str, Any]], side: str) -> str:
+        """渲染權證推薦表格"""
+        opt_type_label = "認購 CALL" if side == 'LONG' else "認售 PUT"
+        if not warrants:
+            return f"""
+            <div class="xiaoge-warrant-box">
+                <div style="color:var(--text-muted); font-size:13px; text-align:center; padding:16px;">
+                    ⚠️ 本標的目前市場「無符合權證小哥指標」之權證（剩餘天數不足 120 天或差槓比 &gt; 0.7%）。<br>
+                    💡 小哥操作紀律：寧可直接操作現股，絕不妥協買進劣質權證承擔時間價值加速衰減！
+                </div>
+            </div>
+            """
+
+        rows = ""
+        for idx, w in enumerate(warrants, 1):
+            is_tier1 = w.get('is_strict_pass', True)
+            badge_html = f'<span class="badge-xiaoge-pass">★ 小哥嚴選 #{idx}</span>' if is_tier1 else f'<span class="badge-xiaoge-relax">◆ 次選放寬 #{idx}</span>'
+            diff_class = "badge-diff-lever" if is_tier1 else "badge-diff-lever-relax"
+            rows += f"""
+            <tr>
+                <td>{badge_html}</td>
+                <td><strong>{w['warrant_id']}</strong> {w['warrant_name']}</td>
+                <td>{w['buy_price']:.2f} / {w['sell_price']:.2f}</td>
+                <td>{w['strike_price']:.2f} ({w['in_out_dec']:+.1f}%)</td>
+                <td style="color:var(--bull-red); font-weight:700;">{w['period']} 天</td>
+                <td>{w['leverage']:.2f}x</td>
+                <td>{w['buy_sell_rate']:.2f}%</td>
+                <td><span class="{diff_class}">{w['diff_lever_ratio']:.3f}%</span></td>
+                <td>{w['out_vol_rate']:.1f}%</td>
+                <td><strong style="color:var(--accent-blue);">{w['issuer_name']}</strong></td>
+            </tr>
+            """
+
+        return f"""
+        <div class="xiaoge-warrant-box">
+            <table class="xiaoge-table">
+                <thead>
+                    <tr>
+                        <th>評級</th>
+                        <th>權證代碼 / 名稱</th>
+                        <th>委買 / 委賣</th>
+                        <th>履約價 (價外%)</th>
+                        <th>剩餘天數</th>
+                        <th>實質槓桿</th>
+                        <th>買賣價差比</th>
+                        <th>差槓比</th>
+                        <th>流通在外</th>
+                        <th>造市券商</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {rows}
+                </tbody>
+            </table>
+        </div>
+        """
