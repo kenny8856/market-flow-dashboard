@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2404 漢唐 專業量化分析 (K線/九轉序列/13不連續/權證資金流) - 投行機構風控系統</title>
+    <style>
+        :root {
+            --bg-base: #0a0e17;
+            --bg-card: #111827;
+            --bg-card-hover: #1f2937;
+            --border-color: #2d3748;
+            --border-light: #374151;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --bull-red: #ef4444;
+            --bear-green: #10b981;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
+            --accent-yellow: #f59e0b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", sans-serif;
+            line-height: 1.5;
+            padding-bottom: 60px;
+        }
+        .container { max-width: 1380px; margin: 0 auto; padding: 20px 24px; }
+        
+        /* 導航 Header */
+        .top-navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #1e293b;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid #3b82f6;
+            transition: all 0.2s;
+        }
+        .btn-back:hover {
+            background: #3b82f6;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+        }
+        .header-title-box {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .stock-main-title {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+        .stock-price-box {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+        .stock-price {
+            font-size: 30px;
+            font-weight: 900;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        .stock-ret {
+            font-size: 16px;
+            font-weight: 700;
+            font-family: ui-monospace, SFMono-Regular, monospace;
+        }
+        
+        /* 通用 Card */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .card-title {
+            font-size: 17px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* 網格統計欄 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .stat-item {
+            background: #172033;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px 16px;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .stat-value {
+            font-size: 18px;
+            font-weight: 800;
+            font-family: ui-monospace, SFMono-Regular, monospace;
+        }
+        
+        /* TD 診斷卡片 */
+        .td-alert-box {
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3b82f6;
+            background: rgba(30, 41, 59, 0.7);
+        }
+        .td-alert-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .td-alert-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* 圖表容器 */
+        .chart-box {
+            position: relative;
+            width: 100%;
+            height: 520px;
+            border-radius: 8px;
+            background: #0f172a;
+            border: 1px solid var(--border-light);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .chart-box-sub {
+            position: relative;
+            width: 100%;
+            height: 260px;
+            border-radius: 8px;
+            background: #0f172a;
+            border: 1px solid var(--border-light);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .chart-legend {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            display: inline-block;
+        }
+        
+        /* 標籤 Badge */
+        .badge-bull { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+        .badge-bear { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+        .badge-neutral { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+        .text-bull { color: var(--bull-red); }
+        .text-bear { color: var(--bear-green); }
+        .text-muted { color: var(--text-muted); }
+        
+        /* 表格樣式 */
+        .xiaoge-warrant-box {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 14px;
+        }
+        .xiaoge-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+        .xiaoge-table th {
+            background: #1e293b;
+            color: var(--text-secondary);
+            padding: 10px 8px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .xiaoge-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #1e293b;
+        }
+        .badge-xiaoge-pass { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+        .badge-xiaoge-relax { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid #f59e0b; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+        .badge-diff-lever { background: rgba(16, 185, 129, 0.15); color: #10b981; font-weight: 700; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+        .badge-diff-lever-relax { background: rgba(245, 158, 11, 0.15); color: #f59e0b; font-weight: 700; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+        
+        /* 響應式 */
+        @media (max-width: 768px) {
+            .top-navbar { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .chart-box { height: 420px; }
+            .chart-box-sub { height: 220px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+    <!-- 本地優先載入 Lightweight Charts，外網 CDN 雙重備援 -->
+    <script src="assets/lightweight-charts.standalone.production.js"></script>
+    <script>
+        if (typeof LightweightCharts === 'undefined') {
+            document.write('<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"><\/script>');
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- 頂部導航 -->
+        <div class="top-navbar">
+            <div style="display:flex; align-items:center; gap:16px;">
+                <a href="index.html" class="btn-back">← 返回市場全域儀表板</a>
+                <div class="header-title-box">
+                    <span class="stock-main-title">2404 漢唐</span>
+                    <span style="font-size:13px; color:var(--text-muted);">TWSE</span>
+                    <span class='badge-bull'>▲ LONG #8 結構走強</span>
+                </div>
+            </div>
+            <div class="stock-price-box">
+                <span class="stock-price text-bull">1250.00</span>
+                <span class="stock-ret text-bull">5日: +16.30%</span>
+            </div>
+        </div>
+
+        <!-- 關鍵量化指標卡片格 -->
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-label">🎯 POC 最大量核心價</div>
+                <div class="stat-value text-bull">1170.94 元</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">🛡️ 價值區間 (Value Area 70%)</div>
+                <div class="stat-value" style="font-size:15px;">0.00 ~ 0.00 元</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">⚡ 投信 5日淨買賣</div>
+                <div class="stat-value" style="color:var(--accent-cyan);">+1120 張</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">🌐 外資 5日淨買賣</div>
+                <div class="stat-value" style="color:var(--accent-blue);">+1689 張</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">📊 融資 5日增減</div>
+                <div class="stat-value" style="color:var(--accent-yellow);">+43 張</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">🔥 今日權證多空比</div>
+                <div class="stat-value" style="font-size:15px;">認購 100.0% : 認售 0.0%</div>
+            </div>
+        </div>
+
+        <!-- TD Sequential & Countdown 序列診斷狀態卡 -->
+        <div class="card" style="border-left: 5px solid #ef4444;">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>⏱️ Tom DeMark 九轉序列 (TD Setup 9) 與 13 不連續計數診斷</span>
+                </div>
+                <span class="badge-bull">賣出九轉推進中 (第 5/9 天)</span>
+            </div>
+            <div class="td-alert-box">
+                <div class="td-alert-title">
+                    <span>💡 當前 K 線計數解讀：</span>
+                </div>
+                <div class="td-alert-desc">
+                    連續 5 個交易日收盤價高於 4 天前收盤價，多頭趨勢延續中。<br>
+                    • <strong>九轉結構 (TD Setup 9)</strong>：當連續 9 日收盤價低於前第 4 日收盤價即觸發【買9】，代表空方動能竭盡轉折點；反之連續 9 日高於前第 4 日收盤價即觸發【賣9】。<br>
+                    • <strong>13 不連續序列 (TD Countdown 13)</strong>：九轉成立後，統計收盤價與前第 2 日極值（Close &lt;= Low[t-2] 或 Close &gt;= High[t-2]），累計滿 13 根觸發極限背離訊號！
+                </div>
+            </div>
+
+            <!-- 主圖：K線與九轉標籤 -->
+            <div class="chart-legend">
+                <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> 上漲K棒 (紅)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> 下跌K棒 (綠)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> ▲ 買9 (空頭力竭買點)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> ▼ 賣9 (多頭超買賣點)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#06b6d4;"></span> ★ 買13 (終極底部背離)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#f59e0b;"></span> ★ 賣13 (終極頂部反轉)</div>
+            </div>
+            <div id="kline-chart-container" class="chart-box"></div>
+        </div>
+
+        <!-- 副圖：每日權證多空資金流 (Warrant Flow) -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>🎯 個股關聯權證每日多空資金流 (Warrant Money Flow History)</span>
+                </div>
+                <span style="font-size:12px; color:var(--text-secondary);">資料庫累計收錄 245 個開盤日權證交易紀錄</span>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> 認購成交額 (多方買氣, 萬元)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> 認售成交額 (空方避險, 萬元)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#3b82f6;"></span> 權證多空淨額曲線 (認購 - 認售)</div>
+            </div>
+            <div id="warrant-chart-container" class="chart-box-sub"></div>
+        </div>
+
+        <!-- 權證小哥 5 大指標推薦名單 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>⚡ 權證小哥 5 大指標嚴選標的 (實戰交易優先推薦)</span>
+                </div>
+                <span style="font-size:12px; color:var(--text-secondary);">每日 16:00 元大權證網直連 ｜ 天數 &gt; 120天 ｜ 差槓比 &lt; 0.3%~0.7%</span>
+            </div>
+            
+            <div class="xiaoge-warrant-box">
+                <div style="color:var(--text-muted); font-size:13px; text-align:center; padding:16px;">
+                    ⚠️ 本標的目前市場「無符合權證小哥指標」之權證（剩餘天數不足 120 天或差槓比 &gt; 0.7%）。<br>
+                    💡 小哥操作紀律：寧可直接操作現股，絕不妥協買進劣質權證承擔時間價值加速衰減！
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- 圖表初始化腳本 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const klineData = [{"time": "2024-05-10", "open": 383.5, "high": 384.0, "low": 372.0, "close": 375.0}, {"time": "2025-09-22", "open": 1005.0, "high": 1005.0, "low": 985.0, "close": 985.0}, {"time": "2025-09-23", "open": 990.0, "high": 995.0, "low": 955.0, "close": 987.0}, {"time": "2025-09-24", "open": 989.0, "high": 993.0, "low": 964.0, "close": 964.0}, {"time": "2025-09-25", "open": 971.0, "high": 978.0, "low": 940.0, "close": 950.0}, {"time": "2025-09-26", "open": 948.0, "high": 948.0, "low": 890.0, "close": 901.0}, {"time": "2025-09-30", "open": 919.0, "high": 920.0, "low": 892.0, "close": 896.0}, {"time": "2025-10-01", "open": 907.0, "high": 925.0, "low": 901.0, "close": 913.0}, {"time": "2025-10-02", "open": 928.0, "high": 932.0, "low": 890.0, "close": 890.0}, {"time": "2025-10-03", "open": 900.0, "high": 900.0, "low": 878.0, "close": 886.0}, {"time": "2025-10-07", "open": 891.0, "high": 904.0, "low": 872.0, "close": 875.0}, {"time": "2025-10-08", "open": 871.0, "high": 873.0, "low": 857.0, "close": 860.0}, {"time": "2025-10-09", "open": 866.0, "high": 880.0, "low": 858.0, "close": 876.0}, {"time": "2025-10-13", "open": 845.0, "high": 867.0, "low": 845.0, "close": 851.0}, {"time": "2025-10-14", "open": 890.0, "high": 895.0, "low": 840.0, "close": 841.0}, {"time": "2025-10-15", "open": 851.0, "high": 907.0, "low": 851.0, "close": 893.0}, {"time": "2025-10-16", "open": 903.0, "high": 909.0, "low": 872.0, "close": 884.0}, {"time": "2025-10-17", "open": 874.0, "high": 889.0, "low": 862.0, "close": 862.0}, {"time": "2025-10-20", "open": 871.0, "high": 872.0, "low": 846.0, "close": 851.0}, {"time": "2025-10-21", "open": 852.0, "high": 862.0, "low": 846.0, "close": 848.0}, {"time": "2025-10-22", "open": 848.0, "high": 850.0, "low": 838.0, "close": 842.0}, {"time": "2025-10-23", "open": 838.0, "high": 846.0, "low": 829.0, "close": 830.0}, {"time": "2025-10-27", "open": 845.0, "high": 852.0, "low": 818.0, "close": 827.0}, {"time": "2025-10-28", "open": 835.0, "high": 855.0, "low": 832.0, "close": 852.0}, {"time": "2025-10-29", "open": 860.0, "high": 873.0, "low": 849.0, "close": 858.0}, {"time": "2025-10-30", "open": 865.0, "high": 878.0, "low": 858.0, "close": 869.0}, {"time": "2025-10-31", "open": 873.0, "high": 884.0, "low": 862.0, "close": 862.0}, {"time": "2025-11-03", "open": 866.0, "high": 867.0, "low": 842.0, "close": 842.0}, {"time": "2025-11-04", "open": 844.0, "high": 853.0, "low": 835.0, "close": 842.0}, {"time": "2025-11-05", "open": 834.0, "high": 837.0, "low": 811.0, "close": 825.0}, {"time": "2025-11-06", "open": 834.0, "high": 839.0, "low": 817.0, "close": 817.0}, {"time": "2025-11-07", "open": 815.0, "high": 817.0, "low": 800.0, "close": 800.0}, {"time": "2025-11-10", "open": 802.0, "high": 804.0, "low": 773.0, "close": 795.0}, {"time": "2025-11-11", "open": 791.0, "high": 793.0, "low": 740.0, "close": 746.0}, {"time": "2025-11-12", "open": 746.0, "high": 752.0, "low": 726.0, "close": 747.0}, {"time": "2025-11-13", "open": 784.0, "high": 821.0, "low": 778.0, "close": 821.0}, {"time": "2025-11-14", "open": 826.0, "high": 834.0, "low": 781.0, "close": 781.0}, {"time": "2025-11-17", "open": 784.0, "high": 808.0, "low": 770.0, "close": 792.0}, {"time": "2025-11-18", "open": 781.0, "high": 796.0, "low": 758.0, "close": 762.0}, {"time": "2025-11-19", "open": 759.0, "high": 796.0, "low": 756.0, "close": 777.0}, {"time": "2025-11-20", "open": 796.0, "high": 805.0, "low": 787.0, "close": 790.0}, {"time": "2025-11-21", "open": 769.0, "high": 784.0, "low": 748.0, "close": 751.0}, {"time": "2025-11-24", "open": 759.0, "high": 770.0, "low": 754.0, "close": 770.0}, {"time": "2025-11-25", "open": 785.0, "high": 790.0, "low": 773.0, "close": 780.0}, {"time": "2025-11-26", "open": 787.0, "high": 804.0, "low": 782.0, "close": 799.0}, {"time": "2025-11-27", "open": 804.0, "high": 804.0, "low": 787.0, "close": 791.0}, {"time": "2025-11-28", "open": 788.0, "high": 814.0, "low": 785.0, "close": 801.0}, {"time": "2025-12-01", "open": 800.0, "high": 805.0, "low": 767.0, "close": 782.0}, {"time": "2025-12-02", "open": 783.0, "high": 789.0, "low": 769.0, "close": 775.0}, {"time": "2025-12-03", "open": 779.0, "high": 803.0, "low": 778.0, "close": 801.0}, {"time": "2025-12-04", "open": 806.0, "high": 834.0, "low": 793.0, "close": 805.0}, {"time": "2025-12-05", "open": 807.0, "high": 817.0, "low": 786.0, "close": 793.0}, {"time": "2025-12-08", "open": 796.0, "high": 820.0, "low": 796.0, "close": 810.0}, {"time": "2025-12-09", "open": 810.0, "high": 865.0, "low": 806.0, "close": 830.0}, {"time": "2025-12-10", "open": 845.0, "high": 908.0, "low": 835.0, "close": 877.0}, {"time": "2025-12-11", "open": 900.0, "high": 928.0, "low": 888.0, "close": 897.0}, {"time": "2025-12-12", "open": 915.0, "high": 960.0, "low": 915.0, "close": 946.0}, {"time": "2025-12-15", "open": 925.0, "high": 947.0, "low": 918.0, "close": 925.0}, {"time": "2025-12-16", "open": 915.0, "high": 945.0, "low": 906.0, "close": 945.0}, {"time": "2025-12-17", "open": 963.0, "high": 1000.0, "low": 943.0, "close": 957.0}, {"time": "2025-12-18", "open": 953.0, "high": 965.0, "low": 915.0, "close": 952.0}, {"time": "2025-12-19", "open": 977.0, "high": 984.0, "low": 954.0, "close": 983.0}, {"time": "2025-12-22", "open": 997.0, "high": 997.0, "low": 932.0, "close": 932.0}, {"time": "2025-12-23", "open": 938.0, "high": 964.0, "low": 937.0, "close": 954.0}, {"time": "2025-12-24", "open": 954.0, "high": 962.0, "low": 909.0, "close": 925.0}, {"time": "2025-12-26", "open": 934.0, "high": 948.0, "low": 925.0, "close": 941.0}, {"time": "2025-12-29", "open": 941.0, "high": 941.0, "low": 920.0, "close": 922.0}, {"time": "2025-12-30", "open": 922.0, "high": 938.0, "low": 908.0, "close": 908.0}, {"time": "2025-12-31", "open": 920.0, "high": 957.0, "low": 909.0, "close": 949.0}, {"time": "2026-01-02", "open": 950.0, "high": 985.0, "low": 945.0, "close": 960.0}, {"time": "2026-01-05", "open": 981.0, "high": 994.0, "low": 965.0, "close": 992.0}, {"time": "2026-01-06", "open": 988.0, "high": 1040.0, "low": 974.0, "close": 1020.0}, {"time": "2026-01-07", "open": 1020.0, "high": 1020.0, "low": 988.0, "close": 1000.0}, {"time": "2026-01-08", "open": 990.0, "high": 1060.0, "low": 983.0, "close": 1010.0}, {"time": "2026-01-09", "open": 1010.0, "high": 1040.0, "low": 991.0, "close": 994.0}, {"time": "2026-01-12", "open": 1010.0, "high": 1030.0, "low": 979.0, "close": 982.0}, {"time": "2026-01-13", "open": 1040.0, "high": 1080.0, "low": 1040.0, "close": 1080.0}, {"time": "2026-01-14", "open": 1080.0, "high": 1170.0, "low": 1055.0, "close": 1150.0}, {"time": "2026-01-15", "open": 1150.0, "high": 1175.0, "low": 1140.0, "close": 1150.0}, {"time": "2026-01-16", "open": 1235.0, "high": 1245.0, "low": 1075.0, "close": 1100.0}, {"time": "2026-01-19", "open": 1090.0, "high": 1110.0, "low": 1055.0, "close": 1095.0}, {"time": "2026-01-20", "open": 1080.0, "high": 1095.0, "low": 1065.0, "close": 1080.0}, {"time": "2026-01-21", "open": 1065.0, "high": 1065.0, "low": 1005.0, "close": 1010.0}, {"time": "2026-01-22", "open": 1035.0, "high": 1035.0, "low": 985.0, "close": 990.0}, {"time": "2026-01-23", "open": 998.0, "high": 998.0, "low": 981.0, "close": 985.0}, {"time": "2026-01-26", "open": 988.0, "high": 1005.0, "low": 951.0, "close": 951.0}, {"time": "2026-01-27", "open": 952.0, "high": 958.0, "low": 940.0, "close": 940.0}, {"time": "2026-01-28", "open": 953.0, "high": 972.0, "low": 940.0, "close": 953.0}, {"time": "2026-01-29", "open": 967.0, "high": 978.0, "low": 948.0, "close": 950.0}, {"time": "2026-01-30", "open": 947.0, "high": 948.0, "low": 908.0, "close": 908.0}, {"time": "2026-02-02", "open": 896.0, "high": 917.0, "low": 890.0, "close": 914.0}, {"time": "2026-02-03", "open": 930.0, "high": 944.0, "low": 922.0, "close": 936.0}, {"time": "2026-02-04", "open": 935.0, "high": 942.0, "low": 923.0, "close": 933.0}, {"time": "2026-02-05", "open": 925.0, "high": 957.0, "low": 924.0, "close": 931.0}, {"time": "2026-02-06", "open": 927.0, "high": 928.0, "low": 901.0, "close": 907.0}, {"time": "2026-02-09", "open": 930.0, "high": 945.0, "low": 895.0, "close": 898.0}, {"time": "2026-02-10", "open": 910.0, "high": 918.0, "low": 892.0, "close": 908.0}, {"time": "2026-02-11", "open": 910.0, "high": 927.0, "low": 908.0, "close": 923.0}, {"time": "2026-02-23", "open": 933.0, "high": 994.0, "low": 924.0, "close": 963.0}, {"time": "2026-02-24", "open": 964.0, "high": 994.0, "low": 960.0, "close": 980.0}, {"time": "2026-02-25", "open": 990.0, "high": 1040.0, "low": 985.0, "close": 1035.0}, {"time": "2026-02-26", "open": 1045.0, "high": 1135.0, "low": 1035.0, "close": 1130.0}, {"time": "2026-03-02", "open": 1090.0, "high": 1120.0, "low": 1055.0, "close": 1075.0}, {"time": "2026-03-03", "open": 1095.0, "high": 1100.0, "low": 1015.0, "close": 1015.0}, {"time": "2026-03-04", "open": 993.0, "high": 1015.0, "low": 975.0, "close": 1000.0}, {"time": "2026-03-05", "open": 1080.0, "high": 1100.0, "low": 1055.0, "close": 1100.0}, {"time": "2026-03-06", "open": 1100.0, "high": 1130.0, "low": 1090.0, "close": 1100.0}, {"time": "2026-03-09", "open": 1010.0, "high": 1070.0, "low": 990.0, "close": 1070.0}, {"time": "2026-03-10", "open": 1130.0, "high": 1130.0, "low": 1015.0, "close": 1040.0}, {"time": "2026-03-11", "open": 1095.0, "high": 1105.0, "low": 1070.0, "close": 1085.0}, {"time": "2026-03-12", "open": 1070.0, "high": 1075.0, "low": 1035.0, "close": 1065.0}, {"time": "2026-03-13", "open": 1045.0, "high": 1045.0, "low": 1010.0, "close": 1010.0}, {"time": "2026-03-16", "open": 1010.0, "high": 1010.0, "low": 961.0, "close": 964.0}, {"time": "2026-03-17", "open": 968.0, "high": 975.0, "low": 924.0, "close": 929.0}, {"time": "2026-03-18", "open": 939.0, "high": 953.0, "low": 933.0, "close": 938.0}, {"time": "2026-03-19", "open": 928.0, "high": 931.0, "low": 915.0, "close": 915.0}, {"time": "2026-03-20", "open": 920.0, "high": 947.0, "low": 908.0, "close": 930.0}, {"time": "2026-03-23", "open": 908.0, "high": 922.0, "low": 901.0, "close": 915.0}, {"time": "2026-03-24", "open": 938.0, "high": 953.0, "low": 906.0, "close": 935.0}, {"time": "2026-03-25", "open": 960.0, "high": 974.0, "low": 937.0, "close": 943.0}, {"time": "2026-03-26", "open": 949.0, "high": 953.0, "low": 905.0, "close": 905.0}, {"time": "2026-03-27", "open": 896.0, "high": 910.0, "low": 876.0, "close": 880.0}, {"time": "2026-03-30", "open": 850.0, "high": 857.0, "low": 835.0, "close": 836.0}, {"time": "2026-03-31", "open": 836.0, "high": 855.0, "low": 821.0, "close": 821.0}, {"time": "2026-04-01", "open": 857.0, "high": 857.0, "low": 831.0, "close": 834.0}, {"time": "2026-04-02", "open": 846.0, "high": 851.0, "low": 824.0, "close": 829.0}, {"time": "2026-04-07", "open": 839.0, "high": 872.0, "low": 829.0, "close": 855.0}, {"time": "2026-04-08", "open": 883.0, "high": 914.0, "low": 872.0, "close": 904.0}, {"time": "2026-04-09", "open": 910.0, "high": 924.0, "low": 903.0, "close": 907.0}, {"time": "2026-04-10", "open": 924.0, "high": 950.0, "low": 917.0, "close": 926.0}, {"time": "2026-04-13", "open": 941.0, "high": 947.0, "low": 890.0, "close": 932.0}, {"time": "2026-04-14", "open": 943.0, "high": 948.0, "low": 913.0, "close": 915.0}, {"time": "2026-04-15", "open": 922.0, "high": 928.0, "low": 907.0, "close": 910.0}, {"time": "2026-04-16", "open": 919.0, "high": 941.0, "low": 908.0, "close": 935.0}, {"time": "2026-04-17", "open": 923.0, "high": 1025.0, "low": 919.0, "close": 1025.0}, {"time": "2026-04-20", "open": 1040.0, "high": 1055.0, "low": 1010.0, "close": 1025.0}, {"time": "2026-04-21", "open": 1030.0, "high": 1030.0, "low": 985.0, "close": 1000.0}, {"time": "2026-04-22", "open": 1000.0, "high": 1025.0, "low": 1000.0, "close": 1000.0}, {"time": "2026-04-23", "open": 1015.0, "high": 1030.0, "low": 954.0, "close": 975.0}, {"time": "2026-04-24", "open": 991.0, "high": 1010.0, "low": 973.0, "close": 989.0}, {"time": "2026-04-27", "open": 1005.0, "high": 1015.0, "low": 966.0, "close": 969.0}, {"time": "2026-04-28", "open": 970.0, "high": 984.0, "low": 965.0, "close": 969.0}, {"time": "2026-04-29", "open": 973.0, "high": 975.0, "low": 951.0, "close": 959.0}, {"time": "2026-04-30", "open": 960.0, "high": 963.0, "low": 945.0, "close": 950.0}, {"time": "2026-05-04", "open": 968.0, "high": 993.0, "low": 966.0, "close": 978.0}, {"time": "2026-05-05", "open": 987.0, "high": 992.0, "low": 972.0, "close": 977.0}, {"time": "2026-05-06", "open": 984.0, "high": 1000.0, "low": 965.0, "close": 984.0}, {"time": "2026-05-07", "open": 999.0, "high": 1005.0, "low": 985.0, "close": 997.0}, {"time": "2026-05-08", "open": 999.0, "high": 1050.0, "low": 996.0, "close": 1015.0}, {"time": "2026-05-11", "open": 1040.0, "high": 1040.0, "low": 986.0, "close": 1025.0}, {"time": "2026-05-12", "open": 1040.0, "high": 1040.0, "low": 990.0, "close": 993.0}, {"time": "2026-05-13", "open": 1020.0, "high": 1080.0, "low": 1005.0, "close": 1025.0}, {"time": "2026-05-14", "open": 1040.0, "high": 1060.0, "low": 1000.0, "close": 1050.0}, {"time": "2026-05-15", "open": 1065.0, "high": 1080.0, "low": 995.0, "close": 1000.0}, {"time": "2026-05-18", "open": 990.0, "high": 1035.0, "low": 982.0, "close": 1005.0}, {"time": "2026-05-19", "open": 1000.0, "high": 1040.0, "low": 995.0, "close": 1030.0}, {"time": "2026-05-20", "open": 1030.0, "high": 1070.0, "low": 1015.0, "close": 1025.0}, {"time": "2026-05-21", "open": 1045.0, "high": 1120.0, "low": 1045.0, "close": 1100.0}, {"time": "2026-05-22", "open": 1125.0, "high": 1170.0, "low": 1105.0, "close": 1155.0}, {"time": "2026-05-25", "open": 1185.0, "high": 1270.0, "low": 1165.0, "close": 1245.0}, {"time": "2026-05-26", "open": 1285.0, "high": 1345.0, "low": 1250.0, "close": 1265.0}, {"time": "2026-05-27", "open": 1285.0, "high": 1300.0, "low": 1225.0, "close": 1235.0}, {"time": "2026-05-28", "open": 1240.0, "high": 1255.0, "low": 1150.0, "close": 1160.0}, {"time": "2026-05-29", "open": 1200.0, "high": 1205.0, "low": 1150.0, "close": 1155.0}, {"time": "2026-06-01", "open": 1170.0, "high": 1175.0, "low": 1135.0, "close": 1175.0}, {"time": "2026-06-02", "open": 1175.0, "high": 1180.0, "low": 1135.0, "close": 1150.0}, {"time": "2026-06-03", "open": 1155.0, "high": 1180.0, "low": 1130.0, "close": 1155.0}, {"time": "2026-06-04", "open": 1150.0, "high": 1245.0, "low": 1150.0, "close": 1230.0}, {"time": "2026-06-05", "open": 1210.0, "high": 1280.0, "low": 1190.0, "close": 1205.0}, {"time": "2026-06-08", "open": 1100.0, "high": 1120.0, "low": 1085.0, "close": 1110.0}, {"time": "2026-06-09", "open": 1125.0, "high": 1195.0, "low": 1090.0, "close": 1190.0}, {"time": "2026-06-10", "open": 1170.0, "high": 1210.0, "low": 1150.0, "close": 1150.0}, {"time": "2026-06-11", "open": 1185.0, "high": 1230.0, "low": 1140.0, "close": 1195.0}, {"time": "2026-06-12", "open": 1280.0, "high": 1310.0, "low": 1265.0, "close": 1310.0}, {"time": "2026-06-15", "open": 1380.0, "high": 1430.0, "low": 1360.0, "close": 1380.0}, {"time": "2026-06-16", "open": 1380.0, "high": 1380.0, "low": 1245.0, "close": 1245.0}, {"time": "2026-06-17", "open": 1225.0, "high": 1295.0, "low": 1225.0, "close": 1280.0}, {"time": "2026-06-18", "open": 1295.0, "high": 1305.0, "low": 1245.0, "close": 1265.0}, {"time": "2026-06-22", "open": 1275.0, "high": 1285.0, "low": 1255.0, "close": 1280.0}, {"time": "2026-06-23", "open": 1290.0, "high": 1315.0, "low": 1255.0, "close": 1260.0}, {"time": "2026-06-24", "open": 1245.0, "high": 1265.0, "low": 1220.0, "close": 1255.0}, {"time": "2026-06-25", "open": 1265.0, "high": 1380.0, "low": 1240.0, "close": 1365.0}, {"time": "2026-06-26", "open": 1350.0, "high": 1395.0, "low": 1310.0, "close": 1340.0}, {"time": "2026-06-29", "open": 1380.0, "high": 1450.0, "low": 1350.0, "close": 1360.0}, {"time": "2026-06-30", "open": 1370.0, "high": 1380.0, "low": 1310.0, "close": 1320.0}, {"time": "2026-07-01", "open": 1340.0, "high": 1375.0, "low": 1285.0, "close": 1300.0}, {"time": "2026-07-02", "open": 1295.0, "high": 1390.0, "low": 1285.0, "close": 1385.0}, {"time": "2026-07-03", "open": 1375.0, "high": 1395.0, "low": 1345.0, "close": 1350.0}, {"time": "2026-07-06", "open": 1350.0, "high": 1350.0, "low": 1285.0, "close": 1320.0}, {"time": "2026-07-07", "open": 1320.0, "high": 1320.0, "low": 1250.0, "close": 1260.0}, {"time": "2026-07-08", "open": 1265.0, "high": 1275.0, "low": 1180.0, "close": 1200.0}, {"time": "2026-07-09", "open": 1220.0, "high": 1245.0, "low": 1200.0, "close": 1215.0}, {"time": "2026-07-13", "open": 1225.0, "high": 1245.0, "low": 1205.0, "close": 1230.0}, {"time": "2026-07-14", "open": 1210.0, "high": 1225.0, "low": 1140.0, "close": 1185.0}, {"time": "2026-07-15", "open": 1240.0, "high": 1300.0, "low": 1205.0, "close": 1285.0}, {"time": "2026-07-16", "open": 1230.0, "high": 1270.0, "low": 1200.0, "close": 1250.0}, {"time": "2026-07-17", "open": 1210.0, "high": 1250.0, "low": 1160.0, "close": 1160.0}, {"time": "2026-07-20", "open": 1160.0, "high": 1185.0, "low": 1105.0, "close": 1135.0}, {"time": "2026-07-21", "open": 1165.0, "high": 1190.0, "low": 1125.0, "close": 1150.0}, {"time": "2026-07-22", "open": 1170.0, "high": 1215.0, "low": 1170.0, "close": 1175.0}, {"time": "2026-07-23", "open": 1190.0, "high": 1190.0, "low": 1165.0, "close": 1165.0}, {"time": "2026-07-24", "open": 1160.0, "high": 1205.0, "low": 1120.0, "close": 1120.0}, {"time": "2026-07-27", "open": 1130.0, "high": 1130.0, "low": 1085.0, "close": 1115.0}, {"time": "2026-07-28", "open": 1070.0, "high": 1070.0, "low": 1005.0, "close": 1010.0}, {"time": "2026-07-29", "open": 1025.0, "high": 1075.0, "low": 975.0, "close": 1015.0}, {"time": "2026-07-30", "open": 1000.0, "high": 1065.0, "low": 981.0, "close": 1010.0}, {"time": "2026-07-31", "open": 1080.0, "high": 1110.0, "low": 1060.0, "close": 1100.0}, {"time": "2026-08-03", "open": 1075.0, "high": 1140.0, "low": 1060.0, "close": 1105.0}, {"time": "2026-08-04", "open": 1095.0, "high": 1120.0, "low": 1090.0, "close": 1110.0}, {"time": "2026-08-05", "open": 1140.0, "high": 1145.0, "low": 1110.0, "close": 1115.0}, {"time": "2026-08-06", "open": 1110.0, "high": 1180.0, "low": 1085.0, "close": 1170.0}, {"time": "2026-08-07", "open": 1170.0, "high": 1180.0, "low": 1145.0, "close": 1150.0}, {"time": "2026-08-10", "open": 1150.0, "high": 1180.0, "low": 1135.0, "close": 1150.0}, {"time": "2026-08-11", "open": 1170.0, "high": 1170.0, "low": 1140.0, "close": 1150.0}, {"time": "2026-08-12", "open": 1150.0, "high": 1170.0, "low": 1135.0, "close": 1135.0}, {"time": "2026-08-13", "open": 1170.0, "high": 1175.0, "low": 1115.0, "close": 1130.0}, {"time": "2026-08-14", "open": 1135.0, "high": 1140.0, "low": 1100.0, "close": 1125.0}, {"time": "2026-08-17", "open": 1120.0, "high": 1165.0, "low": 1120.0, "close": 1155.0}, {"time": "2026-08-18", "open": 1150.0, "high": 1155.0, "low": 1110.0, "close": 1115.0}, {"time": "2026-08-19", "open": 1090.0, "high": 1115.0, "low": 1075.0, "close": 1095.0}, {"time": "2026-08-20", "open": 1115.0, "high": 1120.0, "low": 1060.0, "close": 1075.0}, {"time": "2026-08-21", "open": 1075.0, "high": 1080.0, "low": 1050.0, "close": 1060.0}, {"time": "2026-08-24", "open": 1060.0, "high": 1075.0, "low": 1050.0, "close": 1065.0}, {"time": "2026-08-25", "open": 1060.0, "high": 1080.0, "low": 1055.0, "close": 1070.0}, {"time": "2026-08-26", "open": 1070.0, "high": 1100.0, "low": 1070.0, "close": 1080.0}, {"time": "2026-08-27", "open": 1090.0, "high": 1095.0, "low": 1065.0, "close": 1075.0}, {"time": "2026-08-28", "open": 1080.0, "high": 1095.0, "low": 1070.0, "close": 1075.0}, {"time": "2026-08-31", "open": 1065.0, "high": 1065.0, "low": 1035.0, "close": 1060.0}, {"time": "2026-09-01", "open": 1060.0, "high": 1105.0, "low": 1060.0, "close": 1100.0}, {"time": "2026-09-02", "open": 1085.0, "high": 1085.0, "low": 1025.0, "close": 1025.0}, {"time": "2026-09-03", "open": 1030.0, "high": 1060.0, "low": 1025.0, "close": 1035.0}, {"time": "2026-09-04", "open": 1040.0, "high": 1085.0, "low": 1010.0, "close": 1070.0}, {"time": "2026-09-07", "open": 1070.0, "high": 1085.0, "low": 1060.0, "close": 1080.0}, {"time": "2026-09-08", "open": 1085.0, "high": 1085.0, "low": 1050.0, "close": 1055.0}, {"time": "2026-09-09", "open": 1055.0, "high": 1080.0, "low": 1055.0, "close": 1065.0}, {"time": "2026-09-10", "open": 1055.0, "high": 1065.0, "low": 1040.0, "close": 1060.0}, {"time": "2026-09-11", "open": 1025.0, "high": 1040.0, "low": 1000.0, "close": 1005.0}, {"time": "2026-09-14", "open": 995.0, "high": 1040.0, "low": 992.0, "close": 1015.0}, {"time": "2026-09-15", "open": 1015.0, "high": 1050.0, "low": 1015.0, "close": 1035.0}, {"time": "2026-09-16", "open": 1040.0, "high": 1060.0, "low": 1030.0, "close": 1035.0}, {"time": "2026-09-17", "open": 1040.0, "high": 1055.0, "low": 1025.0, "close": 1030.0}, {"time": "2026-09-18", "open": 1040.0, "high": 1130.0, "low": 1040.0, "close": 1125.0}, {"time": "2026-09-21", "open": 1125.0, "high": 1160.0, "low": 1090.0, "close": 1130.0}, {"time": "2026-09-22", "open": 1140.0, "high": 1175.0, "low": 1130.0, "close": 1140.0}, {"time": "2026-09-23", "open": 1160.0, "high": 1250.0, "low": 1140.0, "close": 1250.0}];
+            const volumeData = [{"time": "2024-05-10", "value": 2234.0, "color": "#10b98188"}, {"time": "2025-09-22", "value": 1312.0, "color": "#10b98188"}, {"time": "2025-09-23", "value": 2449.0, "color": "#10b98188"}, {"time": "2025-09-24", "value": 1410.0, "color": "#10b98188"}, {"time": "2025-09-25", "value": 2069.0, "color": "#10b98188"}, {"time": "2025-09-26", "value": 2926.0, "color": "#10b98188"}, {"time": "2025-09-30", "value": 1469.0, "color": "#10b98188"}, {"time": "2025-10-01", "value": 2253.0, "color": "#ef444488"}, {"time": "2025-10-02", "value": 2286.0, "color": "#10b98188"}, {"time": "2025-10-03", "value": 1613.0, "color": "#10b98188"}, {"time": "2025-10-07", "value": 2107.0, "color": "#10b98188"}, {"time": "2025-10-08", "value": 2109.0, "color": "#10b98188"}, {"time": "2025-10-09", "value": 1713.0, "color": "#ef444488"}, {"time": "2025-10-13", "value": 1180.0, "color": "#ef444488"}, {"time": "2025-10-14", "value": 2984.0, "color": "#10b98188"}, {"time": "2025-10-15", "value": 6086.0, "color": "#ef444488"}, {"time": "2025-10-16", "value": 2782.0, "color": "#10b98188"}, {"time": "2025-10-17", "value": 2165.0, "color": "#10b98188"}, {"time": "2025-10-20", "value": 1688.0, "color": "#10b98188"}, {"time": "2025-10-21", "value": 1307.0, "color": "#10b98188"}, {"time": "2025-10-22", "value": 1268.0, "color": "#10b98188"}, {"time": "2025-10-23", "value": 1202.0, "color": "#10b98188"}, {"time": "2025-10-27", "value": 2946.0, "color": "#10b98188"}, {"time": "2025-10-28", "value": 1668.0, "color": "#ef444488"}, {"time": "2025-10-29", "value": 2077.0, "color": "#10b98188"}, {"time": "2025-10-30", "value": 1965.0, "color": "#ef444488"}, {"time": "2025-10-31", "value": 2085.0, "color": "#10b98188"}, {"time": "2025-11-03", "value": 1150.0, "color": "#10b98188"}, {"time": "2025-11-04", "value": 1140.0, "color": "#10b98188"}, {"time": "2025-11-05", "value": 1511.0, "color": "#10b98188"}, {"time": "2025-11-06", "value": 1092.0, "color": "#10b98188"}, {"time": "2025-11-07", "value": 1543.0, "color": "#10b98188"}, {"time": "2025-11-10", "value": 1705.0, "color": "#10b98188"}, {"time": "2025-11-11", "value": 3787.0, "color": "#10b98188"}, {"time": "2025-11-12", "value": 2476.0, "color": "#ef444488"}, {"time": "2025-11-13", "value": 2973.0, "color": "#ef444488"}, {"time": "2025-11-14", "value": 4911.0, "color": "#10b98188"}, {"time": "2025-11-17", "value": 2278.0, "color": "#ef444488"}, {"time": "2025-11-18", "value": 2086.0, "color": "#10b98188"}, {"time": "2025-11-19", "value": 2127.0, "color": "#ef444488"}, {"time": "2025-11-20", "value": 2031.0, "color": "#10b98188"}, {"time": "2025-11-21", "value": 2171.0, "color": "#10b98188"}, {"time": "2025-11-24", "value": 1139.0, "color": "#ef444488"}, {"time": "2025-11-25", "value": 1192.0, "color": "#10b98188"}, {"time": "2025-11-26", "value": 1455.0, "color": "#ef444488"}, {"time": "2025-11-27", "value": 1196.0, "color": "#10b98188"}, {"time": "2025-11-28", "value": 1108.0, "color": "#ef444488"}, {"time": "2025-12-01", "value": 2160.0, "color": "#10b98188"}, {"time": "2025-12-02", "value": 1418.0, "color": "#10b98188"}, {"time": "2025-12-03", "value": 1446.0, "color": "#ef444488"}, {"time": "2025-12-04", "value": 2419.0, "color": "#10b98188"}, {"time": "2025-12-05", "value": 1911.0, "color": "#10b98188"}, {"time": "2025-12-08", "value": 2017.0, "color": "#ef444488"}, {"time": "2025-12-09", "value": 5266.0, "color": "#ef444488"}, {"time": "2025-12-10", "value": 5734.0, "color": "#ef444488"}, {"time": "2025-12-11", "value": 8159.0, "color": "#10b98188"}, {"time": "2025-12-12", "value": 7238.0, "color": "#ef444488"}, {"time": "2025-12-15", "value": 3435.0, "color": "#ef444488"}, {"time": "2025-12-16", "value": 4990.0, "color": "#ef444488"}, {"time": "2025-12-17", "value": 8885.0, "color": "#10b98188"}, {"time": "2025-12-18", "value": 4783.0, "color": "#10b98188"}, {"time": "2025-12-19", "value": 4625.0, "color": "#ef444488"}, {"time": "2025-12-22", "value": 6282.0, "color": "#10b98188"}, {"time": "2025-12-23", "value": 2976.0, "color": "#ef444488"}, {"time": "2025-12-24", "value": 4644.0, "color": "#10b98188"}, {"time": "2025-12-26", "value": 2293.0, "color": "#ef444488"}, {"time": "2025-12-29", "value": 2140.0, "color": "#10b98188"}, {"time": "2025-12-30", "value": 2868.0, "color": "#10b98188"}, {"time": "2025-12-31", "value": 4603.0, "color": "#ef444488"}, {"time": "2026-01-02", "value": 3996.0, "color": "#ef444488"}, {"time": "2026-01-05", "value": 5164.0, "color": "#ef444488"}, {"time": "2026-01-06", "value": 5375.0, "color": "#ef444488"}, {"time": "2026-01-07", "value": 4311.0, "color": "#10b98188"}, {"time": "2026-01-08", "value": 4864.0, "color": "#ef444488"}, {"time": "2026-01-09", "value": 2885.0, "color": "#10b98188"}, {"time": "2026-01-12", "value": 4817.0, "color": "#10b98188"}, {"time": "2026-01-13", "value": 8944.0, "color": "#ef444488"}, {"time": "2026-01-14", "value": 8701.0, "color": "#ef444488"}, {"time": "2026-01-15", "value": 4219.0, "color": "#ef444488"}, {"time": "2026-01-16", "value": 9506.0, "color": "#10b98188"}, {"time": "2026-01-19", "value": 3112.0, "color": "#ef444488"}, {"time": "2026-01-20", "value": 2072.0, "color": "#ef444488"}, {"time": "2026-01-21", "value": 4332.0, "color": "#10b98188"}, {"time": "2026-01-22", "value": 4679.0, "color": "#10b98188"}, {"time": "2026-01-23", "value": 2243.0, "color": "#10b98188"}, {"time": "2026-01-26", "value": 3681.0, "color": "#10b98188"}, {"time": "2026-01-27", "value": 2376.0, "color": "#10b98188"}, {"time": "2026-01-28", "value": 3450.0, "color": "#ef444488"}, {"time": "2026-01-29", "value": 3558.0, "color": "#10b98188"}, {"time": "2026-01-30", "value": 3481.0, "color": "#10b98188"}, {"time": "2026-02-02", "value": 2309.0, "color": "#ef444488"}, {"time": "2026-02-03", "value": 1768.0, "color": "#ef444488"}, {"time": "2026-02-04", "value": 1617.0, "color": "#10b98188"}, {"time": "2026-02-05", "value": 3086.0, "color": "#ef444488"}, {"time": "2026-02-06", "value": 2711.0, "color": "#10b98188"}, {"time": "2026-02-09", "value": 2076.0, "color": "#10b98188"}, {"time": "2026-02-10", "value": 1304.0, "color": "#10b98188"}, {"time": "2026-02-11", "value": 2219.0, "color": "#ef444488"}, {"time": "2026-02-23", "value": 3335.0, "color": "#ef444488"}, {"time": "2026-02-24", "value": 2455.0, "color": "#ef444488"}, {"time": "2026-02-25", "value": 4697.0, "color": "#ef444488"}, {"time": "2026-02-26", "value": 7685.0, "color": "#ef444488"}, {"time": "2026-03-02", "value": 4623.0, "color": "#10b98188"}, {"time": "2026-03-03", "value": 3843.0, "color": "#10b98188"}, {"time": "2026-03-04", "value": 3467.0, "color": "#ef444488"}, {"time": "2026-03-05", "value": 3894.0, "color": "#ef444488"}, {"time": "2026-03-06", "value": 3184.0, "color": "#ef444488"}, {"time": "2026-03-09", "value": 3676.0, "color": "#ef444488"}, {"time": "2026-03-10", "value": 4100.0, "color": "#10b98188"}, {"time": "2026-03-11", "value": 2356.0, "color": "#10b98188"}, {"time": "2026-03-12", "value": 1972.0, "color": "#10b98188"}, {"time": "2026-03-13", "value": 2792.0, "color": "#10b98188"}, {"time": "2026-03-16", "value": 4927.0, "color": "#10b98188"}, {"time": "2026-03-17", "value": 6387.0, "color": "#10b98188"}, {"time": "2026-03-18", "value": 2822.0, "color": "#10b98188"}, {"time": "2026-03-19", "value": 2939.0, "color": "#10b98188"}, {"time": "2026-03-20", "value": 6586.0, "color": "#ef444488"}, {"time": "2026-03-23", "value": 2947.0, "color": "#ef444488"}, {"time": "2026-03-24", "value": 4489.0, "color": "#10b98188"}, {"time": "2026-03-25", "value": 5839.0, "color": "#10b98188"}, {"time": "2026-03-26", "value": 4674.0, "color": "#10b98188"}, {"time": "2026-03-27", "value": 4311.0, "color": "#10b98188"}, {"time": "2026-03-30", "value": 3297.0, "color": "#10b98188"}, {"time": "2026-03-31", "value": 3419.0, "color": "#10b98188"}, {"time": "2026-04-01", "value": 2142.0, "color": "#10b98188"}, {"time": "2026-04-02", "value": 2650.0, "color": "#10b98188"}, {"time": "2026-04-07", "value": 2037.0, "color": "#ef444488"}, {"time": "2026-04-08", "value": 4082.0, "color": "#ef444488"}, {"time": "2026-04-09", "value": 3774.0, "color": "#10b98188"}, {"time": "2026-04-10", "value": 3667.0, "color": "#ef444488"}, {"time": "2026-04-13", "value": 5698.0, "color": "#10b98188"}, {"time": "2026-04-14", "value": 4999.0, "color": "#10b98188"}, {"time": "2026-04-15", "value": 2830.0, "color": "#10b98188"}, {"time": "2026-04-16", "value": 3873.0, "color": "#ef444488"}, {"time": "2026-04-17", "value": 11342.0, "color": "#ef444488"}, {"time": "2026-04-20", "value": 6876.0, "color": "#10b98188"}, {"time": "2026-04-21", "value": 7030.0, "color": "#10b98188"}, {"time": "2026-04-22", "value": 4021.0, "color": "#ef444488"}, {"time": "2026-04-23", "value": 7422.0, "color": "#10b98188"}, {"time": "2026-04-24", "value": 4525.0, "color": "#10b98188"}, {"time": "2026-04-27", "value": 4054.0, "color": "#10b98188"}, {"time": "2026-04-28", "value": 2672.0, "color": "#10b98188"}, {"time": "2026-04-29", "value": 2670.0, "color": "#10b98188"}, {"time": "2026-04-30", "value": 3019.0, "color": "#10b98188"}, {"time": "2026-05-04", "value": 3350.0, "color": "#ef444488"}, {"time": "2026-05-05", "value": 2895.0, "color": "#10b98188"}, {"time": "2026-05-06", "value": 3757.0, "color": "#ef444488"}, {"time": "2026-05-07", "value": 3370.0, "color": "#10b98188"}, {"time": "2026-05-08", "value": 6940.0, "color": "#ef444488"}, {"time": "2026-05-11", "value": 4977.0, "color": "#10b98188"}, {"time": "2026-05-12", "value": 4734.0, "color": "#10b98188"}, {"time": "2026-05-13", "value": 8636.0, "color": "#ef444488"}, {"time": "2026-05-14", "value": 5790.0, "color": "#ef444488"}, {"time": "2026-05-15", "value": 6200.0, "color": "#10b98188"}, {"time": "2026-05-18", "value": 3966.0, "color": "#ef444488"}, {"time": "2026-05-19", "value": 4467.0, "color": "#ef444488"}, {"time": "2026-05-20", "value": 5761.0, "color": "#10b98188"}, {"time": "2026-05-21", "value": 7100.0, "color": "#ef444488"}, {"time": "2026-05-22", "value": 5166.0, "color": "#ef444488"}, {"time": "2026-05-25", "value": 5552.0, "color": "#ef444488"}, {"time": "2026-05-26", "value": 8007.0, "color": "#10b98188"}, {"time": "2026-05-27", "value": 5007.0, "color": "#10b98188"}, {"time": "2026-05-28", "value": 4494.0, "color": "#10b98188"}, {"time": "2026-05-29", "value": 3394.0, "color": "#10b98188"}, {"time": "2026-06-01", "value": 2682.0, "color": "#ef444488"}, {"time": "2026-06-02", "value": 3749.0, "color": "#10b98188"}, {"time": "2026-06-03", "value": 5099.0, "color": "#ef444488"}, {"time": "2026-06-04", "value": 6428.0, "color": "#ef444488"}, {"time": "2026-06-05", "value": 6169.0, "color": "#10b98188"}, {"time": "2026-06-08", "value": 4582.0, "color": "#ef444488"}, {"time": "2026-06-09", "value": 4413.0, "color": "#ef444488"}, {"time": "2026-06-10", "value": 4162.0, "color": "#10b98188"}, {"time": "2026-06-11", "value": 4892.0, "color": "#ef444488"}, {"time": "2026-06-12", "value": 6101.0, "color": "#ef444488"}, {"time": "2026-06-15", "value": 5578.0, "color": "#ef444488"}, {"time": "2026-06-16", "value": 6617.0, "color": "#10b98188"}, {"time": "2026-06-17", "value": 4750.0, "color": "#ef444488"}, {"time": "2026-06-18", "value": 3238.0, "color": "#10b98188"}, {"time": "2026-06-22", "value": 1898.0, "color": "#ef444488"}, {"time": "2026-06-23", "value": 2277.0, "color": "#10b98188"}, {"time": "2026-06-24", "value": 1838.0, "color": "#ef444488"}, {"time": "2026-06-25", "value": 5934.0, "color": "#ef444488"}, {"time": "2026-06-26", "value": 4491.0, "color": "#10b98188"}, {"time": "2026-06-29", "value": 4708.0, "color": "#10b98188"}, {"time": "2026-06-30", "value": 2928.0, "color": "#10b98188"}, {"time": "2026-07-01", "value": 4315.0, "color": "#10b98188"}, {"time": "2026-07-02", "value": 3745.0, "color": "#ef444488"}, {"time": "2026-07-03", "value": 1761.0, "color": "#10b98188"}, {"time": "2026-07-06", "value": 2397.0, "color": "#10b98188"}, {"time": "2026-07-07", "value": 2305.0, "color": "#10b98188"}, {"time": "2026-07-08", "value": 2328.0, "color": "#10b98188"}, {"time": "2026-07-09", "value": 2001.0, "color": "#10b98188"}, {"time": "2026-07-13", "value": 1588.0, "color": "#ef444488"}, {"time": "2026-07-14", "value": 2417.0, "color": "#10b98188"}, {"time": "2026-07-15", "value": 3675.0, "color": "#ef444488"}, {"time": "2026-07-16", "value": 2955.0, "color": "#ef444488"}, {"time": "2026-07-17", "value": 3355.0, "color": "#10b98188"}, {"time": "2026-07-20", "value": 2265.0, "color": "#10b98188"}, {"time": "2026-07-21", "value": 2161.0, "color": "#10b98188"}, {"time": "2026-07-22", "value": 1898.0, "color": "#ef444488"}, {"time": "2026-07-23", "value": 1021.0, "color": "#10b98188"}, {"time": "2026-07-24", "value": 1633.0, "color": "#10b98188"}, {"time": "2026-07-27", "value": 1257.0, "color": "#10b98188"}, {"time": "2026-07-28", "value": 2695.0, "color": "#10b98188"}, {"time": "2026-07-29", "value": 3931.0, "color": "#10b98188"}, {"time": "2026-07-30", "value": 2190.0, "color": "#ef444488"}, {"time": "2026-07-31", "value": 4149.0, "color": "#ef444488"}, {"time": "2026-08-03", "value": 2660.0, "color": "#ef444488"}, {"time": "2026-08-04", "value": 1758.0, "color": "#ef444488"}, {"time": "2026-08-05", "value": 1695.0, "color": "#10b98188"}, {"time": "2026-08-06", "value": 1767.0, "color": "#ef444488"}, {"time": "2026-08-07", "value": 1105.0, "color": "#10b98188"}, {"time": "2026-08-10", "value": 1179.0, "color": "#ef444488"}, {"time": "2026-08-11", "value": 1119.0, "color": "#10b98188"}, {"time": "2026-08-12", "value": 1163.0, "color": "#10b98188"}, {"time": "2026-08-13", "value": 2734.0, "color": "#10b98188"}, {"time": "2026-08-14", "value": 1936.0, "color": "#10b98188"}, {"time": "2026-08-17", "value": 1164.0, "color": "#ef444488"}, {"time": "2026-08-18", "value": 1191.0, "color": "#10b98188"}, {"time": "2026-08-19", "value": 1111.0, "color": "#ef444488"}, {"time": "2026-08-20", "value": 1621.0, "color": "#10b98188"}, {"time": "2026-08-21", "value": 835.0, "color": "#10b98188"}, {"time": "2026-08-24", "value": 596.0, "color": "#ef444488"}, {"time": "2026-08-25", "value": 746.0, "color": "#ef444488"}, {"time": "2026-08-26", "value": 687.0, "color": "#ef444488"}, {"time": "2026-08-27", "value": 1452.0, "color": "#10b98188"}, {"time": "2026-08-28", "value": 1240.0, "color": "#10b98188"}, {"time": "2026-08-31", "value": 1469.0, "color": "#10b98188"}, {"time": "2026-09-01", "value": 1513.0, "color": "#ef444488"}, {"time": "2026-09-02", "value": 2371.0, "color": "#10b98188"}, {"time": "2026-09-03", "value": 1457.0, "color": "#ef444488"}, {"time": "2026-09-04", "value": 1780.0, "color": "#ef444488"}, {"time": "2026-09-07", "value": 951.0, "color": "#ef444488"}, {"time": "2026-09-08", "value": 651.0, "color": "#10b98188"}, {"time": "2026-09-09", "value": 1187.0, "color": "#ef444488"}, {"time": "2026-09-10", "value": 674.0, "color": "#ef444488"}, {"time": "2026-09-11", "value": 1637.0, "color": "#10b98188"}, {"time": "2026-09-14", "value": 976.0, "color": "#ef444488"}, {"time": "2026-09-15", "value": 965.0, "color": "#ef444488"}, {"time": "2026-09-16", "value": 746.0, "color": "#10b98188"}, {"time": "2026-09-17", "value": 636.0, "color": "#10b98188"}, {"time": "2026-09-18", "value": 3305.0, "color": "#ef444488"}, {"time": "2026-09-21", "value": 2092.0, "color": "#ef444488"}, {"time": "2026-09-22", "value": 1655.0, "color": "#ef444488"}, {"time": "2026-09-23", "value": 5162.0, "color": "#ef444488"}];
+            const markersData = [{"time": "2025-10-13", "position": "belowBar", "color": "#10b981", "shape": "arrowUp", "text": "\u8cb79"}, {"time": "2025-11-10", "position": "belowBar", "color": "#06b6d4", "shape": "circle", "text": "\u2605\u8cb713"}, {"time": "2025-12-15", "position": "aboveBar", "color": "#ef4444", "shape": "arrowDown", "text": "\u8ce39"}, {"time": "2026-01-30", "position": "belowBar", "color": "#10b981", "shape": "arrowUp", "text": "\u8cb79"}, {"time": "2026-03-20", "position": "belowBar", "color": "#06b6d4", "shape": "circle", "text": "\u2605\u8cb713"}, {"time": "2026-03-23", "position": "belowBar", "color": "#10b981", "shape": "arrowUp", "text": "\u8cb79"}, {"time": "2026-04-17", "position": "aboveBar", "color": "#ef4444", "shape": "arrowDown", "text": "\u8ce39"}, {"time": "2026-05-14", "position": "aboveBar", "color": "#ef4444", "shape": "arrowDown", "text": "\u8ce39"}, {"time": "2026-06-26", "position": "aboveBar", "color": "#f59e0b", "shape": "circle", "text": "\u2605\u8ce313"}];
+            const warrantCallData = [{"time": "2024-05-10", "value": 0}, {"time": "2025-09-22", "value": 0}, {"time": "2025-09-23", "value": 0}, {"time": "2025-09-24", "value": 0}, {"time": "2025-09-25", "value": 0}, {"time": "2025-09-26", "value": 0}, {"time": "2025-09-30", "value": 0}, {"time": "2025-10-01", "value": 0}, {"time": "2025-10-02", "value": 0}, {"time": "2025-10-03", "value": 0}, {"time": "2025-10-07", "value": 0}, {"time": "2025-10-08", "value": 0}, {"time": "2025-10-09", "value": 0}, {"time": "2025-10-13", "value": 0}, {"time": "2025-10-14", "value": 0}, {"time": "2025-10-15", "value": 0}, {"time": "2025-10-16", "value": 0}, {"time": "2025-10-17", "value": 0}, {"time": "2025-10-20", "value": 0}, {"time": "2025-10-21", "value": 0}, {"time": "2025-10-22", "value": 0}, {"time": "2025-10-23", "value": 0}, {"time": "2025-10-27", "value": 0}, {"time": "2025-10-28", "value": 0}, {"time": "2025-10-29", "value": 0}, {"time": "2025-10-30", "value": 0}, {"time": "2025-10-31", "value": 0}, {"time": "2025-11-03", "value": 0}, {"time": "2025-11-04", "value": 0}, {"time": "2025-11-05", "value": 0}, {"time": "2025-11-06", "value": 0}, {"time": "2025-11-07", "value": 0}, {"time": "2025-11-10", "value": 0}, {"time": "2025-11-11", "value": 0}, {"time": "2025-11-12", "value": 0}, {"time": "2025-11-13", "value": 0}, {"time": "2025-11-14", "value": 0}, {"time": "2025-11-17", "value": 0}, {"time": "2025-11-18", "value": 0}, {"time": "2025-11-19", "value": 0}, {"time": "2025-11-20", "value": 0}, {"time": "2025-11-21", "value": 0}, {"time": "2025-11-24", "value": 0}, {"time": "2025-11-25", "value": 0}, {"time": "2025-11-26", "value": 0}, {"time": "2025-11-27", "value": 0}, {"time": "2025-11-28", "value": 0}, {"time": "2025-12-01", "value": 0}, {"time": "2025-12-02", "value": 0}, {"time": "2025-12-03", "value": 0}, {"time": "2025-12-04", "value": 0}, {"time": "2025-12-05", "value": 0}, {"time": "2025-12-08", "value": 0}, {"time": "2025-12-09", "value": 0}, {"time": "2025-12-10", "value": 0}, {"time": "2025-12-11", "value": 0}, {"time": "2025-12-12", "value": 0}, {"time": "2025-12-15", "value": 0}, {"time": "2025-12-16", "value": 0}, {"time": "2025-12-17", "value": 0}, {"time": "2025-12-18", "value": 0}, {"time": "2025-12-19", "value": 0}, {"time": "2025-12-22", "value": 0}, {"time": "2025-12-23", "value": 0}, {"time": "2025-12-24", "value": 0}, {"time": "2025-12-26", "value": 0}, {"time": "2025-12-29", "value": 0}, {"time": "2025-12-30", "value": 0}, {"time": "2025-12-31", "value": 0}, {"time": "2026-01-02", "value": 0}, {"time": "2026-01-05", "value": 0}, {"time": "2026-01-06", "value": 0}, {"time": "2026-01-07", "value": 0}, {"time": "2026-01-08", "value": 0}, {"time": "2026-01-09", "value": 0}, {"time": "2026-01-12", "value": 0}, {"time": "2026-01-13", "value": 0}, {"time": "2026-01-14", "value": 0}, {"time": "2026-01-15", "value": 0}, {"time": "2026-01-16", "value": 0}, {"time": "2026-01-19", "value": 0}, {"time": "2026-01-20", "value": 0}, {"time": "2026-01-21", "value": 0}, {"time": "2026-01-22", "value": 0}, {"time": "2026-01-23", "value": 0}, {"time": "2026-01-26", "value": 0}, {"time": "2026-01-27", "value": 0}, {"time": "2026-01-28", "value": 0}, {"time": "2026-01-29", "value": 0}, {"time": "2026-01-30", "value": 0}, {"time": "2026-02-02", "value": 0}, {"time": "2026-02-03", "value": 0}, {"time": "2026-02-04", "value": 0}, {"time": "2026-02-05", "value": 0}, {"time": "2026-02-06", "value": 0}, {"time": "2026-02-09", "value": 0}, {"time": "2026-02-10", "value": 0}, {"time": "2026-02-11", "value": 0}, {"time": "2026-02-23", "value": 0}, {"time": "2026-02-24", "value": 0}, {"time": "2026-02-25", "value": 0}, {"time": "2026-02-26", "value": 0}, {"time": "2026-03-02", "value": 0}, {"time": "2026-03-03", "value": 0}, {"time": "2026-03-04", "value": 0}, {"time": "2026-03-05", "value": 0}, {"time": "2026-03-06", "value": 0}, {"time": "2026-03-09", "value": 0}, {"time": "2026-03-10", "value": 0}, {"time": "2026-03-11", "value": 0}, {"time": "2026-03-12", "value": 0}, {"time": "2026-03-13", "value": 0}, {"time": "2026-03-16", "value": 0}, {"time": "2026-03-17", "value": 0}, {"time": "2026-03-18", "value": 0}, {"time": "2026-03-19", "value": 0}, {"time": "2026-03-20", "value": 0}, {"time": "2026-03-23", "value": 0}, {"time": "2026-03-24", "value": 0}, {"time": "2026-03-25", "value": 0}, {"time": "2026-03-26", "value": 0}, {"time": "2026-03-27", "value": 0}, {"time": "2026-03-30", "value": 0}, {"time": "2026-03-31", "value": 0}, {"time": "2026-04-01", "value": 0}, {"time": "2026-04-02", "value": 0}, {"time": "2026-04-07", "value": 0}, {"time": "2026-04-08", "value": 0}, {"time": "2026-04-09", "value": 0}, {"time": "2026-04-10", "value": 0}, {"time": "2026-04-13", "value": 0}, {"time": "2026-04-14", "value": 0}, {"time": "2026-04-15", "value": 0}, {"time": "2026-04-16", "value": 0}, {"time": "2026-04-17", "value": 0}, {"time": "2026-04-20", "value": 0}, {"time": "2026-04-21", "value": 0}, {"time": "2026-04-22", "value": 0}, {"time": "2026-04-23", "value": 0}, {"time": "2026-04-24", "value": 0}, {"time": "2026-04-27", "value": 0}, {"time": "2026-04-28", "value": 0}, {"time": "2026-04-29", "value": 0}, {"time": "2026-04-30", "value": 0}, {"time": "2026-05-04", "value": 0}, {"time": "2026-05-05", "value": 0}, {"time": "2026-05-06", "value": 0}, {"time": "2026-05-07", "value": 0}, {"time": "2026-05-08", "value": 0}, {"time": "2026-05-11", "value": 0}, {"time": "2026-05-12", "value": 0}, {"time": "2026-05-13", "value": 0}, {"time": "2026-05-14", "value": 0}, {"time": "2026-05-15", "value": 0}, {"time": "2026-05-18", "value": 0}, {"time": "2026-05-19", "value": 0}, {"time": "2026-05-20", "value": 0}, {"time": "2026-05-21", "value": 0}, {"time": "2026-05-22", "value": 0}, {"time": "2026-05-25", "value": 0}, {"time": "2026-05-26", "value": 0}, {"time": "2026-05-27", "value": 0}, {"time": "2026-05-28", "value": 0}, {"time": "2026-05-29", "value": 0}, {"time": "2026-06-01", "value": 0}, {"time": "2026-06-02", "value": 0}, {"time": "2026-06-03", "value": 0}, {"time": "2026-06-04", "value": 0}, {"time": "2026-06-05", "value": 0}, {"time": "2026-06-08", "value": 0}, {"time": "2026-06-09", "value": 0}, {"time": "2026-06-10", "value": 0}, {"time": "2026-06-11", "value": 0}, {"time": "2026-06-12", "value": 0}, {"time": "2026-06-15", "value": 0}, {"time": "2026-06-16", "value": 0}, {"time": "2026-06-17", "value": 0}, {"time": "2026-06-18", "value": 0}, {"time": "2026-06-22", "value": 0}, {"time": "2026-06-23", "value": 0}, {"time": "2026-06-24", "value": 0}, {"time": "2026-06-25", "value": 0}, {"time": "2026-06-26", "value": 0}, {"time": "2026-06-29", "value": 0}, {"time": "2026-06-30", "value": 0}, {"time": "2026-07-01", "value": 0}, {"time": "2026-07-02", "value": 0}, {"time": "2026-07-03", "value": 0}, {"time": "2026-07-06", "value": 0}, {"time": "2026-07-07", "value": 0}, {"time": "2026-07-08", "value": 0}, {"time": "2026-07-09", "value": 0}, {"time": "2026-07-13", "value": 0}, {"time": "2026-07-14", "value": 0}, {"time": "2026-07-15", "value": 0}, {"time": "2026-07-16", "value": 0}, {"time": "2026-07-17", "value": 0}, {"time": "2026-07-20", "value": 0}, {"time": "2026-07-21", "value": 0}, {"time": "2026-07-22", "value": 0}, {"time": "2026-07-23", "value": 0}, {"time": "2026-07-24", "value": 0}, {"time": "2026-07-27", "value": 0}, {"time": "2026-07-28", "value": 0}, {"time": "2026-07-29", "value": 0}, {"time": "2026-07-30", "value": 0}, {"time": "2026-07-31", "value": 0}, {"time": "2026-08-03", "value": 0}, {"time": "2026-08-04", "value": 0}, {"time": "2026-08-05", "value": 0}, {"time": "2026-08-06", "value": 0}, {"time": "2026-08-07", "value": 0}, {"time": "2026-08-10", "value": 0}, {"time": "2026-08-11", "value": 0}, {"time": "2026-08-12", "value": 0}, {"time": "2026-08-13", "value": 0}, {"time": "2026-08-14", "value": 0}, {"time": "2026-08-17", "value": 0}, {"time": "2026-08-18", "value": 0}, {"time": "2026-08-19", "value": 0}, {"time": "2026-08-20", "value": 0}, {"time": "2026-08-21", "value": 0}, {"time": "2026-08-24", "value": 0}, {"time": "2026-08-25", "value": 0}, {"time": "2026-08-26", "value": 0}, {"time": "2026-08-27", "value": 0}, {"time": "2026-08-28", "value": 0}, {"time": "2026-08-31", "value": 0}, {"time": "2026-09-01", "value": 0}, {"time": "2026-09-02", "value": 0}, {"time": "2026-09-03", "value": 0}, {"time": "2026-09-04", "value": 0}, {"time": "2026-09-07", "value": 0}, {"time": "2026-09-08", "value": 0}, {"time": "2026-09-09", "value": 0}, {"time": "2026-09-10", "value": 0}, {"time": "2026-09-11", "value": 0}, {"time": "2026-09-14", "value": 0}, {"time": "2026-09-15", "value": 0}, {"time": "2026-09-16", "value": 0}, {"time": "2026-09-17", "value": 0}, {"time": "2026-09-18", "value": 0}, {"time": "2026-09-21", "value": 0}, {"time": "2026-09-22", "value": 0}, {"time": "2026-09-23", "value": 0}];
+            const warrantPutData = [{"time": "2024-05-10", "value": 0}, {"time": "2025-09-22", "value": 0}, {"time": "2025-09-23", "value": 0}, {"time": "2025-09-24", "value": 0}, {"time": "2025-09-25", "value": 0}, {"time": "2025-09-26", "value": 0}, {"time": "2025-09-30", "value": 0}, {"time": "2025-10-01", "value": 0}, {"time": "2025-10-02", "value": 0}, {"time": "2025-10-03", "value": 0}, {"time": "2025-10-07", "value": 0}, {"time": "2025-10-08", "value": 0}, {"time": "2025-10-09", "value": 0}, {"time": "2025-10-13", "value": 0}, {"time": "2025-10-14", "value": 0}, {"time": "2025-10-15", "value": 0}, {"time": "2025-10-16", "value": 0}, {"time": "2025-10-17", "value": 0}, {"time": "2025-10-20", "value": 0}, {"time": "2025-10-21", "value": 0}, {"time": "2025-10-22", "value": 0}, {"time": "2025-10-23", "value": 0}, {"time": "2025-10-27", "value": 0}, {"time": "2025-10-28", "value": 0}, {"time": "2025-10-29", "value": 0}, {"time": "2025-10-30", "value": 0}, {"time": "2025-10-31", "value": 0}, {"time": "2025-11-03", "value": 0}, {"time": "2025-11-04", "value": 0}, {"time": "2025-11-05", "value": 0}, {"time": "2025-11-06", "value": 0}, {"time": "2025-11-07", "value": 0}, {"time": "2025-11-10", "value": 0}, {"time": "2025-11-11", "value": 0}, {"time": "2025-11-12", "value": 0}, {"time": "2025-11-13", "value": 0}, {"time": "2025-11-14", "value": 0}, {"time": "2025-11-17", "value": 0}, {"time": "2025-11-18", "value": 0}, {"time": "2025-11-19", "value": 0}, {"time": "2025-11-20", "value": 0}, {"time": "2025-11-21", "value": 0}, {"time": "2025-11-24", "value": 0}, {"time": "2025-11-25", "value": 0}, {"time": "2025-11-26", "value": 0}, {"time": "2025-11-27", "value": 0}, {"time": "2025-11-28", "value": 0}, {"time": "2025-12-01", "value": 0}, {"time": "2025-12-02", "value": 0}, {"time": "2025-12-03", "value": 0}, {"time": "2025-12-04", "value": 0}, {"time": "2025-12-05", "value": 0}, {"time": "2025-12-08", "value": 0}, {"time": "2025-12-09", "value": 0}, {"time": "2025-12-10", "value": 0}, {"time": "2025-12-11", "value": 0}, {"time": "2025-12-12", "value": 0}, {"time": "2025-12-15", "value": 0}, {"time": "2025-12-16", "value": 0}, {"time": "2025-12-17", "value": 0}, {"time": "2025-12-18", "value": 0}, {"time": "2025-12-19", "value": 0}, {"time": "2025-12-22", "value": 0}, {"time": "2025-12-23", "value": 0}, {"time": "2025-12-24", "value": 0}, {"time": "2025-12-26", "value": 0}, {"time": "2025-12-29", "value": 0}, {"time": "2025-12-30", "value": 0}, {"time": "2025-12-31", "value": 0}, {"time": "2026-01-02", "value": 0}, {"time": "2026-01-05", "value": 0}, {"time": "2026-01-06", "value": 0}, {"time": "2026-01-07", "value": 0}, {"time": "2026-01-08", "value": 0}, {"time": "2026-01-09", "value": 0}, {"time": "2026-01-12", "value": 0}, {"time": "2026-01-13", "value": 0}, {"time": "2026-01-14", "value": 0}, {"time": "2026-01-15", "value": 0}, {"time": "2026-01-16", "value": 0}, {"time": "2026-01-19", "value": 0}, {"time": "2026-01-20", "value": 0}, {"time": "2026-01-21", "value": 0}, {"time": "2026-01-22", "value": 0}, {"time": "2026-01-23", "value": 0}, {"time": "2026-01-26", "value": 0}, {"time": "2026-01-27", "value": 0}, {"time": "2026-01-28", "value": 0}, {"time": "2026-01-29", "value": 0}, {"time": "2026-01-30", "value": 0}, {"time": "2026-02-02", "value": 0}, {"time": "2026-02-03", "value": 0}, {"time": "2026-02-04", "value": 0}, {"time": "2026-02-05", "value": 0}, {"time": "2026-02-06", "value": 0}, {"time": "2026-02-09", "value": 0}, {"time": "2026-02-10", "value": 0}, {"time": "2026-02-11", "value": 0}, {"time": "2026-02-23", "value": 0}, {"time": "2026-02-24", "value": 0}, {"time": "2026-02-25", "value": 0}, {"time": "2026-02-26", "value": 0}, {"time": "2026-03-02", "value": 0}, {"time": "2026-03-03", "value": 0}, {"time": "2026-03-04", "value": 0}, {"time": "2026-03-05", "value": 0}, {"time": "2026-03-06", "value": 0}, {"time": "2026-03-09", "value": 0}, {"time": "2026-03-10", "value": 0}, {"time": "2026-03-11", "value": 0}, {"time": "2026-03-12", "value": 0}, {"time": "2026-03-13", "value": 0}, {"time": "2026-03-16", "value": 0}, {"time": "2026-03-17", "value": 0}, {"time": "2026-03-18", "value": 0}, {"time": "2026-03-19", "value": 0}, {"time": "2026-03-20", "value": 0}, {"time": "2026-03-23", "value": 0}, {"time": "2026-03-24", "value": 0}, {"time": "2026-03-25", "value": 0}, {"time": "2026-03-26", "value": 0}, {"time": "2026-03-27", "value": 0}, {"time": "2026-03-30", "value": 0}, {"time": "2026-03-31", "value": 0}, {"time": "2026-04-01", "value": 0}, {"time": "2026-04-02", "value": 0}, {"time": "2026-04-07", "value": 0}, {"time": "2026-04-08", "value": 0}, {"time": "2026-04-09", "value": 0}, {"time": "2026-04-10", "value": 0}, {"time": "2026-04-13", "value": 0}, {"time": "2026-04-14", "value": 0}, {"time": "2026-04-15", "value": 0}, {"time": "2026-04-16", "value": 0}, {"time": "2026-04-17", "value": 0}, {"time": "2026-04-20", "value": 0}, {"time": "2026-04-21", "value": 0}, {"time": "2026-04-22", "value": 0}, {"time": "2026-04-23", "value": 0}, {"time": "2026-04-24", "value": 0}, {"time": "2026-04-27", "value": 0}, {"time": "2026-04-28", "value": 0}, {"time": "2026-04-29", "value": 0}, {"time": "2026-04-30", "value": 0}, {"time": "2026-05-04", "value": 0}, {"time": "2026-05-05", "value": 0}, {"time": "2026-05-06", "value": 0}, {"time": "2026-05-07", "value": 0}, {"time": "2026-05-08", "value": 0}, {"time": "2026-05-11", "value": 0}, {"time": "2026-05-12", "value": 0}, {"time": "2026-05-13", "value": 0}, {"time": "2026-05-14", "value": 0}, {"time": "2026-05-15", "value": 0}, {"time": "2026-05-18", "value": 0}, {"time": "2026-05-19", "value": 0}, {"time": "2026-05-20", "value": 0}, {"time": "2026-05-21", "value": 0}, {"time": "2026-05-22", "value": 0}, {"time": "2026-05-25", "value": 0}, {"time": "2026-05-26", "value": 0}, {"time": "2026-05-27", "value": 0}, {"time": "2026-05-28", "value": 0}, {"time": "2026-05-29", "value": 0}, {"time": "2026-06-01", "value": 0}, {"time": "2026-06-02", "value": 0}, {"time": "2026-06-03", "value": 0}, {"time": "2026-06-04", "value": 0}, {"time": "2026-06-05", "value": 0}, {"time": "2026-06-08", "value": 0}, {"time": "2026-06-09", "value": 0}, {"time": "2026-06-10", "value": 0}, {"time": "2026-06-11", "value": 0}, {"time": "2026-06-12", "value": 0}, {"time": "2026-06-15", "value": 0}, {"time": "2026-06-16", "value": 0}, {"time": "2026-06-17", "value": 0}, {"time": "2026-06-18", "value": 0}, {"time": "2026-06-22", "value": 0}, {"time": "2026-06-23", "value": 0}, {"time": "2026-06-24", "value": 0}, {"time": "2026-06-25", "value": 0}, {"time": "2026-06-26", "value": 0}, {"time": "2026-06-29", "value": 0}, {"time": "2026-06-30", "value": 0}, {"time": "2026-07-01", "value": 0}, {"time": "2026-07-02", "value": 0}, {"time": "2026-07-03", "value": 0}, {"time": "2026-07-06", "value": 0}, {"time": "2026-07-07", "value": 0}, {"time": "2026-07-08", "value": 0}, {"time": "2026-07-09", "value": 0}, {"time": "2026-07-13", "value": 0}, {"time": "2026-07-14", "value": 0}, {"time": "2026-07-15", "value": 0}, {"time": "2026-07-16", "value": 0}, {"time": "2026-07-17", "value": 0}, {"time": "2026-07-20", "value": 0}, {"time": "2026-07-21", "value": 0}, {"time": "2026-07-22", "value": 0}, {"time": "2026-07-23", "value": 0}, {"time": "2026-07-24", "value": 0}, {"time": "2026-07-27", "value": 0}, {"time": "2026-07-28", "value": 0}, {"time": "2026-07-29", "value": 0}, {"time": "2026-07-30", "value": 0}, {"time": "2026-07-31", "value": 0}, {"time": "2026-08-03", "value": 0}, {"time": "2026-08-04", "value": 0}, {"time": "2026-08-05", "value": 0}, {"time": "2026-08-06", "value": 0}, {"time": "2026-08-07", "value": 0}, {"time": "2026-08-10", "value": 0}, {"time": "2026-08-11", "value": 0}, {"time": "2026-08-12", "value": 0}, {"time": "2026-08-13", "value": 0}, {"time": "2026-08-14", "value": 0}, {"time": "2026-08-17", "value": 0}, {"time": "2026-08-18", "value": 0}, {"time": "2026-08-19", "value": 0}, {"time": "2026-08-20", "value": 0}, {"time": "2026-08-21", "value": 0}, {"time": "2026-08-24", "value": 0}, {"time": "2026-08-25", "value": 0}, {"time": "2026-08-26", "value": 0}, {"time": "2026-08-27", "value": 0}, {"time": "2026-08-28", "value": 0}, {"time": "2026-08-31", "value": 0}, {"time": "2026-09-01", "value": 0}, {"time": "2026-09-02", "value": 0}, {"time": "2026-09-03", "value": 0}, {"time": "2026-09-04", "value": 0}, {"time": "2026-09-07", "value": 0}, {"time": "2026-09-08", "value": 0}, {"time": "2026-09-09", "value": 0}, {"time": "2026-09-10", "value": 0}, {"time": "2026-09-11", "value": 0}, {"time": "2026-09-14", "value": 0}, {"time": "2026-09-15", "value": 0}, {"time": "2026-09-16", "value": 0}, {"time": "2026-09-17", "value": 0}, {"time": "2026-09-18", "value": 0}, {"time": "2026-09-21", "value": 0}, {"time": "2026-09-22", "value": 0}, {"time": "2026-09-23", "value": 0}];
+            const warrantNetData = [{"time": "2024-05-10", "value": 0}, {"time": "2025-09-22", "value": 0}, {"time": "2025-09-23", "value": 0}, {"time": "2025-09-24", "value": 0}, {"time": "2025-09-25", "value": 0}, {"time": "2025-09-26", "value": 0}, {"time": "2025-09-30", "value": 0}, {"time": "2025-10-01", "value": 0}, {"time": "2025-10-02", "value": 0}, {"time": "2025-10-03", "value": 0}, {"time": "2025-10-07", "value": 0}, {"time": "2025-10-08", "value": 0}, {"time": "2025-10-09", "value": 0}, {"time": "2025-10-13", "value": 0}, {"time": "2025-10-14", "value": 0}, {"time": "2025-10-15", "value": 0}, {"time": "2025-10-16", "value": 0}, {"time": "2025-10-17", "value": 0}, {"time": "2025-10-20", "value": 0}, {"time": "2025-10-21", "value": 0}, {"time": "2025-10-22", "value": 0}, {"time": "2025-10-23", "value": 0}, {"time": "2025-10-27", "value": 0}, {"time": "2025-10-28", "value": 0}, {"time": "2025-10-29", "value": 0}, {"time": "2025-10-30", "value": 0}, {"time": "2025-10-31", "value": 0}, {"time": "2025-11-03", "value": 0}, {"time": "2025-11-04", "value": 0}, {"time": "2025-11-05", "value": 0}, {"time": "2025-11-06", "value": 0}, {"time": "2025-11-07", "value": 0}, {"time": "2025-11-10", "value": 0}, {"time": "2025-11-11", "value": 0}, {"time": "2025-11-12", "value": 0}, {"time": "2025-11-13", "value": 0}, {"time": "2025-11-14", "value": 0}, {"time": "2025-11-17", "value": 0}, {"time": "2025-11-18", "value": 0}, {"time": "2025-11-19", "value": 0}, {"time": "2025-11-20", "value": 0}, {"time": "2025-11-21", "value": 0}, {"time": "2025-11-24", "value": 0}, {"time": "2025-11-25", "value": 0}, {"time": "2025-11-26", "value": 0}, {"time": "2025-11-27", "value": 0}, {"time": "2025-11-28", "value": 0}, {"time": "2025-12-01", "value": 0}, {"time": "2025-12-02", "value": 0}, {"time": "2025-12-03", "value": 0}, {"time": "2025-12-04", "value": 0}, {"time": "2025-12-05", "value": 0}, {"time": "2025-12-08", "value": 0}, {"time": "2025-12-09", "value": 0}, {"time": "2025-12-10", "value": 0}, {"time": "2025-12-11", "value": 0}, {"time": "2025-12-12", "value": 0}, {"time": "2025-12-15", "value": 0}, {"time": "2025-12-16", "value": 0}, {"time": "2025-12-17", "value": 0}, {"time": "2025-12-18", "value": 0}, {"time": "2025-12-19", "value": 0}, {"time": "2025-12-22", "value": 0}, {"time": "2025-12-23", "value": 0}, {"time": "2025-12-24", "value": 0}, {"time": "2025-12-26", "value": 0}, {"time": "2025-12-29", "value": 0}, {"time": "2025-12-30", "value": 0}, {"time": "2025-12-31", "value": 0}, {"time": "2026-01-02", "value": 0}, {"time": "2026-01-05", "value": 0}, {"time": "2026-01-06", "value": 0}, {"time": "2026-01-07", "value": 0}, {"time": "2026-01-08", "value": 0}, {"time": "2026-01-09", "value": 0}, {"time": "2026-01-12", "value": 0}, {"time": "2026-01-13", "value": 0}, {"time": "2026-01-14", "value": 0}, {"time": "2026-01-15", "value": 0}, {"time": "2026-01-16", "value": 0}, {"time": "2026-01-19", "value": 0}, {"time": "2026-01-20", "value": 0}, {"time": "2026-01-21", "value": 0}, {"time": "2026-01-22", "value": 0}, {"time": "2026-01-23", "value": 0}, {"time": "2026-01-26", "value": 0}, {"time": "2026-01-27", "value": 0}, {"time": "2026-01-28", "value": 0}, {"time": "2026-01-29", "value": 0}, {"time": "2026-01-30", "value": 0}, {"time": "2026-02-02", "value": 0}, {"time": "2026-02-03", "value": 0}, {"time": "2026-02-04", "value": 0}, {"time": "2026-02-05", "value": 0}, {"time": "2026-02-06", "value": 0}, {"time": "2026-02-09", "value": 0}, {"time": "2026-02-10", "value": 0}, {"time": "2026-02-11", "value": 0}, {"time": "2026-02-23", "value": 0}, {"time": "2026-02-24", "value": 0}, {"time": "2026-02-25", "value": 0}, {"time": "2026-02-26", "value": 0}, {"time": "2026-03-02", "value": 0}, {"time": "2026-03-03", "value": 0}, {"time": "2026-03-04", "value": 0}, {"time": "2026-03-05", "value": 0}, {"time": "2026-03-06", "value": 0}, {"time": "2026-03-09", "value": 0}, {"time": "2026-03-10", "value": 0}, {"time": "2026-03-11", "value": 0}, {"time": "2026-03-12", "value": 0}, {"time": "2026-03-13", "value": 0}, {"time": "2026-03-16", "value": 0}, {"time": "2026-03-17", "value": 0}, {"time": "2026-03-18", "value": 0}, {"time": "2026-03-19", "value": 0}, {"time": "2026-03-20", "value": 0}, {"time": "2026-03-23", "value": 0}, {"time": "2026-03-24", "value": 0}, {"time": "2026-03-25", "value": 0}, {"time": "2026-03-26", "value": 0}, {"time": "2026-03-27", "value": 0}, {"time": "2026-03-30", "value": 0}, {"time": "2026-03-31", "value": 0}, {"time": "2026-04-01", "value": 0}, {"time": "2026-04-02", "value": 0}, {"time": "2026-04-07", "value": 0}, {"time": "2026-04-08", "value": 0}, {"time": "2026-04-09", "value": 0}, {"time": "2026-04-10", "value": 0}, {"time": "2026-04-13", "value": 0}, {"time": "2026-04-14", "value": 0}, {"time": "2026-04-15", "value": 0}, {"time": "2026-04-16", "value": 0}, {"time": "2026-04-17", "value": 0}, {"time": "2026-04-20", "value": 0}, {"time": "2026-04-21", "value": 0}, {"time": "2026-04-22", "value": 0}, {"time": "2026-04-23", "value": 0}, {"time": "2026-04-24", "value": 0}, {"time": "2026-04-27", "value": 0}, {"time": "2026-04-28", "value": 0}, {"time": "2026-04-29", "value": 0}, {"time": "2026-04-30", "value": 0}, {"time": "2026-05-04", "value": 0}, {"time": "2026-05-05", "value": 0}, {"time": "2026-05-06", "value": 0}, {"time": "2026-05-07", "value": 0}, {"time": "2026-05-08", "value": 0}, {"time": "2026-05-11", "value": 0}, {"time": "2026-05-12", "value": 0}, {"time": "2026-05-13", "value": 0}, {"time": "2026-05-14", "value": 0}, {"time": "2026-05-15", "value": 0}, {"time": "2026-05-18", "value": 0}, {"time": "2026-05-19", "value": 0}, {"time": "2026-05-20", "value": 0}, {"time": "2026-05-21", "value": 0}, {"time": "2026-05-22", "value": 0}, {"time": "2026-05-25", "value": 0}, {"time": "2026-05-26", "value": 0}, {"time": "2026-05-27", "value": 0}, {"time": "2026-05-28", "value": 0}, {"time": "2026-05-29", "value": 0}, {"time": "2026-06-01", "value": 0}, {"time": "2026-06-02", "value": 0}, {"time": "2026-06-03", "value": 0}, {"time": "2026-06-04", "value": 0}, {"time": "2026-06-05", "value": 0}, {"time": "2026-06-08", "value": 0}, {"time": "2026-06-09", "value": 0}, {"time": "2026-06-10", "value": 0}, {"time": "2026-06-11", "value": 0}, {"time": "2026-06-12", "value": 0}, {"time": "2026-06-15", "value": 0}, {"time": "2026-06-16", "value": 0}, {"time": "2026-06-17", "value": 0}, {"time": "2026-06-18", "value": 0}, {"time": "2026-06-22", "value": 0}, {"time": "2026-06-23", "value": 0}, {"time": "2026-06-24", "value": 0}, {"time": "2026-06-25", "value": 0}, {"time": "2026-06-26", "value": 0}, {"time": "2026-06-29", "value": 0}, {"time": "2026-06-30", "value": 0}, {"time": "2026-07-01", "value": 0}, {"time": "2026-07-02", "value": 0}, {"time": "2026-07-03", "value": 0}, {"time": "2026-07-06", "value": 0}, {"time": "2026-07-07", "value": 0}, {"time": "2026-07-08", "value": 0}, {"time": "2026-07-09", "value": 0}, {"time": "2026-07-13", "value": 0}, {"time": "2026-07-14", "value": 0}, {"time": "2026-07-15", "value": 0}, {"time": "2026-07-16", "value": 0}, {"time": "2026-07-17", "value": 0}, {"time": "2026-07-20", "value": 0}, {"time": "2026-07-21", "value": 0}, {"time": "2026-07-22", "value": 0}, {"time": "2026-07-23", "value": 0}, {"time": "2026-07-24", "value": 0}, {"time": "2026-07-27", "value": 0}, {"time": "2026-07-28", "value": 0}, {"time": "2026-07-29", "value": 0}, {"time": "2026-07-30", "value": 0}, {"time": "2026-07-31", "value": 0}, {"time": "2026-08-03", "value": 0}, {"time": "2026-08-04", "value": 0}, {"time": "2026-08-05", "value": 0}, {"time": "2026-08-06", "value": 0}, {"time": "2026-08-07", "value": 0}, {"time": "2026-08-10", "value": 0}, {"time": "2026-08-11", "value": 0}, {"time": "2026-08-12", "value": 0}, {"time": "2026-08-13", "value": 0}, {"time": "2026-08-14", "value": 0}, {"time": "2026-08-17", "value": 0}, {"time": "2026-08-18", "value": 0}, {"time": "2026-08-19", "value": 0}, {"time": "2026-08-20", "value": 0}, {"time": "2026-08-21", "value": 0}, {"time": "2026-08-24", "value": 0}, {"time": "2026-08-25", "value": 0}, {"time": "2026-08-26", "value": 0}, {"time": "2026-08-27", "value": 0}, {"time": "2026-08-28", "value": 0}, {"time": "2026-08-31", "value": 0}, {"time": "2026-09-01", "value": 0}, {"time": "2026-09-02", "value": 0}, {"time": "2026-09-03", "value": 0}, {"time": "2026-09-04", "value": 0}, {"time": "2026-09-07", "value": 0}, {"time": "2026-09-08", "value": 0}, {"time": "2026-09-09", "value": 0}, {"time": "2026-09-10", "value": 0}, {"time": "2026-09-11", "value": 0}, {"time": "2026-09-14", "value": 0}, {"time": "2026-09-15", "value": 0}, {"time": "2026-09-16", "value": 0}, {"time": "2026-09-17", "value": 0}, {"time": "2026-09-18", "value": 0}, {"time": "2026-09-21", "value": 0}, {"time": "2026-09-22", "value": 0}, {"time": "2026-09-23", "value": 0}];
+
+            // 1. 初始化 K 線主圖
+            const klineContainer = document.getElementById('kline-chart-container');
+            const klineChart = LightweightCharts.createChart(klineContainer, {
+                width: klineContainer.clientWidth,
+                height: klineContainer.clientHeight,
+                layout: {
+                    background: { color: '#0f172a' },
+                    textColor: '#94a3b8',
+                },
+                grid: {
+                    vertLines: { color: '#1e293b' },
+                    horzLines: { color: '#1e293b' },
+                },
+                crosshair: {
+                    mode: LightweightCharts.CrosshairMode.Normal,
+                },
+                rightPriceScale: {
+                    borderColor: '#334155',
+                },
+                timeScale: {
+                    borderColor: '#334155',
+                    timeVisible: true,
+                },
+            });
+
+            const candleSeries = klineChart.addCandlestickSeries({
+                upColor: '#ef4444',
+                downColor: '#10b981',
+                borderUpColor: '#ef4444',
+                borderDownColor: '#10b981',
+                wickUpColor: '#ef4444',
+                wickDownColor: '#10b981',
+            });
+            candleSeries.setData(klineData);
+            candleSeries.setMarkers(markersData);
+
+            // 成交量副柱狀圖
+            const volumeSeries = klineChart.addHistogramSeries({
+                color: '#26a69a',
+                priceFormat: { type: 'volume' },
+                priceScaleId: '', // 內嵌在底層
+                scaleMargins: {
+                    top: 0.8,
+                    bottom: 0,
+                },
+            });
+            volumeSeries.setData(volumeData);
+
+            // 2. 初始化權證多空資金流副圖
+            const warrantContainer = document.getElementById('warrant-chart-container');
+            const warrantChart = LightweightCharts.createChart(warrantContainer, {
+                width: warrantContainer.clientWidth,
+                height: warrantContainer.clientHeight,
+                layout: {
+                    background: { color: '#0f172a' },
+                    textColor: '#94a3b8',
+                },
+                grid: {
+                    vertLines: { color: '#1e293b' },
+                    horzLines: { color: '#1e293b' },
+                },
+                rightPriceScale: {
+                    borderColor: '#334155',
+                },
+                timeScale: {
+                    borderColor: '#334155',
+                    timeVisible: true,
+                },
+            });
+
+            const callSeries = warrantChart.addHistogramSeries({
+                color: 'rgba(239, 68, 68, 0.65)',
+                priceFormat: { type: 'custom', formatter: val => val + ' 萬' },
+                title: '認購額(萬)',
+            });
+            callSeries.setData(warrantCallData);
+
+            const putSeries = warrantChart.addHistogramSeries({
+                color: 'rgba(16, 185, 129, 0.65)',
+                priceFormat: { type: 'custom', formatter: val => val + ' 萬' },
+                title: '認售額(萬)',
+            });
+            putSeries.setData(warrantPutData);
+
+            const netLineSeries = warrantChart.addLineSeries({
+                color: '#3b82f6',
+                lineWidth: 2,
+                title: '多空淨額',
+            });
+            netLineSeries.setData(warrantNetData);
+
+            // 雙圖時間軸連動
+            klineChart.timeScale().subscribeVisibleTimeRangeChange(range => {
+                warrantChart.timeScale().setVisibleTimeRange(range);
+            });
+            warrantChart.timeScale().subscribeVisibleTimeRangeChange(range => {
+                klineChart.timeScale().setVisibleTimeRange(range);
+            });
+
+            // 視窗縮放自適應
+            window.addEventListener('resize', () => {
+                klineChart.applyOptions({ width: klineContainer.clientWidth });
+                warrantChart.applyOptions({ width: warrantContainer.clientWidth });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -577,8 +577,35 @@
             padding: 3px 8px;
             border-radius: 6px;
         }
-        .rank-tag-long { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-        .rank-tag-short { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .stock-title-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            padding: 4px 10px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .stock-title-link:hover {
+            background: rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+            transform: translateY(-1px);
+        }
+        .stock-jump-badge {
+            font-size: 11px;
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+        .stock-title-link:hover .stock-jump-badge {
+            background: #3b82f6;
+            color: #ffffff;
+        }
         .stock-id {
             font-size: 20px;
             font-weight: 800;
@@ -1278,9 +1305,12 @@
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #1</span>
-                    <span class="stock-id">6526</span>
-                    <span class="stock-name">達發</span>
-                    <span class="stock-market">TWSE</span>
+                    <a href="stock_6526.html" class="stock-title-link" title="點擊進入 6526 達發 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
+                        <span class="stock-id">6526</span>
+                        <span class="stock-name">達發</span>
+                        <span class="stock-market">TWSE</span>
+                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
+                    </a>
                 </div>
                 <div class="stock-price-group">
                     <span class="price-val text-bull">840.00</span>
@@ -1402,9 +1432,12 @@
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #2</span>
-                    <span class="stock-id">6257</span>
-                    <span class="stock-name">矽格</span>
-                    <span class="stock-market">TWSE</span>
+                    <a href="stock_6257.html" class="stock-title-link" title="點擊進入 6257 矽格 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
+                        <span class="stock-id">6257</span>
+                        <span class="stock-name">矽格</span>
+                        <span class="stock-market">TWSE</span>
+                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
+                    </a>
                 </div>
                 <div class="stock-price-group">
                     <span class="price-val text-bull">247.00</span>
@@ -1564,9 +1597,12 @@
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #3</span>
-                    <span class="stock-id">3265</span>
-                    <span class="stock-name">台星科</span>
-                    <span class="stock-market">TPEX</span>
+                    <a href="stock_3265.html" class="stock-title-link" title="點擊進入 3265 台星科 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
+                        <span class="stock-id">3265</span>
+                        <span class="stock-name">台星科</span>
+                        <span class="stock-market">TPEX</span>
+                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
+                    </a>
                 </div>
                 <div class="stock-price-group">
                     <span class="price-val text-bull">180.00</span>
@@ -1764,9 +1800,12 @@
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #4</span>
-                    <span class="stock-id">2527</span>
-                    <span class="stock-name">宏璟</span>
-                    <span class="stock-market">TWSE</span>
+                    <a href="stock_2527.html" class="stock-title-link" title="點擊進入 2527 宏璟 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
+                        <span class="stock-id">2527</span>
+                        <span class="stock-name">宏璟</span>
+                        <span class="stock-market">TWSE</span>
+                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
+                    </a>
                 </div>
                 <div class="stock-price-group">
                     <span class="price-val text-bull">48.40</span>
@@ -1888,9 +1927,12 @@
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #5</span>
-                    <span class="stock-id">2441</span>
-                    <span class="stock-name">超豐</span>
-                    <span class="stock-market">TWSE</span>
+                    <a href="stock_2441.html" class="stock-title-link" title="點擊進入 2441 超豐 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
+                        <span class="stock-id">2441</span>
+                        <span class="stock-name">超豐</span>
+                        <span class="stock-market">TWSE</span>
+                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
+                    </a>
                 </div>
                 <div class="stock-price-group">
                     <span class="price-val text-bull">125.00</span>
@@ -2088,9 +2130,12 @@
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #6</span>
-                    <span class="stock-id">3035</span>
-                    <span class="stock-name">智原</span>
-                    <span class="stock-market">TWSE</span>
+                    <a href="stock_3035.html" class="stock-title-link" title="點擊進入 3035 智原 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
+                        <span class="stock-id">3035</span>
+                        <span class="stock-name">智原</span>
+                        <span class="stock-market">TWSE</span>
+                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
+                    </a>
                 </div>
                 <div class="stock-price-group">
                     <span class="price-val text-bull">204.00</span>
@@ -2288,9 +2333,12 @@
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #7</span>
-                    <span class="stock-id">3711</span>
-                    <span class="stock-name">日月光投控</span>
-                    <span class="stock-market">TWSE</span>
+                    <a href="stock_3711.html" class="stock-title-link" title="點擊進入 3711 日月光投控 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
+                        <span class="stock-id">3711</span>
+                        <span class="stock-name">日月光投控</span>
+                        <span class="stock-market">TWSE</span>
+                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
+                    </a>
                 </div>
                 <div class="stock-price-group">
                     <span class="price-val text-bull">693.00</span>
@@ -2488,9 +2536,12 @@
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #8</span>
-                    <span class="stock-id">2404</span>
-                    <span class="stock-name">漢唐</span>
-                    <span class="stock-market">TWSE</span>
+                    <a href="stock_2404.html" class="stock-title-link" title="點擊進入 2404 漢唐 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
+                        <span class="stock-id">2404</span>
+                        <span class="stock-name">漢唐</span>
+                        <span class="stock-market">TWSE</span>
+                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
+                    </a>
                 </div>
                 <div class="stock-price-group">
                     <span class="price-val text-bull">1250.00</span>
@@ -2612,9 +2663,12 @@
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #9</span>
-                    <span class="stock-id">8150</span>
-                    <span class="stock-name">南茂</span>
-                    <span class="stock-market">TWSE</span>
+                    <a href="stock_8150.html" class="stock-title-link" title="點擊進入 8150 南茂 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
+                        <span class="stock-id">8150</span>
+                        <span class="stock-name">南茂</span>
+                        <span class="stock-market">TWSE</span>
+                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
+                    </a>
                 </div>
                 <div class="stock-price-group">
                     <span class="price-val text-bull">107.00</span>
@@ -2812,9 +2866,12 @@
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #10</span>
-                    <span class="stock-id">2449</span>
-                    <span class="stock-name">京元電子</span>
-                    <span class="stock-market">TWSE</span>
+                    <a href="stock_2449.html" class="stock-title-link" title="點擊進入 2449 京元電子 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
+                        <span class="stock-id">2449</span>
+                        <span class="stock-name">京元電子</span>
+                        <span class="stock-market">TWSE</span>
+                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
+                    </a>
                 </div>
                 <div class="stock-price-group">
                     <span class="price-val text-bull">304.00</span>
@@ -3031,7 +3088,7 @@
         
         <!-- Footer -->
         <div class="footer">
-            TW-Stock Quantitative Research System • 100% 離線純自給自足 (純 SVG 向量圖形) • 產出時間: 2026-09-23 23:28:25
+            TW-Stock Quantitative Research System • 100% 離線純自給自足 (純 SVG 向量圖形) • 產出時間: 2026-09-24 00:04:00
         </div>
     </div>
 
