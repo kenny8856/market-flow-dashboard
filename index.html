@@ -1,0 +1,3076 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投行機構 3 模組市場狀態與立體溫度計系統 (含全市場與個股權證分析)</title>
+    <style>
+        :root {
+            --bg-main: #0a0e17;
+            --bg-card: #121826;
+            --bg-card-hover: #172033;
+            --border-color: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --bull-red: #ef4444;
+            --bear-green: #10b981;
+            --warn-amber: #f59e0b;
+            --accent-blue: #38bdf8;
+            --indigo-accent: #6366f1;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            padding: 24px;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header-left h1 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .header-left p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        .header-right {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .date-badge {
+            background: #1e293b;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-blue);
+            border: 1px solid #334155;
+        }
+        .btn-copy {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-copy:hover {
+            background: #1d4ed8;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+        
+        /* Top 50-50 Hero Grid */
+        .hero-split-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 36px;
+        }
+        @media (max-width: 1024px) {
+            .hero-split-grid { grid-template-columns: 1fr; }
+        }
+        
+        .hero-card {
+            background: linear-gradient(135deg, #121826 0%, #151d2e 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .hero-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .module-tag {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--indigo-accent);
+            background: rgba(99, 102, 241, 0.15);
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+        .hero-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .hero-title {
+            font-size: 24px;
+            font-weight: 800;
+        }
+        
+        .badge-bull { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
+        .badge-bear { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; }
+        .badge-neutral { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid #f59e0b; }
+        
+        /* Gauges Layout */
+        .gauge-inner-grid {
+            display: grid;
+            grid-template-columns: 190px 1fr;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        @media (max-width: 600px) {
+            .gauge-inner-grid { grid-template-columns: 1fr; }
+        }
+        .gauge-box {
+            text-align: center;
+            background: rgba(10, 14, 23, 0.6);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #1e293b;
+        }
+        
+        .sub-metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .sub-metric-item {
+            background: rgba(18, 24, 38, 0.8);
+            border: 1px solid var(--border-color);
+            padding: 10px 12px;
+            border-radius: 10px;
+        }
+        .sub-metric-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            display: block;
+        }
+        .sub-metric-val {
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 2px;
+            color: #ffffff;
+        }
+        .sub-metric-desc {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            display: block;
+        }
+        
+        /* Dynamic Allocation Controller Panel */
+        .allocation-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 10px 14px;
+        }
+        .alloc-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .alloc-badge {
+            font-size: 12px;
+            font-weight: 800;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.15);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+        .alloc-tag {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-muted);
+            background: #1e293b;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .alloc-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .alloc-quota-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .alloc-quota-box {
+            padding: 6px 8px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: rgba(30, 41, 59, 0.5);
+            text-align: center;
+        }
+        .quota-active-long {
+            border-color: rgba(239, 68, 68, 0.5);
+            background: rgba(239, 68, 68, 0.1);
+        }
+        .quota-active-short {
+            border-color: rgba(16, 185, 129, 0.5);
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .quota-dormant {
+            opacity: 0.5;
+        }
+        .quota-head {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+        .quota-val {
+            font-size: 14px;
+            font-weight: 800;
+            margin-top: 1px;
+        }
+        .quota-active-long .quota-val { color: #ef4444; }
+        .quota-active-short .quota-val { color: #10b981; }
+        .quota-dormant .quota-val { color: var(--text-muted); }
+        .alloc-rule-strip {
+            font-size: 10px;
+            color: var(--text-muted);
+            border-top: 1px dashed rgba(255, 255, 255, 0.08);
+            padding-top: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .rule-on {
+            color: #fbbf24;
+            font-weight: 700;
+        }
+        .rule-sep {
+            color: #334155;
+        }
+        
+        /* Empty Regime Card (When Longs or Shorts are 0) */
+        .empty-regime-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .empty-regime-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #38bdf8;
+            margin-bottom: 8px;
+        }
+        .empty-regime-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Warrant Special Box in Radar */
+        .warrant-radar-box {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-top: 14px;
+        }
+        .w-radar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 8px;
+        }
+        .w-radar-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        /* Margin Matrix Box */
+        .margin-matrix-box {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-top: 12px;
+        }
+        .margin-matrix-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .margin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        @media (max-width: 550px) {
+            .margin-grid { grid-template-columns: 1fr; }
+        }
+        .margin-cell {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid #334155;
+            padding: 8px 10px;
+            border-radius: 8px;
+        }
+        .margin-cell-title {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .margin-cell-main {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-top: 2px;
+        }
+        .margin-cell-sub {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* TX Futures Structure Box */
+        .tx-futures-box {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-top: 12px;
+        }
+        .tx-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .tx-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        @media (max-width: 650px) {
+            .tx-grid { grid-template-columns: 1fr; }
+        }
+        .tx-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid #334155;
+            padding: 8px 10px;
+            border-radius: 8px;
+        }
+        .tx-card-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            display: block;
+        }
+        .tx-card-val {
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 2px;
+            display: block;
+        }
+        .tx-card-sub {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            display: block;
+        }
+        .tx-desc-note {
+            font-size: 11px;
+            color: var(--text-secondary);
+            background: rgba(30, 41, 59, 0.35);
+            border-left: 3px solid var(--accent-blue);
+            padding: 6px 10px;
+            border-radius: 4px;
+            line-height: 1.45;
+            margin-top: 6px;
+        }
+
+        /* Volume Profile Box */
+        .vp-box {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+        }
+        .vp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .vp-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+        .vp-badge-support {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .vp-badge-resistance {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .vp-badge-inside {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .vp-metrics-row {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+        .vp-pos-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.45;
+            border-top: 1px dashed rgba(255, 255, 255, 0.08);
+            padding-top: 6px;
+            margin-top: 4px;
+        }
+        
+        .hero-banner {
+            margin-top: 12px;
+            padding: 10px 14px;
+            background: rgba(30, 41, 59, 0.5);
+            border-left: 4px solid var(--warn-amber);
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* Section Dividers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        
+        /* Stock Cards */
+        .cards-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+            margin-bottom: 40px;
+        }
+        .stock-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .stock-card:hover {
+            border-color: #334155;
+            background: var(--bg-card-hover);
+        }
+        .card-long { border-left: 5px solid var(--bull-red); }
+        .card-short { border-left: 5px solid var(--bear-green); }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .stock-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .rank-tag {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+        .rank-tag-long { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .rank-tag-short { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .stock-id {
+            font-size: 20px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .stock-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .stock-market {
+            font-size: 11px;
+            background: #1e293b;
+            color: var(--text-muted);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .stock-price-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .price-val {
+            font-size: 24px;
+            font-weight: 800;
+            font-family: monospace;
+        }
+        .ret-badge {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+        .ret-bull { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .ret-bear { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+        
+        /* Chips Grid */
+        .chips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+            background: rgba(10, 14, 23, 0.5);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #1a2234;
+        }
+        .chip-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .chip-label {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .chip-val {
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        
+        /* Individual Warrant Box */
+        .warrant-box {
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+        }
+        .warrant-box-empty {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: #1e293b;
+            padding: 8px 14px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .warrant-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--indigo-accent);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        .warrant-tag {
+            font-size: 12px;
+        }
+        .warrant-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        .warrant-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .w-label {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .w-val {
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        
+        /* Xiaoge Warrant Screener Section */
+        .xiaoge-warrant-box {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+        }
+        .xiaoge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .xiaoge-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .xiaoge-subtitle {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        .xiaoge-table-wrapper {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #1e293b;
+        }
+        .xiaoge-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+            background: rgba(10, 14, 23, 0.4);
+        }
+        .xiaoge-table th {
+            background: #1e293b;
+            color: var(--text-secondary);
+            padding: 7px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+            border-bottom: 1px solid #334155;
+        }
+        .xiaoge-table td {
+            padding: 7px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+        .xiaoge-table tr:last-child td {
+            border-bottom: none;
+        }
+        .xiaoge-table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        .badge-xiaoge-pass {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.35));
+            color: #fbbf24;
+            border: 1px solid #f59e0b;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 10.5px;
+            font-weight: 800;
+            display: inline-block;
+        }
+        .badge-xiaoge-relax {
+            background: rgba(56, 189, 248, 0.18);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.45);
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 10.5px;
+            font-weight: 800;
+            display: inline-block;
+        }
+        .badge-xiaoge-alt {
+            background: rgba(100, 116, 139, 0.2);
+            color: var(--text-secondary);
+            border: 1px solid #475569;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            display: inline-block;
+        }
+        .badge-diff-lever {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+        .badge-diff-lever-relax {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+        .badge-diff-lever-high {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+        .xiaoge-empty-strict {
+            background: rgba(245, 158, 11, 0.06);
+            border: 1px dashed rgba(245, 158, 11, 0.35);
+            border-radius: 8px;
+            padding: 12px 14px;
+        }
+        .empty-strict-title {
+            color: #fbbf24;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .empty-strict-desc {
+            color: var(--text-secondary);
+            font-size: 11px;
+            line-height: 1.5;
+        }
+        .xiaoge-table-footer {
+            padding: 8px 10px;
+            font-size: 11px;
+            color: #fbbf24;
+            background: rgba(245, 158, 11, 0.06);
+            border-top: 1px dashed rgba(245, 158, 11, 0.25);
+            border-radius: 0 0 8px 8px;
+        }
+        
+        /* Execution Box */
+        .execution-box {
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid;
+        }
+        .box-long {
+            background: rgba(239, 68, 68, 0.04);
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+        .box-short {
+            background: rgba(16, 185, 129, 0.04);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+        .exec-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+        .rr-tag {
+            background: #1e293b;
+            color: #ffffff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 800;
+        }
+        .exec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+        .exec-col {
+            display: flex;
+            flex-direction: column;
+        }
+        .exec-label {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .exec-val {
+            font-size: 18px;
+            font-weight: 800;
+            font-family: monospace;
+            margin-top: 2px;
+        }
+        .exec-sub {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .exec-warning {
+            font-size: 12px;
+            color: var(--text-secondary);
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+            padding-top: 10px;
+            margin-top: 6px;
+        }
+        
+        /* Utility */
+        .text-bull { color: var(--bull-red); }
+        .text-bear { color: var(--bear-green); }
+        .font-mono { font-family: monospace; }
+        .font-bold { font-weight: 700; }
+        .badge-normal { color: #10b981; font-weight: 700; font-size: 13px; }
+        .badge-alert { color: #ef4444; font-weight: 700; font-size: 13px; }
+        
+        /* RWD: 響應式優化 (手機 / 平板 / 電腦自動校正) */
+        html, body {
+            overflow-x: hidden;
+            max-width: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
+        @media (max-width: 900px) {
+            body {
+                padding: 14px 10px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                padding-bottom: 14px;
+                margin-bottom: 16px;
+            }
+            .header-left h1 {
+                font-size: 20px;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .header-left p {
+                font-size: 12px;
+            }
+            .header-right {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                gap: 8px;
+            }
+            .date-badge {
+                padding: 6px 10px;
+                font-size: 12px;
+                flex-shrink: 0;
+            }
+            .btn-copy {
+                flex: 1;
+                justify-content: center;
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            .hero-split-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+            .hero-card {
+                padding: 16px 14px;
+            }
+            .hero-title {
+                font-size: 20px;
+            }
+            .gauge-inner-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+            .gauge-box {
+                padding: 10px;
+                max-width: 220px;
+                margin: 0 auto;
+                width: 100%;
+            }
+            .sub-metrics-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .sub-metric-item {
+                padding: 8px 10px;
+            }
+            .sub-metric-val {
+                font-size: 15px;
+            }
+            .w-radar-stats {
+                flex-direction: column;
+                gap: 6px;
+                font-size: 12px;
+            }
+            .stock-card {
+                padding: 14px 12px;
+            }
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .stock-price-group {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .stock-id {
+                font-size: 18px;
+            }
+            .stock-name {
+                font-size: 16px;
+            }
+            .price-val {
+                font-size: 22px;
+            }
+            .chips-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+                padding: 8px;
+            }
+            .chip-item {
+                min-width: 0;
+            }
+            .chip-label {
+                font-size: 10px;
+            }
+            .chip-val {
+                font-size: 12px;
+                word-break: break-all;
+            }
+            .warrant-box {
+                padding: 10px 12px;
+            }
+            .warrant-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .exec-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .exec-val {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sub-metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            .chips-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .header-left h1 {
+                font-size: 17px;
+            }
+            .stock-title-group {
+                gap: 6px;
+                flex-wrap: wrap;
+            }
+            .rank-tag {
+                padding: 2px 6px;
+                font-size: 10px;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1>🏛️ 投行機構 3 模組市場狀態與立體溫度計系統</h1>
+                <p>Macro & Breadth Regime • 6-Pillar Radar (with Whole-Market Warrants) • Stock Ranking & ATR Execution</p>
+            </div>
+            <div class="header-right">
+                <div class="date-badge">基準分析日: 2026-09-23</div>
+                <button class="btn-copy" onclick="copyPlan()">📋 複製今日多空作戰計畫</button>
+            </div>
+        </div>
+        
+        <!-- Top 50-50 Hero Grid -->
+        <div class="hero-split-grid">
+            <!-- Left Panel: Module 1 Breadth Filter -->
+            <div class="hero-card">
+                <div>
+                    <div class="hero-card-header">
+                        <span class="module-tag">MODULE 1: MACRO & BREADTH REGIME</span>
+                        <span class='badge-normal'>● NORMAL / 警戒中未觸發</span>
+                    </div>
+                    <div class="hero-title-wrap">
+                        <span class="hero-title" style="color: #f59e0b;">防禦警戒狀態 (Neutral / De-grossing)</span>
+                    </div>
+                    <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px; margin-bottom: 16px;">
+                        總持股水位上限建議：<strong style="color: #f59e0b; font-size: 15px;">30% 以下</strong>
+                    </div>
+                    
+                    <div class="gauge-inner-grid">
+                        <div class="gauge-box">
+                            <svg width="180" height="110" viewBox="0 0 180 110" xmlns="http://www.w3.org/2000/svg" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+        <path d="M 28.00 90.00 A 62.00 62.00 0 0 1 70.84 31.03" fill="none" stroke="#10b981" stroke-width="12.0" stroke-linecap="butt" /><path d="M 70.84 31.03 A 62.00 62.00 0 0 1 99.70 28.76" fill="none" stroke="#f59e0b" stroke-width="12.0" stroke-linecap="butt" /><path d="M 99.70 28.76 A 62.00 62.00 0 0 1 152.00 90.00" fill="none" stroke="#ef4444" stroke-width="12.0" stroke-linecap="butt" />
+        <line x1="90.00" y1="90.00" x2="91.40" y2="42.02" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+        <circle cx="90.00" cy="90.00" r="5" fill="#ffffff" />
+        <text x="90.00" y="82.00" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="bold" font-family="monospace">50.93%</text>
+    </svg>
+                            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">
+                                季線寬度: <strong style="color:#ffffff;">50.93%</strong>
+                            </div>
+                        </div>
+                        <div class="sub-metrics-grid">
+                            <div class="sub-metric-item">
+                                <span class="sub-metric-label">站上 60MA 個股</span>
+                                <div class="sub-metric-val">987 <small style="font-size:11px; color:var(--text-muted);">/ 1938</small></div>
+                                <span class="sub-metric-desc">季線擴散度 50.93%</span>
+                            </div>
+                            <div class="sub-metric-item">
+                                <span class="sub-metric-label">全域清倉熔斷</span>
+                                <div class="sub-metric-val" style="font-size: 13px; color: #10b981;">🟢 正常運作</div>
+                                <span class="sub-metric-desc">寬度 &lt; 40% 觸發熔斷</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 大盤融資餘額與維持率矩陣 (上市+上櫃金額與維持率) -->
+                    <div class="margin-matrix-box">
+                        <div class="margin-matrix-header">
+                            <span>🏦 全市場信用融資餘額與維持率矩陣 (Margin & Leverage)</span>
+                            <span class="badge-normal" style="font-size:11px;">籌碼健康充足，維持率遠高於安全線 (無多殺多斷頭風險)</span>
+                        </div>
+                        <div class="margin-grid">
+                            <div class="margin-cell">
+                                <div class="margin-cell-title">加權指數 (上市 TWSE)</div>
+                                <div class="margin-cell-main font-mono">
+                                    6,063.68 億元 
+                                    <small class="text-bull" style="font-size:12px;">(+15.06 億)</small>
+                                </div>
+                                <div class="margin-cell-sub">
+                                    融資維持率: <strong class="text-bull font-mono">193.44%</strong> (擔保 11,729.65 億)
+                                </div>
+                            </div>
+                            <div class="margin-cell">
+                                <div class="margin-cell-title">櫃買指數 (上櫃 TPEx)</div>
+                                <div class="margin-cell-main font-mono">
+                                    2,108.51 億元 
+                                    <small class="text-bull" style="font-size:12px;">(+23.27 億)</small>
+                                </div>
+                                <div class="margin-cell-sub">
+                                    融資維持率: <strong class="text-bull font-mono">190.12%</strong> (擔保 4,008.7 億)
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 8px; font-size: 11px; color: var(--text-secondary); display: flex; justify-content: space-between; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 6px; flex-wrap: wrap; gap: 4px;">
+                            <span>全市場總融資: <strong class="font-mono text-bull">8,172.19 億元</strong> (+38.33 億)</span>
+                            <span>全體維持率: <strong class="font-mono text-bull">192.58%</strong> (斷頭警戒線 130% / 140%)</span>
+                        </div>
+                    </div>
+
+                    <!-- TX 臺指期特法主力結構與外資對峙 -->
+                    <div class="tx-futures-box">
+                        <div class="tx-header">
+                            <span>⚔️ TX 臺指期特法主力結構與外資對峙 (Futures OI Dynamic)</span>
+                            <span class="font-mono" style="font-size:11px; color:var(--text-muted);">市場未平倉: 113,966 口</span>
+                        </div>
+                        <div class="tx-grid">
+                            <div class="tx-card">
+                                <span class="tx-card-label">前五大特法 (近月/遠月)</span>
+                                <span class="tx-card-val text-bull font-mono">
+                                    +21,291 口
+                                </span>
+                                <span class="tx-card-sub font-mono">近月 +21,715 | 遠月 -424</span>
+                            </div>
+                            <div class="tx-card">
+                                <span class="tx-card-label">前十大特法 (近月/遠月)</span>
+                                <span class="tx-card-val text-bull font-mono">
+                                    +7,502 口
+                                </span>
+                                <span class="tx-card-sub font-mono">近月 +8,107 | 遠月 -605</span>
+                            </div>
+                            <div class="tx-card">
+                                <span class="tx-card-label">外資期貨淨留倉 (現貨避險)</span>
+                                <span class="tx-card-val text-bear font-mono">
+                                    -76,084 口
+                                </span>
+                                <span class="tx-card-sub font-mono">金額: -7,352.31 億元</span>
+                            </div>
+                        </div>
+                        <div class="tx-desc-note">
+                            📌 <strong>法人籌碼對峙動態：</strong>前五大特法在近月契約佈建 +21,715 口強大多單護盤，直接抗衡外資高達 -76,084 口現貨避險空單；特法遠月小幅避險 (-424口)，呈現「近月軋空護盤、遠月對沖防禦」之跨月套利對峙格局。
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-banner">
+                    <strong>策略動作：</strong>市場寬度處於 40%~55% 震盪中樞，停止盲目追高，現有多單收緊動態停利線，持股降至 30% 以下。
+                </div>
+            </div>
+            
+            <!-- Right Panel: Market Regime Radar & Dynamic Allocation Controller -->
+            <div class="hero-card">
+                <div>
+                    <div class="hero-card-header">
+                        <span class="module-tag" style="color: var(--accent-blue); background: rgba(56, 189, 248, 0.15);">MARKET REGIME RADAR (DYNAMIC ALLOCATION)</span>
+                        <span class="date-badge" style="font-size: 11px; padding: 3px 8px;">權證基準: 2026-09-23</span>
+                    </div>
+                    <div class="hero-title-wrap">
+                        <span class="hero-title" style="color: #f59e0b;">立體多空溫度計: 66.8 分</span>
+                    </div>
+                    <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px; margin-bottom: 16px;">
+                        多空位階：<strong style="color: #f59e0b; font-size:14px;">中性偏多 (Moderate Bull)</strong> (籌碼整體偏多，但仍須防範結構分化)
+                    </div>
+                    
+                    <div class="gauge-inner-grid">
+                        <div class="gauge-box">
+                            <svg width="180" height="110" viewBox="0 0 180 110" xmlns="http://www.w3.org/2000/svg" style="display:block; margin:0 auto; max-width:100%; height:auto;">
+        <path d="M 28.00 90.00 A 62.00 62.00 0 0 1 80.30 28.76" fill="none" stroke="#10b981" stroke-width="12.0" stroke-linecap="butt" /><path d="M 80.30 28.76 A 62.00 62.00 0 0 1 99.70 28.76" fill="none" stroke="#3b82f6" stroke-width="12.0" stroke-linecap="butt" /><path d="M 99.70 28.76 A 62.00 62.00 0 0 1 133.84 46.16" fill="none" stroke="#f59e0b" stroke-width="12.0" stroke-linecap="butt" /><path d="M 133.84 46.16 A 62.00 62.00 0 0 1 152.00 90.00" fill="none" stroke="#ef4444" stroke-width="12.0" stroke-linecap="butt" />
+        <line x1="90.00" y1="90.00" x2="114.17" y2="48.53" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" />
+        <circle cx="90.00" cy="90.00" r="5" fill="#ffffff" />
+        <text x="90.00" y="82.00" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="bold" font-family="monospace">66.8分</text>
+    </svg>
+                            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">
+                                綜合評分: <strong style="color:#f59e0b; font-size:13px;">66.8 分</strong>
+                            </div>
+                        </div>
+                        <div class="allocation-panel">
+                            <div class="alloc-title-row">
+                                <span class="alloc-badge">⚡ 多方聚焦模式 (多方 Top 10 ｜ 空方 0 檔)</span>
+                                <span class="alloc-tag font-mono">BULL_FOCUS</span>
+                            </div>
+                            <div class="alloc-desc font-mono">
+                                💡 <strong>聯動決策：</strong>大盤處於中性偏多位階，順勢集中火力做多，暫停逆勢放空
+                            </div>
+                            <div class="alloc-quota-row font-mono">
+                                <div class="alloc-quota-box quota-active-long">
+                                    <div class="quota-head">🟢 做多標的池</div>
+                                    <div class="quota-val">Top 10 檔</div>
+                                </div>
+                                <div class="alloc-quota-box quota-dormant">
+                                    <div class="quota-head">🔴 反向做空池</div>
+                                    <div class="quota-val">0 檔 (暫停放空)</div>
+                                </div>
+                            </div>
+                            <div class="alloc-rule-strip font-mono">
+                                <span class="rule-on">偏多(&ge;55分)➜多10/空0</span>
+                                <span class="rule-sep">|</span>
+                                <span class="">震盪(45~55分)➜各5檔</span>
+                                <span class="rule-sep">|</span>
+                                <span class="">偏空(&lt;45分)➜空10/多0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Whole-Market Warrant Flow Box (Retained & Highlighted) -->
+                    <div class="warrant-radar-box">
+                        <div class="w-radar-header">
+                            <span>★ 全市場權證多空買賣總額指標 (Warrant Money Flow)</span>
+                            <span class="text-bull font-bold">游資狂熱看漲 (認購佔比 > 96%)</span>
+                        </div>
+                        <div class="w-radar-stats">
+                            <div>認購成交總額: <strong class="text-bull">43.02 億元</strong> (97.4%, 42,219檔)</div>
+                            <div>認售成交總額: <strong class="text-bear">1.13 億元</strong> (2.6%, 2,757檔)</div>
+                            <div>P/C 比率: <strong class="font-mono">0.0264</strong></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-banner" style="border-left-color: var(--accent-blue);">
+                    <strong>溫度計解析與選股聯動：</strong>全市場權證總額達 44.15 億元，認購佔比高達 97.4%，游資多方情緒極高。大盤位階判定為【中性偏多 (Moderate Bull)】，已啟動【多方聚焦模式 (多方 Top 10 ｜ 空方 0 檔)】，現貨做多標的池自動擴充至 Top 10 檔，暫停逆勢放空！
+                </div>
+            </div>
+        </div>
+        
+        
+        <!-- Module 2 & 3: Long Targets -->
+        <div class="section-header">
+            <div>
+                <div class="section-title">
+                    <span style="color: var(--bull-red);">🟢 模組 2 & 3：做多標的池 Top 10</span>
+                    <span style="font-size: 13px; background: rgba(239, 68, 68, 0.15); color: #ef4444; padding: 2px 8px; border-radius: 6px;">大盤多空位階：中性偏多 (Moderate Bull) ｜ 順勢集中做多 ｜ 90日 Volume Profile 密集區定價 ｜ 權證小哥 5 大指標嚴選</span>
+                </div>
+                <div class="section-desc">篩選條件：站上 60MA、近 20 日漲幅前 20% 分位數、投信與外資大買、借券回補、融資沉澱，且<strong>保證具備活躍權證交易（無權證者自動排除並向下遞補）</strong>。</div>
+            </div>
+        </div>
+        
+        <div class="cards-list">
+            
+        <div class="stock-card card-long">
+            <div class="card-header">
+                <div class="stock-title-group">
+                    <span class="rank-tag rank-tag-long">LONG #1</span>
+                    <span class="stock-id">6526</span>
+                    <span class="stock-name">達發</span>
+                    <span class="stock-market">TWSE</span>
+                </div>
+                <div class="stock-price-group">
+                    <span class="price-val text-bull">840.00</span>
+                    <span class="ret-badge ret-bull">20D +37.7%</span>
+                </div>
+            </div>
+            
+            <div class="chips-grid">
+                <div class="chip-item">
+                    <span class="chip-label">投信 5 日</span>
+                    <span class="chip-val text-bull">+-45 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">外資 5 日</span>
+                    <span class="chip-val text-bull">+3,995 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">融資 5 日</span>
+                    <span class="chip-val text-bear">+998 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">借券變化</span>
+                    <span class="chip-val text-bull">-356 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">均線排列</span>
+                    <span class="chip-val font-mono">5M:729.6 | 20M:657.0</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">真實波幅</span>
+                    <span class="chip-val font-mono">ATR(14)=32.29</span>
+                </div>
+            </div>
+            
+            
+            <div class="vp-box">
+                <div class="vp-header">
+                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
+                    <span class="vp-badge vp-badge-support">站穩密集區之上 (轉為強支撐)</span>
+                </div>
+                <div class="vp-metrics-row font-mono">
+                    <div>POC 最大量核心價: <strong class="text-bull">693.56 元</strong></div>
+                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">618.12 ~ 742.38 元</strong></div>
+                </div>
+                <div class="vp-pos-desc">
+                    💡 <strong>定價與避巴邏輯：</strong>現價突破站穩 90日密集區 (618.12~742.38元)，密集區形成強支撐底座。回測密集區上緣防守開倉，杜絕盲目追高被雙巴。
+                </div>
+            </div>
+            
+            
+            <div class="warrant-box">
+                <div class="warrant-title">
+                    <span>🎯 個股關聯權證多空分析 (Warrant Flow)</span>
+                    <span class="warrant-tag font-bold">🔴 認購主力壓倒性重押</span>
+                </div>
+                <div class="warrant-grid">
+                    <div class="warrant-item">
+                        <span class="w-label">認購成交總額</span>
+                        <span class="w-val text-bull">1,645.5 萬元 <small>(99.6%, 60檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">認售成交總額</span>
+                        <span class="w-val text-bear">6.6 萬元 <small>(0.4%, 1檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">權證多空金額比</span>
+                        <span class="w-val font-mono">認購 99.6% : 認售 0.4%</span>
+                    </div>
+                </div>
+            </div>
+            
+            
+        <div class="xiaoge-warrant-box">
+            <div class="xiaoge-header">
+                <div class="xiaoge-title">
+                    <span>⚡ 權證小哥 5 大指標嚴選標的 (認購 CALL)</span>
+                </div>
+                <div class="xiaoge-subtitle">元大權證網每日 16:00 盤後直連 ｜ 嚴選漏斗：剩餘天數 &gt; 120天 ｜ 差槓比 &lt; 0.3% (若無放寬至 0.7%) ｜ 價平~價外25% ｜ 流通 10%~60%</div>
+            </div>
+            <div class="xiaoge-empty-strict">
+                <div class="empty-strict-title">⚠️ 本標的目前市場「無符合權證小哥指標」之權證 (含差槓比放寬至 0.7%)</div>
+                <div class="empty-strict-desc">
+                    元大權證網全數在掛牌權證均因 <strong>剩餘天數不足 120 天、深度價內外（偏離小哥 -25%~+5% 黃金區間）、流通在外比例失真（&lt;10%或&gt;60%）或差槓比 &gt; 0.7%</strong> 而遭硬性剔除。<br>
+                    💡 <strong>小哥操作紀律</strong>：寧可直接操作現股，絕不妥協買進劣質權證承擔時間價值加速衰減與過高摩擦成本！
+                </div>
+            </div>
+        </div>
+        
+            
+            <div class="execution-box box-long">
+                <div class="exec-title">
+                    <span>⚡ 模組 3：籌碼密集區精準定價與風控指示 (避免追高雙巴)</span>
+                    <span class="rr-tag">風報比 1 : 1.5</span>
+                </div>
+                <div class="exec-grid">
+                    <div class="exec-col">
+                        <span class="exec-label">🎯 密集區進場點 (避免雙巴)</span>
+                        <span class="exec-val text-bull">742.38 元</span>
+                        <span class="exec-sub">回測 90日密集區上緣 742.38元 守穩進場 (避免追高雙巴)</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🛑 密集區防守停損</span>
+                        <span class="exec-val text-bear">618.12 元</span>
+                        <span class="exec-sub">最大回撤 -16.7%</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🏆 波段停利目標</span>
+                        <span class="exec-val text-bull">928.77 元</span>
+                        <span class="exec-sub">預期利潤 +25.1%</span>
+                    </div>
+                </div>
+                <div class="exec-warning">
+                    ⚠️ <strong>離場警示：</strong>收盤跌破 20MA (657.05元) 或 跌破密集區下緣 (618.12元) 即無條件出場
+                </div>
+            </div>
+        </div>
+        
+        <div class="stock-card card-long">
+            <div class="card-header">
+                <div class="stock-title-group">
+                    <span class="rank-tag rank-tag-long">LONG #2</span>
+                    <span class="stock-id">6257</span>
+                    <span class="stock-name">矽格</span>
+                    <span class="stock-market">TWSE</span>
+                </div>
+                <div class="stock-price-group">
+                    <span class="price-val text-bull">247.00</span>
+                    <span class="ret-badge ret-bull">20D +21.1%</span>
+                </div>
+            </div>
+            
+            <div class="chips-grid">
+                <div class="chip-item">
+                    <span class="chip-label">投信 5 日</span>
+                    <span class="chip-val text-bull">+-66 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">外資 5 日</span>
+                    <span class="chip-val text-bull">+31,061 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">融資 5 日</span>
+                    <span class="chip-val text-bull">-1,390 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">借券變化</span>
+                    <span class="chip-val text-bull">-4,317 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">均線排列</span>
+                    <span class="chip-val font-mono">5M:242.7 | 20M:219.7</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">真實波幅</span>
+                    <span class="chip-val font-mono">ATR(14)=10.86</span>
+                </div>
+            </div>
+            
+            
+            <div class="vp-box">
+                <div class="vp-header">
+                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
+                    <span class="vp-badge vp-badge-inside">處於密集區內部 (籌碼震盪換手帶)</span>
+                </div>
+                <div class="vp-metrics-row font-mono">
+                    <div>POC 最大量核心價: <strong class="text-bull">213.35 元</strong></div>
+                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">206.60 ~ 247.10 元</strong></div>
+                </div>
+                <div class="vp-pos-desc">
+                    💡 <strong>定價與避巴邏輯：</strong>現價處於 90日密集換手區間 (206.60~247.10元)，POC核心密集價為 213.35元，等待突破/跌破邊緣再行動態進場。
+                </div>
+            </div>
+            
+            
+            <div class="warrant-box">
+                <div class="warrant-title">
+                    <span>🎯 個股關聯權證多空分析 (Warrant Flow)</span>
+                    <span class="warrant-tag font-bold">🔴 認購主力壓倒性重押</span>
+                </div>
+                <div class="warrant-grid">
+                    <div class="warrant-item">
+                        <span class="w-label">認購成交總額</span>
+                        <span class="w-val text-bull">1,854.3 萬元 <small>(99.9%, 135檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">認售成交總額</span>
+                        <span class="w-val text-bear">1.4 萬元 <small>(0.1%, 8檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">權證多空金額比</span>
+                        <span class="w-val font-mono">認購 99.9% : 認售 0.1%</span>
+                    </div>
+                </div>
+            </div>
+            
+            
+    <div class="xiaoge-warrant-box">
+        <div class="xiaoge-header">
+            <div class="xiaoge-title">
+                <span>⚡ 權證小哥 5 大指標嚴選 Top 1 標的 (認購 CALL)</span>
+            </div>
+            <div class="xiaoge-subtitle">元大權證網每日 16:00 盤後直連 ｜ 剩餘天數 &gt; 120天 ｜ 價平~價外25% ｜ 流通 10%~60% ｜ 差槓比 &lt; 0.3% (若無放寬至 0.7%)</div>
+        </div>
+        <div class="xiaoge-table-wrapper">
+            <table class="xiaoge-table font-mono">
+                <thead>
+                    <tr>
+                        <th>評級</th>
+                        <th>代碼 / 名稱</th>
+                        <th>委買 / 委賣</th>
+                        <th>履約價 (價外%)</th>
+                        <th>剩餘天數</th>
+                        <th>實質槓桿</th>
+                        <th>買賣價差比</th>
+                        <th>差槓比</th>
+                        <th>流通在外</th>
+                        <th>造市券商</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td><span class="badge-xiaoge-relax">◆ 次選放寬 #1</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">085745</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">矽格元大67購01</div>
+            </td>
+            <td>1.92 / 1.94</td>
+            <td>
+                <span>248.00</span>
+                <small class="text-bull">(-0.4%)</small>
+            </td>
+            <td class="text-bull"><strong>292</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">2.22x</strong></td>
+            <td>1.03%</td>
+            <td><span class="badge-diff-lever-relax">0.464%</span></td>
+            <td class="text-bull">20.0%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">元大</span></td>
+        </tr>
+        
+                </tbody>
+            </table>
+            
+        <div class="xiaoge-table-footer">
+            💡 差槓比放寬說明：標示【◆ 次選放寬】者為差槓比介於 0.3%~0.7% 之放寬標的（抗摩擦成本稍降），其餘「剩餘天數 &gt; 120天」、「價平~價外25%」、「流通10%~60%」等小哥四大核心風控指標仍 100% 嚴格符合！
+        </div>
+        
+        </div>
+    </div>
+    
+            
+            <div class="execution-box box-long">
+                <div class="exec-title">
+                    <span>⚡ 模組 3：籌碼密集區精準定價與風控指示 (避免追高雙巴)</span>
+                    <span class="rr-tag">風報比 1 : 1.5</span>
+                </div>
+                <div class="exec-grid">
+                    <div class="exec-col">
+                        <span class="exec-label">🎯 密集區進場點 (避免雙巴)</span>
+                        <span class="exec-val text-bull">247.10 元</span>
+                        <span class="exec-sub">突破 90日密集區上緣 247.10元 確認轉強開倉</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🛑 密集區防守停損</span>
+                        <span class="exec-val text-bear">206.60 元</span>
+                        <span class="exec-sub">最大回撤 -16.4%</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🏆 波段停利目標</span>
+                        <span class="exec-val text-bull">307.85 元</span>
+                        <span class="exec-sub">預期利潤 +24.6%</span>
+                    </div>
+                </div>
+                <div class="exec-warning">
+                    ⚠️ <strong>離場警示：</strong>收盤跌破 20MA (219.72元) 或 跌破密集區下緣 (206.60元) 即無條件出場
+                </div>
+            </div>
+        </div>
+        
+        <div class="stock-card card-long">
+            <div class="card-header">
+                <div class="stock-title-group">
+                    <span class="rank-tag rank-tag-long">LONG #3</span>
+                    <span class="stock-id">3265</span>
+                    <span class="stock-name">台星科</span>
+                    <span class="stock-market">TPEX</span>
+                </div>
+                <div class="stock-price-group">
+                    <span class="price-val text-bull">180.00</span>
+                    <span class="ret-badge ret-bull">20D +11.1%</span>
+                </div>
+            </div>
+            
+            <div class="chips-grid">
+                <div class="chip-item">
+                    <span class="chip-label">投信 5 日</span>
+                    <span class="chip-val text-bull">+0 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">外資 5 日</span>
+                    <span class="chip-val text-bull">+2,990 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">融資 5 日</span>
+                    <span class="chip-val text-bear">+181 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">借券變化</span>
+                    <span class="chip-val text-bull">-13 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">均線排列</span>
+                    <span class="chip-val font-mono">5M:185.7 | 20M:167.9</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">真實波幅</span>
+                    <span class="chip-val font-mono">ATR(14)=8.36</span>
+                </div>
+            </div>
+            
+            
+            <div class="vp-box">
+                <div class="vp-header">
+                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
+                    <span class="vp-badge vp-badge-inside">處於密集區內部 (籌碼震盪換手帶)</span>
+                </div>
+                <div class="vp-metrics-row font-mono">
+                    <div>POC 最大量核心價: <strong class="text-bull">160.97 元</strong></div>
+                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">160.50 ~ 185.81 元</strong></div>
+                </div>
+                <div class="vp-pos-desc">
+                    💡 <strong>定價與避巴邏輯：</strong>現價處於 90日密集換手區間 (160.50~185.81元)，POC核心密集價為 160.97元，等待突破/跌破邊緣再行動態進場。
+                </div>
+            </div>
+            
+            
+            <div class="warrant-box">
+                <div class="warrant-title">
+                    <span>🎯 個股關聯權證多空分析 (Warrant Flow)</span>
+                    <span class="warrant-tag font-bold">🔴 認購主力壓倒性重押</span>
+                </div>
+                <div class="warrant-grid">
+                    <div class="warrant-item">
+                        <span class="w-label">認購成交總額</span>
+                        <span class="w-val text-bull">1,273.3 萬元 <small>(99.4%, 40檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">認售成交總額</span>
+                        <span class="w-val text-bear">7.7 萬元 <small>(0.6%, 1檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">權證多空金額比</span>
+                        <span class="w-val font-mono">認購 99.4% : 認售 0.6%</span>
+                    </div>
+                </div>
+            </div>
+            
+            
+    <div class="xiaoge-warrant-box">
+        <div class="xiaoge-header">
+            <div class="xiaoge-title">
+                <span>⚡ 權證小哥 5 大指標嚴選 Top 3 標的 (認購 CALL)</span>
+            </div>
+            <div class="xiaoge-subtitle">元大權證網每日 16:00 盤後直連 ｜ 剩餘天數 &gt; 120天 ｜ 價平~價外25% ｜ 流通 10%~60% ｜ 差槓比 &lt; 0.3% (若無放寬至 0.7%)</div>
+        </div>
+        <div class="xiaoge-table-wrapper">
+            <table class="xiaoge-table font-mono">
+                <thead>
+                    <tr>
+                        <th>評級</th>
+                        <th>代碼 / 名稱</th>
+                        <th>委買 / 委賣</th>
+                        <th>履約價 (價外%)</th>
+                        <th>剩餘天數</th>
+                        <th>實質槓桿</th>
+                        <th>買賣價差比</th>
+                        <th>差槓比</th>
+                        <th>流通在外</th>
+                        <th>造市券商</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #1</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">713090</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">台星科凱基63購01</div>
+            </td>
+            <td>1.40 / 1.41</td>
+            <td>
+                <span>230.00</span>
+                <small class="text-bull">(-21.7%)</small>
+            </td>
+            <td class="text-bull"><strong>183</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">3.47x</strong></td>
+            <td>0.71%</td>
+            <td><span class="badge-diff-lever">0.204%</span></td>
+            <td class="text-bull">12.1%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge-xiaoge-relax">◆ 次選放寬 #2</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">712605</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">台星科永豐64購01</div>
+            </td>
+            <td>1.21 / 1.22</td>
+            <td>
+                <span>210.00</span>
+                <small class="text-bull">(-14.3%)</small>
+            </td>
+            <td class="text-bull"><strong>201</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">2.47x</strong></td>
+            <td>0.82%</td>
+            <td><span class="badge-diff-lever-relax">0.333%</span></td>
+            <td class="text-bull">13.5%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">國泰</span></td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge-xiaoge-relax">◆ 次選放寬 #3</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">713037</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">台星科元大62購03</div>
+            </td>
+            <td>0.65 / 0.66</td>
+            <td>
+                <span>233.45</span>
+                <small class="text-bull">(-22.9%)</small>
+            </td>
+            <td class="text-bull"><strong>154</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">2.97x</strong></td>
+            <td>1.52%</td>
+            <td><span class="badge-diff-lever-relax">0.512%</span></td>
+            <td class="text-bull">20.1%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">元大</span></td>
+        </tr>
+        
+                </tbody>
+            </table>
+            
+        <div class="xiaoge-table-footer">
+            💡 差槓比放寬說明：標示【◆ 次選放寬】者為差槓比介於 0.3%~0.7% 之放寬標的（抗摩擦成本稍降），其餘「剩餘天數 &gt; 120天」、「價平~價外25%」、「流通10%~60%」等小哥四大核心風控指標仍 100% 嚴格符合！
+        </div>
+        
+        </div>
+    </div>
+    
+            
+            <div class="execution-box box-long">
+                <div class="exec-title">
+                    <span>⚡ 模組 3：籌碼密集區精準定價與風控指示 (避免追高雙巴)</span>
+                    <span class="rr-tag">風報比 1 : 1.5</span>
+                </div>
+                <div class="exec-grid">
+                    <div class="exec-col">
+                        <span class="exec-label">🎯 密集區進場點 (避免雙巴)</span>
+                        <span class="exec-val text-bull">185.81 元</span>
+                        <span class="exec-sub">突破 90日密集區上緣 185.81元 確認轉強開倉</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🛑 密集區防守停損</span>
+                        <span class="exec-val text-bear">160.50 元</span>
+                        <span class="exec-sub">最大回撤 -13.6%</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🏆 波段停利目標</span>
+                        <span class="exec-val text-bull">223.78 元</span>
+                        <span class="exec-sub">預期利潤 +20.4%</span>
+                    </div>
+                </div>
+                <div class="exec-warning">
+                    ⚠️ <strong>離場警示：</strong>收盤跌破 20MA (167.93元) 或 跌破密集區下緣 (160.50元) 即無條件出場
+                </div>
+            </div>
+        </div>
+        
+        <div class="stock-card card-long">
+            <div class="card-header">
+                <div class="stock-title-group">
+                    <span class="rank-tag rank-tag-long">LONG #4</span>
+                    <span class="stock-id">2527</span>
+                    <span class="stock-name">宏璟</span>
+                    <span class="stock-market">TWSE</span>
+                </div>
+                <div class="stock-price-group">
+                    <span class="price-val text-bull">48.40</span>
+                    <span class="ret-badge ret-bull">20D +11.3%</span>
+                </div>
+            </div>
+            
+            <div class="chips-grid">
+                <div class="chip-item">
+                    <span class="chip-label">投信 5 日</span>
+                    <span class="chip-val text-bull">+0 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">外資 5 日</span>
+                    <span class="chip-val text-bull">+1,300 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">融資 5 日</span>
+                    <span class="chip-val text-bear">+98 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">借券變化</span>
+                    <span class="chip-val text-bear">+43 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">均線排列</span>
+                    <span class="chip-val font-mono">5M:46.6 | 20M:44.2</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">真實波幅</span>
+                    <span class="chip-val font-mono">ATR(14)=1.39</span>
+                </div>
+            </div>
+            
+            
+            <div class="vp-box">
+                <div class="vp-header">
+                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
+                    <span class="vp-badge vp-badge-inside">處於密集區內部 (籌碼震盪換手帶)</span>
+                </div>
+                <div class="vp-metrics-row font-mono">
+                    <div>POC 最大量核心價: <strong class="text-bull">43.56 元</strong></div>
+                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">39.94 ~ 49.59 元</strong></div>
+                </div>
+                <div class="vp-pos-desc">
+                    💡 <strong>定價與避巴邏輯：</strong>現價處於 90日密集換手區間 (39.94~49.59元)，POC核心密集價為 43.56元，等待突破/跌破邊緣再行動態進場。
+                </div>
+            </div>
+            
+            
+            <div class="warrant-box">
+                <div class="warrant-title">
+                    <span>🎯 個股關聯權證多空分析 (Warrant Flow)</span>
+                    <span class="warrant-tag font-bold">🔴 認購主力壓倒性重押</span>
+                </div>
+                <div class="warrant-grid">
+                    <div class="warrant-item">
+                        <span class="w-label">認購成交總額</span>
+                        <span class="w-val text-bull">82.4 萬元 <small>(100.0%, 5檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">認售成交總額</span>
+                        <span class="w-val text-bear">0.0 萬元 <small>(0.0%, 0檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">權證多空金額比</span>
+                        <span class="w-val font-mono">認購 100.0% : 認售 0.0%</span>
+                    </div>
+                </div>
+            </div>
+            
+            
+        <div class="xiaoge-warrant-box">
+            <div class="xiaoge-header">
+                <div class="xiaoge-title">
+                    <span>⚡ 權證小哥 5 大指標嚴選標的 (認購 CALL)</span>
+                </div>
+                <div class="xiaoge-subtitle">元大權證網每日 16:00 盤後直連 ｜ 嚴選漏斗：剩餘天數 &gt; 120天 ｜ 差槓比 &lt; 0.3% (若無放寬至 0.7%) ｜ 價平~價外25% ｜ 流通 10%~60%</div>
+            </div>
+            <div class="xiaoge-empty-strict">
+                <div class="empty-strict-title">⚠️ 本標的目前市場「無符合權證小哥指標」之權證 (含差槓比放寬至 0.7%)</div>
+                <div class="empty-strict-desc">
+                    元大權證網全數在掛牌權證均因 <strong>剩餘天數不足 120 天、深度價內外（偏離小哥 -25%~+5% 黃金區間）、流通在外比例失真（&lt;10%或&gt;60%）或差槓比 &gt; 0.7%</strong> 而遭硬性剔除。<br>
+                    💡 <strong>小哥操作紀律</strong>：寧可直接操作現股，絕不妥協買進劣質權證承擔時間價值加速衰減與過高摩擦成本！
+                </div>
+            </div>
+        </div>
+        
+            
+            <div class="execution-box box-long">
+                <div class="exec-title">
+                    <span>⚡ 模組 3：籌碼密集區精準定價與風控指示 (避免追高雙巴)</span>
+                    <span class="rr-tag">風報比 1 : 1.5</span>
+                </div>
+                <div class="exec-grid">
+                    <div class="exec-col">
+                        <span class="exec-label">🎯 密集區進場點 (避免雙巴)</span>
+                        <span class="exec-val text-bull">49.59 元</span>
+                        <span class="exec-sub">突破 90日密集區上緣 49.59元 確認轉強開倉</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🛑 密集區防守停損</span>
+                        <span class="exec-val text-bear">39.94 元</span>
+                        <span class="exec-sub">最大回撤 -19.5%</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🏆 波段停利目標</span>
+                        <span class="exec-val text-bull">64.07 元</span>
+                        <span class="exec-sub">預期利潤 +29.2%</span>
+                    </div>
+                </div>
+                <div class="exec-warning">
+                    ⚠️ <strong>離場警示：</strong>收盤跌破 20MA (44.20元) 或 跌破密集區下緣 (39.94元) 即無條件出場
+                </div>
+            </div>
+        </div>
+        
+        <div class="stock-card card-long">
+            <div class="card-header">
+                <div class="stock-title-group">
+                    <span class="rank-tag rank-tag-long">LONG #5</span>
+                    <span class="stock-id">2441</span>
+                    <span class="stock-name">超豐</span>
+                    <span class="stock-market">TWSE</span>
+                </div>
+                <div class="stock-price-group">
+                    <span class="price-val text-bull">125.00</span>
+                    <span class="ret-badge ret-bull">20D +9.6%</span>
+                </div>
+            </div>
+            
+            <div class="chips-grid">
+                <div class="chip-item">
+                    <span class="chip-label">投信 5 日</span>
+                    <span class="chip-val text-bull">+-1,397 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">外資 5 日</span>
+                    <span class="chip-val text-bull">+8,923 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">融資 5 日</span>
+                    <span class="chip-val text-bull">-208 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">借券變化</span>
+                    <span class="chip-val text-bull">-1,249 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">均線排列</span>
+                    <span class="chip-val font-mono">5M:124.3 | 20M:117.7</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">真實波幅</span>
+                    <span class="chip-val font-mono">ATR(14)=4.79</span>
+                </div>
+            </div>
+            
+            
+            <div class="vp-box">
+                <div class="vp-header">
+                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
+                    <span class="vp-badge vp-badge-inside">處於密集區內部 (籌碼震盪換手帶)</span>
+                </div>
+                <div class="vp-metrics-row font-mono">
+                    <div>POC 最大量核心價: <strong class="text-bull">124.80 元</strong></div>
+                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">114.40 ~ 141.60 元</strong></div>
+                </div>
+                <div class="vp-pos-desc">
+                    💡 <strong>定價與避巴邏輯：</strong>現價處於 90日密集換手區間 (114.40~141.60元)，POC核心密集價為 124.80元，等待突破/跌破邊緣再行動態進場。
+                </div>
+            </div>
+            
+            
+            <div class="warrant-box">
+                <div class="warrant-title">
+                    <span>🎯 個股關聯權證多空分析 (Warrant Flow)</span>
+                    <span class="warrant-tag font-bold">🔴 認購主力壓倒性重押</span>
+                </div>
+                <div class="warrant-grid">
+                    <div class="warrant-item">
+                        <span class="w-label">認購成交總額</span>
+                        <span class="w-val text-bull">619.3 萬元 <small>(100.0%, 83檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">認售成交總額</span>
+                        <span class="w-val text-bear">0.0 萬元 <small>(0.0%, 0檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">權證多空金額比</span>
+                        <span class="w-val font-mono">認購 100.0% : 認售 0.0%</span>
+                    </div>
+                </div>
+            </div>
+            
+            
+    <div class="xiaoge-warrant-box">
+        <div class="xiaoge-header">
+            <div class="xiaoge-title">
+                <span>⚡ 權證小哥 5 大指標嚴選 Top 3 標的 (認購 CALL)</span>
+            </div>
+            <div class="xiaoge-subtitle">元大權證網每日 16:00 盤後直連 ｜ 剩餘天數 &gt; 120天 ｜ 價平~價外25% ｜ 流通 10%~60% ｜ 差槓比 &lt; 0.3% (若無放寬至 0.7%)</div>
+        </div>
+        <div class="xiaoge-table-wrapper">
+            <table class="xiaoge-table font-mono">
+                <thead>
+                    <tr>
+                        <th>評級</th>
+                        <th>代碼 / 名稱</th>
+                        <th>委買 / 委賣</th>
+                        <th>履約價 (價外%)</th>
+                        <th>剩餘天數</th>
+                        <th>實質槓桿</th>
+                        <th>買賣價差比</th>
+                        <th>差槓比</th>
+                        <th>流通在外</th>
+                        <th>造市券商</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td><span class="badge-xiaoge-relax">◆ 次選放寬 #1</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">068028</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">超豐統一64購01</div>
+            </td>
+            <td>0.92 / 0.93</td>
+            <td>
+                <span>124.55</span>
+                <small class="text-bull">(+0.4%)</small>
+            </td>
+            <td class="text-bull"><strong>209</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">2.67x</strong></td>
+            <td>1.08%</td>
+            <td><span class="badge-diff-lever-relax">0.405%</span></td>
+            <td class="text-bull">47.3%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">統一證</span></td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge-xiaoge-relax">◆ 次選放寬 #2</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">068613</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">超豐富邦61購01</div>
+            </td>
+            <td>0.70 / 0.71</td>
+            <td>
+                <span>141.30</span>
+                <small class="text-bull">(-11.5%)</small>
+            </td>
+            <td class="text-bull"><strong>124</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">3.41x</strong></td>
+            <td>1.41%</td>
+            <td><span class="badge-diff-lever-relax">0.414%</span></td>
+            <td class="text-bull">12.5%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">富邦</span></td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge-xiaoge-relax">◆ 次選放寬 #3</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">078625</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">超豐元大64購02</div>
+            </td>
+            <td>0.76 / 0.77</td>
+            <td>
+                <span>134.97</span>
+                <small class="text-bull">(-7.4%)</small>
+            </td>
+            <td class="text-bull"><strong>196</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">2.63x</strong></td>
+            <td>1.30%</td>
+            <td><span class="badge-diff-lever-relax">0.495%</span></td>
+            <td class="text-bull">23.6%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">元大</span></td>
+        </tr>
+        
+                </tbody>
+            </table>
+            
+        <div class="xiaoge-table-footer">
+            💡 差槓比放寬說明：標示【◆ 次選放寬】者為差槓比介於 0.3%~0.7% 之放寬標的（抗摩擦成本稍降），其餘「剩餘天數 &gt; 120天」、「價平~價外25%」、「流通10%~60%」等小哥四大核心風控指標仍 100% 嚴格符合！
+        </div>
+        
+        </div>
+    </div>
+    
+            
+            <div class="execution-box box-long">
+                <div class="exec-title">
+                    <span>⚡ 模組 3：籌碼密集區精準定價與風控指示 (避免追高雙巴)</span>
+                    <span class="rr-tag">風報比 1 : 1.5</span>
+                </div>
+                <div class="exec-grid">
+                    <div class="exec-col">
+                        <span class="exec-label">🎯 密集區進場點 (避免雙巴)</span>
+                        <span class="exec-val text-bull">141.60 元</span>
+                        <span class="exec-sub">突破 90日密集區上緣 141.60元 確認轉強開倉</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🛑 密集區防守停損</span>
+                        <span class="exec-val text-bear">114.40 元</span>
+                        <span class="exec-sub">最大回撤 -19.2%</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🏆 波段停利目標</span>
+                        <span class="exec-val text-bull">182.40 元</span>
+                        <span class="exec-sub">預期利潤 +28.8%</span>
+                    </div>
+                </div>
+                <div class="exec-warning">
+                    ⚠️ <strong>離場警示：</strong>收盤跌破 20MA (117.67元) 或 跌破密集區下緣 (114.40元) 即無條件出場
+                </div>
+            </div>
+        </div>
+        
+        <div class="stock-card card-long">
+            <div class="card-header">
+                <div class="stock-title-group">
+                    <span class="rank-tag rank-tag-long">LONG #6</span>
+                    <span class="stock-id">3035</span>
+                    <span class="stock-name">智原</span>
+                    <span class="stock-market">TWSE</span>
+                </div>
+                <div class="stock-price-group">
+                    <span class="price-val text-bull">204.00</span>
+                    <span class="ret-badge ret-bull">20D +15.6%</span>
+                </div>
+            </div>
+            
+            <div class="chips-grid">
+                <div class="chip-item">
+                    <span class="chip-label">投信 5 日</span>
+                    <span class="chip-val text-bull">+0 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">外資 5 日</span>
+                    <span class="chip-val text-bull">+5,771 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">融資 5 日</span>
+                    <span class="chip-val text-bear">+101 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">借券變化</span>
+                    <span class="chip-val text-bear">+169 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">均線排列</span>
+                    <span class="chip-val font-mono">5M:193.5 | 20M:181.1</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">真實波幅</span>
+                    <span class="chip-val font-mono">ATR(14)=8.11</span>
+                </div>
+            </div>
+            
+            
+            <div class="vp-box">
+                <div class="vp-header">
+                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
+                    <span class="vp-badge vp-badge-inside">處於密集區內部 (籌碼震盪換手帶)</span>
+                </div>
+                <div class="vp-metrics-row font-mono">
+                    <div>POC 最大量核心價: <strong class="text-bull">209.29 元</strong></div>
+                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">178.51 ~ 225.30 元</strong></div>
+                </div>
+                <div class="vp-pos-desc">
+                    💡 <strong>定價與避巴邏輯：</strong>現價處於 90日密集換手區間 (178.51~225.30元)，POC核心密集價為 209.29元，等待突破/跌破邊緣再行動態進場。
+                </div>
+            </div>
+            
+            
+            <div class="warrant-box">
+                <div class="warrant-title">
+                    <span>🎯 個股關聯權證多空分析 (Warrant Flow)</span>
+                    <span class="warrant-tag font-bold">🔴 認購主力壓倒性重押</span>
+                </div>
+                <div class="warrant-grid">
+                    <div class="warrant-item">
+                        <span class="w-label">認購成交總額</span>
+                        <span class="w-val text-bull">3,180.8 萬元 <small>(99.9%, 165檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">認售成交總額</span>
+                        <span class="w-val text-bear">2.2 萬元 <small>(0.1%, 3檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">權證多空金額比</span>
+                        <span class="w-val font-mono">認購 99.9% : 認售 0.1%</span>
+                    </div>
+                </div>
+            </div>
+            
+            
+    <div class="xiaoge-warrant-box">
+        <div class="xiaoge-header">
+            <div class="xiaoge-title">
+                <span>⚡ 權證小哥 5 大指標嚴選 Top 3 標的 (認購 CALL)</span>
+            </div>
+            <div class="xiaoge-subtitle">元大權證網每日 16:00 盤後直連 ｜ 剩餘天數 &gt; 120天 ｜ 價平~價外25% ｜ 流通 10%~60% ｜ 差槓比 &lt; 0.3% (若無放寬至 0.7%)</div>
+        </div>
+        <div class="xiaoge-table-wrapper">
+            <table class="xiaoge-table font-mono">
+                <thead>
+                    <tr>
+                        <th>評級</th>
+                        <th>代碼 / 名稱</th>
+                        <th>委買 / 委賣</th>
+                        <th>履約價 (價外%)</th>
+                        <th>剩餘天數</th>
+                        <th>實質槓桿</th>
+                        <th>買賣價差比</th>
+                        <th>差槓比</th>
+                        <th>流通在外</th>
+                        <th>造市券商</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td><span class="badge-xiaoge-relax">◆ 次選放寬 #1</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">061391</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">智原中信63購01</div>
+            </td>
+            <td>0.97 / 0.98</td>
+            <td>
+                <span>218.04</span>
+                <small class="text-bull">(-6.4%)</small>
+            </td>
+            <td class="text-bull"><strong>184</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">2.66x</strong></td>
+            <td>1.02%</td>
+            <td><span class="badge-diff-lever-relax">0.383%</span></td>
+            <td class="text-bull">43.3%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">券商616</span></td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge-xiaoge-relax">◆ 次選放寬 #2</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">084412</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">智原富邦64購01</div>
+            </td>
+            <td>0.82 / 0.83</td>
+            <td>
+                <span>237.88</span>
+                <small class="text-bull">(-14.2%)</small>
+            </td>
+            <td class="text-bull"><strong>196</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">3.08x</strong></td>
+            <td>1.20%</td>
+            <td><span class="badge-diff-lever-relax">0.390%</span></td>
+            <td class="text-bull">21.0%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">富邦</span></td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge-xiaoge-relax">◆ 次選放寬 #3</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">074900</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">智原永豐64購02</div>
+            </td>
+            <td>0.99 / 1.00</td>
+            <td>
+                <span>246.76</span>
+                <small class="text-bull">(-17.3%)</small>
+            </td>
+            <td class="text-bull"><strong>201</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">2.29x</strong></td>
+            <td>1.00%</td>
+            <td><span class="badge-diff-lever-relax">0.436%</span></td>
+            <td class="text-bull">15.7%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">國泰</span></td>
+        </tr>
+        
+                </tbody>
+            </table>
+            
+        <div class="xiaoge-table-footer">
+            💡 差槓比放寬說明：標示【◆ 次選放寬】者為差槓比介於 0.3%~0.7% 之放寬標的（抗摩擦成本稍降），其餘「剩餘天數 &gt; 120天」、「價平~價外25%」、「流通10%~60%」等小哥四大核心風控指標仍 100% 嚴格符合！
+        </div>
+        
+        </div>
+    </div>
+    
+            
+            <div class="execution-box box-long">
+                <div class="exec-title">
+                    <span>⚡ 模組 3：籌碼密集區精準定價與風控指示 (避免追高雙巴)</span>
+                    <span class="rr-tag">風報比 1 : 1.5</span>
+                </div>
+                <div class="exec-grid">
+                    <div class="exec-col">
+                        <span class="exec-label">🎯 密集區進場點 (避免雙巴)</span>
+                        <span class="exec-val text-bull">225.30 元</span>
+                        <span class="exec-sub">突破 90日密集區上緣 225.30元 確認轉強開倉</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🛑 密集區防守停損</span>
+                        <span class="exec-val text-bear">178.51 元</span>
+                        <span class="exec-sub">最大回撤 -20.8%</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🏆 波段停利目標</span>
+                        <span class="exec-val text-bull">295.49 元</span>
+                        <span class="exec-sub">預期利潤 +31.2%</span>
+                    </div>
+                </div>
+                <div class="exec-warning">
+                    ⚠️ <strong>離場警示：</strong>收盤跌破 20MA (181.10元) 或 跌破密集區下緣 (178.51元) 即無條件出場
+                </div>
+            </div>
+        </div>
+        
+        <div class="stock-card card-long">
+            <div class="card-header">
+                <div class="stock-title-group">
+                    <span class="rank-tag rank-tag-long">LONG #7</span>
+                    <span class="stock-id">3711</span>
+                    <span class="stock-name">日月光投控</span>
+                    <span class="stock-market">TWSE</span>
+                </div>
+                <div class="stock-price-group">
+                    <span class="price-val text-bull">693.00</span>
+                    <span class="ret-badge ret-bull">20D +14.5%</span>
+                </div>
+            </div>
+            
+            <div class="chips-grid">
+                <div class="chip-item">
+                    <span class="chip-label">投信 5 日</span>
+                    <span class="chip-val text-bull">+-759 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">外資 5 日</span>
+                    <span class="chip-val text-bull">+27,287 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">融資 5 日</span>
+                    <span class="chip-val text-bull">-1,966 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">借券變化</span>
+                    <span class="chip-val text-bull">-8,544 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">均線排列</span>
+                    <span class="chip-val font-mono">5M:660.2 | 20M:622.1</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">真實波幅</span>
+                    <span class="chip-val font-mono">ATR(14)=27.86</span>
+                </div>
+            </div>
+            
+            
+            <div class="vp-box">
+                <div class="vp-header">
+                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
+                    <span class="vp-badge vp-badge-support">站穩密集區之上 (轉為強支撐)</span>
+                </div>
+                <div class="vp-metrics-row font-mono">
+                    <div>POC 最大量核心價: <strong class="text-bull">606.90 元</strong></div>
+                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">570.60 ~ 669.60 元</strong></div>
+                </div>
+                <div class="vp-pos-desc">
+                    💡 <strong>定價與避巴邏輯：</strong>現價突破站穩 90日密集區 (570.60~669.60元)，密集區形成強支撐底座。回測密集區上緣防守開倉，杜絕盲目追高被雙巴。
+                </div>
+            </div>
+            
+            
+            <div class="warrant-box">
+                <div class="warrant-title">
+                    <span>🎯 個股關聯權證多空分析 (Warrant Flow)</span>
+                    <span class="warrant-tag font-bold">🔴 認購主力壓倒性重押</span>
+                </div>
+                <div class="warrant-grid">
+                    <div class="warrant-item">
+                        <span class="w-label">認購成交總額</span>
+                        <span class="w-val text-bull">3,660.8 萬元 <small>(96.8%, 317檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">認售成交總額</span>
+                        <span class="w-val text-bear">121.8 萬元 <small>(3.2%, 21檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">權證多空金額比</span>
+                        <span class="w-val font-mono">認購 96.8% : 認售 3.2%</span>
+                    </div>
+                </div>
+            </div>
+            
+            
+    <div class="xiaoge-warrant-box">
+        <div class="xiaoge-header">
+            <div class="xiaoge-title">
+                <span>⚡ 權證小哥 5 大指標嚴選 Top 3 標的 (認購 CALL)</span>
+            </div>
+            <div class="xiaoge-subtitle">元大權證網每日 16:00 盤後直連 ｜ 剩餘天數 &gt; 120天 ｜ 價平~價外25% ｜ 流通 10%~60% ｜ 差槓比 &lt; 0.3% (若無放寬至 0.7%)</div>
+        </div>
+        <div class="xiaoge-table-wrapper">
+            <table class="xiaoge-table font-mono">
+                <thead>
+                    <tr>
+                        <th>評級</th>
+                        <th>代碼 / 名稱</th>
+                        <th>委買 / 委賣</th>
+                        <th>履約價 (價外%)</th>
+                        <th>剩餘天數</th>
+                        <th>實質槓桿</th>
+                        <th>買賣價差比</th>
+                        <th>差槓比</th>
+                        <th>流通在外</th>
+                        <th>造市券商</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #1</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">086972</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">日月光凱基63購15</div>
+            </td>
+            <td>3.07 / 3.09</td>
+            <td>
+                <span>800.00</span>
+                <small class="text-bull">(-13.4%)</small>
+            </td>
+            <td class="text-bull"><strong>174</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">3.68x</strong></td>
+            <td>0.65%</td>
+            <td><span class="badge-diff-lever">0.177%</span></td>
+            <td class="text-bull">11.3%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #2</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">081663</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">日月光元大62購05</div>
+            </td>
+            <td>1.63 / 1.64</td>
+            <td>
+                <span>831.00</span>
+                <small class="text-bull">(-16.6%)</small>
+            </td>
+            <td class="text-bull"><strong>152</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">2.94x</strong></td>
+            <td>0.61%</td>
+            <td><span class="badge-diff-lever">0.207%</span></td>
+            <td class="text-bull">13.0%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">元大</span></td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #3</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">069392</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">日月光元大63購04</div>
+            </td>
+            <td>1.79 / 1.80</td>
+            <td>
+                <span>789.78</span>
+                <small class="text-bull">(-12.2%)</small>
+            </td>
+            <td class="text-bull"><strong>187</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">2.57x</strong></td>
+            <td>0.56%</td>
+            <td><span class="badge-diff-lever">0.218%</span></td>
+            <td class="text-bull">14.7%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">元大</span></td>
+        </tr>
+        
+                </tbody>
+            </table>
+            
+        <div class="xiaoge-table-footer">
+            💡 小哥嚴選全過：全數標的 100% 符合小哥五大硬性指標（差槓比 &lt; 0.3%、天數 &gt; 120天、流通 10%~60%）。
+        </div>
+        
+        </div>
+    </div>
+    
+            
+            <div class="execution-box box-long">
+                <div class="exec-title">
+                    <span>⚡ 模組 3：籌碼密集區精準定價與風控指示 (避免追高雙巴)</span>
+                    <span class="rr-tag">風報比 1 : 1.5</span>
+                </div>
+                <div class="exec-grid">
+                    <div class="exec-col">
+                        <span class="exec-label">🎯 密集區進場點 (避免雙巴)</span>
+                        <span class="exec-val text-bull">669.60 元</span>
+                        <span class="exec-sub">回測 90日密集區上緣 669.60元 守穩進場 (避免追高雙巴)</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🛑 密集區防守停損</span>
+                        <span class="exec-val text-bear">570.60 元</span>
+                        <span class="exec-sub">最大回撤 -14.8%</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🏆 波段停利目標</span>
+                        <span class="exec-val text-bull">818.10 元</span>
+                        <span class="exec-sub">預期利潤 +22.2%</span>
+                    </div>
+                </div>
+                <div class="exec-warning">
+                    ⚠️ <strong>離場警示：</strong>收盤跌破 20MA (622.15元) 或 跌破密集區下緣 (570.60元) 即無條件出場
+                </div>
+            </div>
+        </div>
+        
+        <div class="stock-card card-long">
+            <div class="card-header">
+                <div class="stock-title-group">
+                    <span class="rank-tag rank-tag-long">LONG #8</span>
+                    <span class="stock-id">2404</span>
+                    <span class="stock-name">漢唐</span>
+                    <span class="stock-market">TWSE</span>
+                </div>
+                <div class="stock-price-group">
+                    <span class="price-val text-bull">1250.00</span>
+                    <span class="ret-badge ret-bull">20D +16.3%</span>
+                </div>
+            </div>
+            
+            <div class="chips-grid">
+                <div class="chip-item">
+                    <span class="chip-label">投信 5 日</span>
+                    <span class="chip-val text-bull">+1,120 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">外資 5 日</span>
+                    <span class="chip-val text-bull">+1,689 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">融資 5 日</span>
+                    <span class="chip-val text-bear">+43 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">借券變化</span>
+                    <span class="chip-val text-bull">-31 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">均線排列</span>
+                    <span class="chip-val font-mono">5M:1135.0 | 20M:1073.2</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">真實波幅</span>
+                    <span class="chip-val font-mono">ATR(14)=50.93</span>
+                </div>
+            </div>
+            
+            
+            <div class="vp-box">
+                <div class="vp-header">
+                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
+                    <span class="vp-badge vp-badge-inside">處於密集區內部 (籌碼震盪換手帶)</span>
+                </div>
+                <div class="vp-metrics-row font-mono">
+                    <div>POC 最大量核心價: <strong class="text-bull">1170.94 元</strong></div>
+                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">1034.38 ~ 1283.75 元</strong></div>
+                </div>
+                <div class="vp-pos-desc">
+                    💡 <strong>定價與避巴邏輯：</strong>現價處於 90日密集換手區間 (1034.38~1283.75元)，POC核心密集價為 1170.94元，等待突破/跌破邊緣再行動態進場。
+                </div>
+            </div>
+            
+            
+            <div class="warrant-box">
+                <div class="warrant-title">
+                    <span>🎯 個股關聯權證多空分析 (Warrant Flow)</span>
+                    <span class="warrant-tag font-bold">🔴 認購主力壓倒性重押</span>
+                </div>
+                <div class="warrant-grid">
+                    <div class="warrant-item">
+                        <span class="w-label">認購成交總額</span>
+                        <span class="w-val text-bull">6,145.8 萬元 <small>(100.0%, 248檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">認售成交總額</span>
+                        <span class="w-val text-bear">3.0 萬元 <small>(0.0%, 12檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">權證多空金額比</span>
+                        <span class="w-val font-mono">認購 100.0% : 認售 0.0%</span>
+                    </div>
+                </div>
+            </div>
+            
+            
+        <div class="xiaoge-warrant-box">
+            <div class="xiaoge-header">
+                <div class="xiaoge-title">
+                    <span>⚡ 權證小哥 5 大指標嚴選標的 (認購 CALL)</span>
+                </div>
+                <div class="xiaoge-subtitle">元大權證網每日 16:00 盤後直連 ｜ 嚴選漏斗：剩餘天數 &gt; 120天 ｜ 差槓比 &lt; 0.3% (若無放寬至 0.7%) ｜ 價平~價外25% ｜ 流通 10%~60%</div>
+            </div>
+            <div class="xiaoge-empty-strict">
+                <div class="empty-strict-title">⚠️ 本標的目前市場「無符合權證小哥指標」之權證 (含差槓比放寬至 0.7%)</div>
+                <div class="empty-strict-desc">
+                    元大權證網全數在掛牌權證均因 <strong>剩餘天數不足 120 天、深度價內外（偏離小哥 -25%~+5% 黃金區間）、流通在外比例失真（&lt;10%或&gt;60%）或差槓比 &gt; 0.7%</strong> 而遭硬性剔除。<br>
+                    💡 <strong>小哥操作紀律</strong>：寧可直接操作現股，絕不妥協買進劣質權證承擔時間價值加速衰減與過高摩擦成本！
+                </div>
+            </div>
+        </div>
+        
+            
+            <div class="execution-box box-long">
+                <div class="exec-title">
+                    <span>⚡ 模組 3：籌碼密集區精準定價與風控指示 (避免追高雙巴)</span>
+                    <span class="rr-tag">風報比 1 : 1.5</span>
+                </div>
+                <div class="exec-grid">
+                    <div class="exec-col">
+                        <span class="exec-label">🎯 密集區進場點 (避免雙巴)</span>
+                        <span class="exec-val text-bull">1283.75 元</span>
+                        <span class="exec-sub">突破 90日密集區上緣 1283.75元 確認轉強開倉</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🛑 密集區防守停損</span>
+                        <span class="exec-val text-bear">1034.38 元</span>
+                        <span class="exec-sub">最大回撤 -19.4%</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🏆 波段停利目標</span>
+                        <span class="exec-val text-bull">1657.80 元</span>
+                        <span class="exec-sub">預期利潤 +29.1%</span>
+                    </div>
+                </div>
+                <div class="exec-warning">
+                    ⚠️ <strong>離場警示：</strong>收盤跌破 20MA (1073.25元) 或 跌破密集區下緣 (1034.38元) 即無條件出場
+                </div>
+            </div>
+        </div>
+        
+        <div class="stock-card card-long">
+            <div class="card-header">
+                <div class="stock-title-group">
+                    <span class="rank-tag rank-tag-long">LONG #9</span>
+                    <span class="stock-id">8150</span>
+                    <span class="stock-name">南茂</span>
+                    <span class="stock-market">TWSE</span>
+                </div>
+                <div class="stock-price-group">
+                    <span class="price-val text-bull">107.00</span>
+                    <span class="ret-badge ret-bull">20D +18.5%</span>
+                </div>
+            </div>
+            
+            <div class="chips-grid">
+                <div class="chip-item">
+                    <span class="chip-label">投信 5 日</span>
+                    <span class="chip-val text-bull">+-3 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">外資 5 日</span>
+                    <span class="chip-val text-bull">+48,297 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">融資 5 日</span>
+                    <span class="chip-val text-bull">-1,870 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">借券變化</span>
+                    <span class="chip-val text-bull">-6,980 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">均線排列</span>
+                    <span class="chip-val font-mono">5M:99.2 | 20M:91.9</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">真實波幅</span>
+                    <span class="chip-val font-mono">ATR(14)=5.56</span>
+                </div>
+            </div>
+            
+            
+            <div class="vp-box">
+                <div class="vp-header">
+                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
+                    <span class="vp-badge vp-badge-inside">處於密集區內部 (籌碼震盪換手帶)</span>
+                </div>
+                <div class="vp-metrics-row font-mono">
+                    <div>POC 最大量核心價: <strong class="text-bull">96.09 元</strong></div>
+                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">87.94 ~ 111.66 元</strong></div>
+                </div>
+                <div class="vp-pos-desc">
+                    💡 <strong>定價與避巴邏輯：</strong>現價處於 90日密集換手區間 (87.94~111.66元)，POC核心密集價為 96.09元，等待突破/跌破邊緣再行動態進場。
+                </div>
+            </div>
+            
+            
+            <div class="warrant-box">
+                <div class="warrant-title">
+                    <span>🎯 個股關聯權證多空分析 (Warrant Flow)</span>
+                    <span class="warrant-tag font-bold">🔴 認購主力壓倒性重押</span>
+                </div>
+                <div class="warrant-grid">
+                    <div class="warrant-item">
+                        <span class="w-label">認購成交總額</span>
+                        <span class="w-val text-bull">6,088.3 萬元 <small>(99.8%, 167檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">認售成交總額</span>
+                        <span class="w-val text-bear">9.4 萬元 <small>(0.2%, 3檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">權證多空金額比</span>
+                        <span class="w-val font-mono">認購 99.8% : 認售 0.2%</span>
+                    </div>
+                </div>
+            </div>
+            
+            
+    <div class="xiaoge-warrant-box">
+        <div class="xiaoge-header">
+            <div class="xiaoge-title">
+                <span>⚡ 權證小哥 5 大指標嚴選 Top 3 標的 (認購 CALL)</span>
+            </div>
+            <div class="xiaoge-subtitle">元大權證網每日 16:00 盤後直連 ｜ 剩餘天數 &gt; 120天 ｜ 價平~價外25% ｜ 流通 10%~60% ｜ 差槓比 &lt; 0.3% (若無放寬至 0.7%)</div>
+        </div>
+        <div class="xiaoge-table-wrapper">
+            <table class="xiaoge-table font-mono">
+                <thead>
+                    <tr>
+                        <th>評級</th>
+                        <th>代碼 / 名稱</th>
+                        <th>委買 / 委賣</th>
+                        <th>履約價 (價外%)</th>
+                        <th>剩餘天數</th>
+                        <th>實質槓桿</th>
+                        <th>買賣價差比</th>
+                        <th>差槓比</th>
+                        <th>流通在外</th>
+                        <th>造市券商</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td><span class="badge-xiaoge-relax">◆ 次選放寬 #1</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">068101</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">南茂統一65購02</div>
+            </td>
+            <td>1.00 / 1.01</td>
+            <td>
+                <span>108.81</span>
+                <small class="text-bull">(-1.7%)</small>
+            </td>
+            <td class="text-bull"><strong>239</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">2.23x</strong></td>
+            <td>0.99%</td>
+            <td><span class="badge-diff-lever-relax">0.443%</span></td>
+            <td class="text-bull">52.2%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">統一證</span></td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge-xiaoge-relax">◆ 次選放寬 #2</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">068311</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">南茂統一65購03</div>
+            </td>
+            <td>0.84 / 0.85</td>
+            <td>
+                <span>103.88</span>
+                <small class="text-bull">(+3.0%)</small>
+            </td>
+            <td class="text-bull"><strong>240</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">2.10x</strong></td>
+            <td>1.18%</td>
+            <td><span class="badge-diff-lever-relax">0.561%</span></td>
+            <td class="text-bull">47.9%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">統一證</span></td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge-xiaoge-relax">◆ 次選放寬 #3</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">080400</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">南茂富邦63購02</div>
+            </td>
+            <td>0.81 / 0.82</td>
+            <td>
+                <span>105.00</span>
+                <small class="text-bull">(+1.9%)</small>
+            </td>
+            <td class="text-bull"><strong>173</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">2.08x</strong></td>
+            <td>1.22%</td>
+            <td><span class="badge-diff-lever-relax">0.586%</span></td>
+            <td class="text-bull">16.5%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">富邦</span></td>
+        </tr>
+        
+                </tbody>
+            </table>
+            
+        <div class="xiaoge-table-footer">
+            💡 差槓比放寬說明：標示【◆ 次選放寬】者為差槓比介於 0.3%~0.7% 之放寬標的（抗摩擦成本稍降），其餘「剩餘天數 &gt; 120天」、「價平~價外25%」、「流通10%~60%」等小哥四大核心風控指標仍 100% 嚴格符合！
+        </div>
+        
+        </div>
+    </div>
+    
+            
+            <div class="execution-box box-long">
+                <div class="exec-title">
+                    <span>⚡ 模組 3：籌碼密集區精準定價與風控指示 (避免追高雙巴)</span>
+                    <span class="rr-tag">風報比 1 : 1.5</span>
+                </div>
+                <div class="exec-grid">
+                    <div class="exec-col">
+                        <span class="exec-label">🎯 密集區進場點 (避免雙巴)</span>
+                        <span class="exec-val text-bull">111.66 元</span>
+                        <span class="exec-sub">突破 90日密集區上緣 111.66元 確認轉強開倉</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🛑 密集區防守停損</span>
+                        <span class="exec-val text-bear">87.94 元</span>
+                        <span class="exec-sub">最大回撤 -21.2%</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🏆 波段停利目標</span>
+                        <span class="exec-val text-bull">147.24 元</span>
+                        <span class="exec-sub">預期利潤 +31.9%</span>
+                    </div>
+                </div>
+                <div class="exec-warning">
+                    ⚠️ <strong>離場警示：</strong>收盤跌破 20MA (91.87元) 或 跌破密集區下緣 (87.94元) 即無條件出場
+                </div>
+            </div>
+        </div>
+        
+        <div class="stock-card card-long">
+            <div class="card-header">
+                <div class="stock-title-group">
+                    <span class="rank-tag rank-tag-long">LONG #10</span>
+                    <span class="stock-id">2449</span>
+                    <span class="stock-name">京元電子</span>
+                    <span class="stock-market">TWSE</span>
+                </div>
+                <div class="stock-price-group">
+                    <span class="price-val text-bull">304.00</span>
+                    <span class="ret-badge ret-bull">20D +22.8%</span>
+                </div>
+            </div>
+            
+            <div class="chips-grid">
+                <div class="chip-item">
+                    <span class="chip-label">投信 5 日</span>
+                    <span class="chip-val text-bull">+7,226 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">外資 5 日</span>
+                    <span class="chip-val text-bull">+38,275 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">融資 5 日</span>
+                    <span class="chip-val text-bear">+925 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">借券變化</span>
+                    <span class="chip-val text-bull">-2,529 張</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">均線排列</span>
+                    <span class="chip-val font-mono">5M:295.8 | 20M:272.6</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">真實波幅</span>
+                    <span class="chip-val font-mono">ATR(14)=13.54</span>
+                </div>
+            </div>
+            
+            
+            <div class="vp-box">
+                <div class="vp-header">
+                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
+                    <span class="vp-badge vp-badge-inside">處於密集區內部 (籌碼震盪換手帶)</span>
+                </div>
+                <div class="vp-metrics-row font-mono">
+                    <div>POC 最大量核心價: <strong class="text-bull">317.91 元</strong></div>
+                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">264.00 ~ 341.62 元</strong></div>
+                </div>
+                <div class="vp-pos-desc">
+                    💡 <strong>定價與避巴邏輯：</strong>現價處於 90日密集換手區間 (264.00~341.62元)，POC核心密集價為 317.91元，等待突破/跌破邊緣再行動態進場。
+                </div>
+            </div>
+            
+            
+            <div class="warrant-box">
+                <div class="warrant-title">
+                    <span>🎯 個股關聯權證多空分析 (Warrant Flow)</span>
+                    <span class="warrant-tag font-bold">🔴 認購主力壓倒性重押</span>
+                </div>
+                <div class="warrant-grid">
+                    <div class="warrant-item">
+                        <span class="w-label">認購成交總額</span>
+                        <span class="w-val text-bull">5,017.9 萬元 <small>(97.4%, 318檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">認售成交總額</span>
+                        <span class="w-val text-bear">134.3 萬元 <small>(2.6%, 12檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">權證多空金額比</span>
+                        <span class="w-val font-mono">認購 97.4% : 認售 2.6%</span>
+                    </div>
+                </div>
+            </div>
+            
+            
+    <div class="xiaoge-warrant-box">
+        <div class="xiaoge-header">
+            <div class="xiaoge-title">
+                <span>⚡ 權證小哥 5 大指標嚴選 Top 3 標的 (認購 CALL)</span>
+            </div>
+            <div class="xiaoge-subtitle">元大權證網每日 16:00 盤後直連 ｜ 剩餘天數 &gt; 120天 ｜ 價平~價外25% ｜ 流通 10%~60% ｜ 差槓比 &lt; 0.3% (若無放寬至 0.7%)</div>
+        </div>
+        <div class="xiaoge-table-wrapper">
+            <table class="xiaoge-table font-mono">
+                <thead>
+                    <tr>
+                        <th>評級</th>
+                        <th>代碼 / 名稱</th>
+                        <th>委買 / 委賣</th>
+                        <th>履約價 (價外%)</th>
+                        <th>剩餘天數</th>
+                        <th>實質槓桿</th>
+                        <th>買賣價差比</th>
+                        <th>差槓比</th>
+                        <th>流通在外</th>
+                        <th>造市券商</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #1</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">079837</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">京元電台新65購02</div>
+            </td>
+            <td>3.43 / 3.45</td>
+            <td>
+                <span>315.00</span>
+                <small class="text-bull">(-3.5%)</small>
+            </td>
+            <td class="text-bull"><strong>229</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">2.65x</strong></td>
+            <td>0.58%</td>
+            <td><span class="badge-diff-lever">0.219%</span></td>
+            <td class="text-bull">13.8%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">券商9B0</span></td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #2</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">065699</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">京元電永豐63購01</div>
+            </td>
+            <td>1.61 / 1.62</td>
+            <td>
+                <span>309.37</span>
+                <small class="text-bull">(-1.7%)</small>
+            </td>
+            <td class="text-bull"><strong>162</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">2.72x</strong></td>
+            <td>0.62%</td>
+            <td><span class="badge-diff-lever">0.228%</span></td>
+            <td class="text-bull">15.9%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">國泰</span></td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #3</span></td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">068390</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">京元電永豐61購01</div>
+            </td>
+            <td>1.25 / 1.26</td>
+            <td>
+                <span>360.59</span>
+                <small class="text-bull">(-15.7%)</small>
+            </td>
+            <td class="text-bull"><strong>124</strong> 天</td>
+            <td><strong style="color:var(--text-primary);">3.39x</strong></td>
+            <td>0.79%</td>
+            <td><span class="badge-diff-lever">0.233%</span></td>
+            <td class="text-bull">17.6%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">國泰</span></td>
+        </tr>
+        
+                </tbody>
+            </table>
+            
+        <div class="xiaoge-table-footer">
+            💡 小哥嚴選全過：全數標的 100% 符合小哥五大硬性指標（差槓比 &lt; 0.3%、天數 &gt; 120天、流通 10%~60%）。
+        </div>
+        
+        </div>
+    </div>
+    
+            
+            <div class="execution-box box-long">
+                <div class="exec-title">
+                    <span>⚡ 模組 3：籌碼密集區精準定價與風控指示 (避免追高雙巴)</span>
+                    <span class="rr-tag">風報比 1 : 1.5</span>
+                </div>
+                <div class="exec-grid">
+                    <div class="exec-col">
+                        <span class="exec-label">🎯 密集區進場點 (避免雙巴)</span>
+                        <span class="exec-val text-bull">341.62 元</span>
+                        <span class="exec-sub">突破 90日密集區上緣 341.62元 確認轉強開倉</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🛑 密集區防守停損</span>
+                        <span class="exec-val text-bear">264.00 元</span>
+                        <span class="exec-sub">最大回撤 -22.7%</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🏆 波段停利目標</span>
+                        <span class="exec-val text-bull">458.05 元</span>
+                        <span class="exec-sub">預期利潤 +34.1%</span>
+                    </div>
+                </div>
+                <div class="exec-warning">
+                    ⚠️ <strong>離場警示：</strong>收盤跌破 20MA (272.60元) 或 跌破密集區下緣 (264.00元) 即無條件出場
+                </div>
+            </div>
+        </div>
+        
+        </div>
+        
+        
+        <!-- Module 2 & 3: Short Targets (Empty on Bullish) -->
+        <div class="section-header">
+            <div>
+                <div class="section-title">
+                    <span style="color: var(--bear-green);">🔴 模組 2 & 3：反向做空標的池</span>
+                    <span style="font-size: 13px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 2px 8px; border-radius: 6px;">多頭格局主導 ｜ 暫停逆勢放空 (空方 0 檔)</span>
+                </div>
+            </div>
+        </div>
+        <div class="empty-regime-card">
+            <div class="empty-regime-title">🛡️ 風控機制啟動：大盤處於「中性偏多 (Moderate Bull)」強勢格局，暫停反向做空選股 (空方 0 檔)</div>
+            <div class="empty-regime-desc">
+                當前立體多空溫度計評分達 <strong>66.8 分</strong>，全市場認購權證佔比高達 <strong>97.4%</strong>，且期貨特法主力多單護盤。<br>
+                依照投行機構量化風控紀律：<strong>多頭格局嚴禁逆勢做空被軋</strong>，全部火力集中於做多標的池 Top 10 檔！
+            </div>
+        </div>
+        
+        
+        <!-- Footer -->
+        <div class="footer">
+            TW-Stock Quantitative Research System • 100% 離線純自給自足 (純 SVG 向量圖形) • 產出時間: 2026-09-23 22:59:09
+        </div>
+    </div>
+
+    <!-- 剪貼簿互動腳本 (原生 JavaScript，零外網依賴) -->
+    <script>
+        function copyPlan() {
+            const text = "【台股投行機構 3 模組實戰計畫】基準日: 2026-09-23\n============================================================\n[模組 1: 市場狀態] 防禦警戒狀態 (Neutral / De-grossing) | 總曝險上限: 30% 以下\n市場季線寬度: 50.93% | 加權維持率: 193.44% | 櫃買維持率: 190.12%\n大盤融資金額: 加權 6,063.68億 (+15.06億) | 櫃買 2,108.51億 (+23.27億)\nTX 特法結構: 前五大 +21,291口 (近月 +21,715 / 遠月 -424)\n外資期貨淨空單: -76,084口 (-7,352.31億元)\n[溫度計與聯動配置] 評分: 66.8分 (中性偏多 (Moderate Bull)) | 聯動: 多方聚焦模式 (多方 Top 10 ｜ 空方 0 檔) | 認購佔比: 97.4%\n\n🟢【做多標的 Top 10 (Volume Profile 90日密集區定價 + 權證小哥嚴選推薦)】\n#1 6526 達發 | 現價: 840.00 | 密集區進場: 742.38 | 停損: 618.12 (-16.7%) | 目標: 928.77 (+25.1%) | POC: 693.56 | 權證: 無合規標的(建議直接操作現股)\n#2 6257 矽格 | 現價: 247.00 | 密集區進場: 247.10 | 停損: 206.60 (-16.4%) | 目標: 307.85 (+24.6%) | POC: 213.35 | 首選權證: 085745 矽格元大67購01(差槓比0.464%, 槓桿2.22x, 天數292天)\n#3 3265 台星科 | 現價: 180.00 | 密集區進場: 185.81 | 停損: 160.50 (-13.6%) | 目標: 223.78 (+20.4%) | POC: 160.97 | 首選權證: 713090 台星科凱基63購01(差槓比0.204%, 槓桿3.47x, 天數183天)\n#4 2527 宏璟 | 現價: 48.40 | 密集區進場: 49.59 | 停損: 39.94 (-19.5%) | 目標: 64.07 (+29.2%) | POC: 43.56 | 權證: 無合規標的(建議直接操作現股)\n#5 2441 超豐 | 現價: 125.00 | 密集區進場: 141.60 | 停損: 114.40 (-19.2%) | 目標: 182.40 (+28.8%) | POC: 124.80 | 首選權證: 068028 超豐統一64購01(差槓比0.405%, 槓桿2.67x, 天數209天)\n#6 3035 智原 | 現價: 204.00 | 密集區進場: 225.30 | 停損: 178.51 (-20.8%) | 目標: 295.49 (+31.2%) | POC: 209.29 | 首選權證: 061391 智原中信63購01(差槓比0.383%, 槓桿2.66x, 天數184天)\n#7 3711 日月光投控 | 現價: 693.00 | 密集區進場: 669.60 | 停損: 570.60 (-14.8%) | 目標: 818.10 (+22.2%) | POC: 606.90 | 首選權證: 086972 日月光凱基63購15(差槓比0.177%, 槓桿3.68x, 天數174天)\n#8 2404 漢唐 | 現價: 1250.00 | 密集區進場: 1283.75 | 停損: 1034.38 (-19.4%) | 目標: 1657.80 (+29.1%) | POC: 1170.94 | 權證: 無合規標的(建議直接操作現股)\n#9 8150 南茂 | 現價: 107.00 | 密集區進場: 111.66 | 停損: 87.94 (-21.2%) | 目標: 147.24 (+31.9%) | POC: 96.09 | 首選權證: 068101 南茂統一65購02(差槓比0.443%, 槓桿2.23x, 天數239天)\n#10 2449 京元電子 | 現價: 304.00 | 密集區進場: 341.62 | 停損: 264.00 (-22.7%) | 目標: 458.05 (+34.1%) | POC: 317.91 | 首選權證: 079837 京元電台新65購02(差槓比0.219%, 槓桿2.65x, 天數229天)\n\n🔴【反向做空標的池 (空方 0 檔)】\n大盤處於中性偏多位階 (66.8分)，啟動順勢集中做多機制，暫停逆勢放空。\n============================================================";
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(function() {
+                    alert("✓ 今日多空作戰計畫 (含權證分析) 已成功複製至剪貼簿！可直接貼至 Line 或 筆記本。");
+                }).catch(function() {
+                    fallbackCopyText(text);
+                });
+            } else {
+                fallbackCopyText(text);
+            }
+        }
+
+        function fallbackCopyText(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    alert("✓ 今日多空作戰計畫 (含權證分析) 已成功複製至剪貼簿！");
+                } else {
+                    alert("瀏覽器限制剪貼簿存取，請手動選取複製。");
+                }
+            } catch (err) {
+                alert("瀏覽器限制剪貼簿存取，請手動選取複製。");
+            }
+            document.body.removeChild(textArea);
+        }
+    </script>
+</body>
+</html>

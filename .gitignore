@@ -1,0 +1,32 @@
+# Credentials & Secrets
+config/email_config.json
+*.env
+*.key
+*.pem
+
+# Large SQLite Databases (Over 2.5GB, GitHub rejects files > 100MB)
+db/
+*.db
+*.sqlite
+*.sqlite3
+
+# Python cache & build
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Scratch & debug files
+scratch/
+*.bin
+test_raw.bin
+scratch_*.txt
+*.bak
+
+# Virtual environments & IDE
+venv/
+.venv/
+env/
+.agents/
+.vscode/
+.idea/
