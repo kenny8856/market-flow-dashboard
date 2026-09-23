@@ -665,11 +665,8 @@ class StockPageGenerator:
             const warrantPutData = {json.dumps(chart_warrants_put)};
             const warrantNetData = {json.dumps(chart_warrants_net)};
 
-            // 1. 初始化 K 線主圖 (純 K 線 + 九轉標籤)
-            const klineContainer = document.getElementById('kline-chart-container');
-            const klineChart = LightweightCharts.createChart(klineContainer, {{
-                width: klineContainer.clientWidth,
-                height: klineContainer.clientHeight,
+            // 通用圖表配置 (統一格式化只顯示日期、消除 00:00:00、鎖定右側軸寬達成精準垂直對齊)
+            const commonChartOptions = {{
                 layout: {{
                     background: {{ color: '#0f172a' }},
                     textColor: '#94a3b8',
@@ -681,14 +678,39 @@ class StockPageGenerator:
                 crosshair: {{
                     mode: LightweightCharts.CrosshairMode.Normal,
                 }},
+                localization: {{
+                    locale: 'zh-TW',
+                    dateFormat: 'yyyy-MM-dd',
+                    timeFormatter: function(t) {{
+                        if (typeof t === 'string') return t;
+                        if (t && t.year) {{
+                            const m = String(t.month).padStart(2, '0');
+                            const d = String(t.day).padStart(2, '0');
+                            return `${{t.year}}-${{m}}-${{d}}`;
+                        }}
+                        return String(t);
+                    }}
+                }},
+                leftPriceScale: {{
+                    visible: false,
+                }},
                 rightPriceScale: {{
                     borderColor: '#334155',
+                    minimumWidth: 105,
                 }},
                 timeScale: {{
                     borderColor: '#334155',
-                    timeVisible: true,
+                    timeVisible: false,
+                    secondsVisible: false,
                 }},
-            }});
+            }};
+
+            // 1. 初始化 K 線主圖 (純 K 線 + 九轉標籤)
+            const klineContainer = document.getElementById('kline-chart-container');
+            const klineChart = LightweightCharts.createChart(klineContainer, Object.assign({{}}, commonChartOptions, {{
+                width: klineContainer.clientWidth,
+                height: klineContainer.clientHeight,
+            }}));
 
             const candleSeries = klineChart.addCandlestickSeries({{
                 upColor: '#ef4444',
@@ -708,25 +730,10 @@ class StockPageGenerator:
 
             // 2. 初始化副圖 1：獨立成交量 (解決重疊問題)
             const volumeContainer = document.getElementById('volume-chart-container');
-            const volumeChart = LightweightCharts.createChart(volumeContainer, {{
+            const volumeChart = LightweightCharts.createChart(volumeContainer, Object.assign({{}}, commonChartOptions, {{
                 width: volumeContainer.clientWidth,
                 height: volumeContainer.clientHeight,
-                layout: {{
-                    background: {{ color: '#0f172a' }},
-                    textColor: '#94a3b8',
-                }},
-                grid: {{
-                    vertLines: {{ color: '#1e293b' }},
-                    horzLines: {{ color: '#1e293b' }},
-                }},
-                rightPriceScale: {{
-                    borderColor: '#334155',
-                }},
-                timeScale: {{
-                    borderColor: '#334155',
-                    timeVisible: true,
-                }},
-            }});
+            }}));
 
             const volumeSeries = volumeChart.addHistogramSeries({{
                 priceFormat: {{
@@ -744,25 +751,10 @@ class StockPageGenerator:
 
             // 3. 初始化副圖 2：外資與投信多空金額 (萬元)
             const instContainer = document.getElementById('inst-chart-container');
-            const instChart = LightweightCharts.createChart(instContainer, {{
+            const instChart = LightweightCharts.createChart(instContainer, Object.assign({{}}, commonChartOptions, {{
                 width: instContainer.clientWidth,
                 height: instContainer.clientHeight,
-                layout: {{
-                    background: {{ color: '#0f172a' }},
-                    textColor: '#94a3b8',
-                }},
-                grid: {{
-                    vertLines: {{ color: '#1e293b' }},
-                    horzLines: {{ color: '#1e293b' }},
-                }},
-                rightPriceScale: {{
-                    borderColor: '#334155',
-                }},
-                timeScale: {{
-                    borderColor: '#334155',
-                    timeVisible: true,
-                }},
-            }});
+            }}));
 
             const foreignSeries = instChart.addHistogramSeries({{
                 priceFormat: {{
@@ -790,25 +782,10 @@ class StockPageGenerator:
 
             // 4. 初始化副圖 3：權證多空資金流 (嚴格限制 Y 軸頂多 1 位小數)
             const warrantContainer = document.getElementById('warrant-chart-container');
-            const warrantChart = LightweightCharts.createChart(warrantContainer, {{
+            const warrantChart = LightweightCharts.createChart(warrantContainer, Object.assign({{}}, commonChartOptions, {{
                 width: warrantContainer.clientWidth,
                 height: warrantContainer.clientHeight,
-                layout: {{
-                    background: {{ color: '#0f172a' }},
-                    textColor: '#94a3b8',
-                }},
-                grid: {{
-                    vertLines: {{ color: '#1e293b' }},
-                    horzLines: {{ color: '#1e293b' }},
-                }},
-                rightPriceScale: {{
-                    borderColor: '#334155',
-                }},
-                timeScale: {{
-                    borderColor: '#334155',
-                    timeVisible: true,
-                }},
-            }});
+            }}));
 
             const callSeries = warrantChart.addHistogramSeries({{
                 color: 'rgba(239, 68, 68, 0.75)',
@@ -847,8 +824,9 @@ class StockPageGenerator:
             }});
             netLineSeries.setData(warrantNetData);
 
-            // 四圖時間軸連動 (Smooth Logical Range Sync)
             const allCharts = [klineChart, volumeChart, instChart, warrantChart];
+
+            // 四圖時間軸與邏輯區間連動 (Smooth Logical Range Sync)
             allCharts.forEach(c1 => {{
                 c1.timeScale().subscribeVisibleLogicalRangeChange(range => {{
                     if (!range) return;
@@ -857,8 +835,65 @@ class StockPageGenerator:
                             c2.timeScale().setVisibleLogicalRange(range);
                         }}
                     }});
+                    syncPriceScaleWidths();
                 }});
             }});
+
+            // 四圖十字游標無縫連動 (Crosshair Synchronization)
+            const candleMap = new Map(klineData.map(d => [d.time, d.close]));
+            const volumeMap = new Map(volumeData.map(d => [d.time, d.value]));
+            const instMap = new Map(instForeignData.map(d => [d.time, d.value]));
+            const warrantMap = new Map(warrantNetData.map(d => [d.time, d.value]));
+
+            function syncCrosshair(sourceChart, param) {{
+                if (!param || !param.time || !param.point) {{
+                    allCharts.forEach(c => {{
+                        if (c !== sourceChart) {{
+                            try {{ c.clearCrosshairPosition(); }} catch(e) {{}}
+                        }}
+                    }});
+                    return;
+                }}
+                const t = param.time;
+                if (klineChart !== sourceChart && candleMap.has(t)) {{
+                    try {{ klineChart.setCrosshairPosition(candleMap.get(t), t, candleSeries); }} catch(e) {{}}
+                }}
+                if (volumeChart !== sourceChart && volumeMap.has(t)) {{
+                    try {{ volumeChart.setCrosshairPosition(volumeMap.get(t), t, volumeSeries); }} catch(e) {{}}
+                }}
+                if (instChart !== sourceChart && instMap.has(t)) {{
+                    try {{ instChart.setCrosshairPosition(instMap.get(t), t, foreignSeries); }} catch(e) {{}}
+                }}
+                if (warrantChart !== sourceChart && warrantMap.has(t)) {{
+                    try {{ warrantChart.setCrosshairPosition(warrantMap.get(t), t, netLineSeries); }} catch(e) {{}}
+                }}
+            }}
+
+            klineChart.subscribeCrosshairMove(p => syncCrosshair(klineChart, p));
+            volumeChart.subscribeCrosshairMove(p => syncCrosshair(volumeChart, p));
+            instChart.subscribeCrosshairMove(p => syncCrosshair(instChart, p));
+            warrantChart.subscribeCrosshairMove(p => syncCrosshair(warrantChart, p));
+
+            // 精確同步右側價格刻度寬度 (保證四張圖繪圖區與網格線 100% 垂直對齊)
+            let currentSyncedWidth = 105;
+            function syncPriceScaleWidths() {{
+                let maxW = 105;
+                allCharts.forEach(c => {{
+                    try {{
+                        const w = c.priceScale('right').width();
+                        if (w > maxW) maxW = w;
+                    }} catch(e) {{}}
+                }});
+                if (maxW !== currentSyncedWidth) {{
+                    currentSyncedWidth = maxW;
+                    allCharts.forEach(c => {{
+                        try {{
+                            c.priceScale('right').applyOptions({{ minimumWidth: currentSyncedWidth }});
+                        }} catch(e) {{}}
+                    }});
+                }}
+            }}
+            setTimeout(syncPriceScaleWidths, 80);
 
             // 視窗縮放自適應
             window.addEventListener('resize', () => {{
@@ -866,6 +901,7 @@ class StockPageGenerator:
                 volumeChart.applyOptions({{ width: volumeContainer.clientWidth }});
                 instChart.applyOptions({{ width: instContainer.clientWidth }});
                 warrantChart.applyOptions({{ width: warrantContainer.clientWidth }});
+                syncPriceScaleWidths();
             }});
         }});
     </script>
