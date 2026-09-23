@@ -38,11 +38,11 @@ class StockPageGenerator:
         conn = sqlite3.connect(db_path)
         c = conn.cursor()
 
-        # 1. 查詢日 K 線
+        # 1. 查詢日 K 線 (過濾 2025-09-01 至今連續有效歷史)
         c.execute("""
             SELECT date, open_price, high_price, low_price, close_price, volume_lots, amount
             FROM daily_quotes
-            WHERE stock_id = ? AND close_price > 0
+            WHERE stock_id = ? AND close_price > 0 AND date >= '2025-09-01'
             ORDER BY date ASC
         """, (stock_id,))
         raw_quotes = c.fetchall()
@@ -53,7 +53,7 @@ class StockPageGenerator:
                    SUM(CASE WHEN warrant_id NOT LIKE '%P' AND warrant_name NOT LIKE '%售%' AND warrant_name NOT LIKE '%熊%' THEN trade_amount ELSE 0 END) as call_amt,
                    SUM(CASE WHEN warrant_id LIKE '%P' OR warrant_name LIKE '%售%' OR warrant_name LIKE '%熊%' THEN trade_amount ELSE 0 END) as put_amt
             FROM daily_warrants
-            WHERE underlying_stock_id = ?
+            WHERE underlying_stock_id = ? AND date >= '2025-09-01'
             GROUP BY date
             ORDER BY date ASC
         """, (stock_id,))
@@ -63,7 +63,7 @@ class StockPageGenerator:
         c.execute("""
             SELECT date, foreign_net, trust_net, foreign_net_lots, trust_net_lots
             FROM daily_institutional
-            WHERE stock_id = ?
+            WHERE stock_id = ? AND date >= '2025-09-01'
             ORDER BY date ASC
         """, (stock_id,))
         raw_inst = c.fetchall()
@@ -142,7 +142,7 @@ class StockPageGenerator:
         curr_price = stock_info.get('price', 0.0)
         ret_5d = stock_info.get('ret_5d', 0.0)
         vp = stock_info.get('vp', {})
-        inst = stock_info.get('inst_5d', {})
+        inst_summary = stock_info.get('inst_5d', {})
         w_summary = stock_info.get('warrant_summary', {})
         w_recommends = stock_info.get('warrant_recommends', [])
 
@@ -220,9 +220,9 @@ class StockPageGenerator:
                     })
 
             # 外資與投信多空金額數據
-            inst = q.get('inst', {})
-            f_amt_wan = inst.get('foreign_amt_wan', 0.0)
-            t_amt_wan = inst.get('trust_amt_wan', 0.0)
+            q_inst = q.get('inst', {})
+            f_amt_wan = q_inst.get('foreign_amt_wan', 0.0)
+            t_amt_wan = q_inst.get('trust_amt_wan', 0.0)
             chart_inst_foreign.append({
                 'time': d_str,
                 'value': f_amt_wan,
@@ -564,19 +564,19 @@ class StockPageGenerator:
             </div>
             <div class="stat-item">
                 <div class="stat-label">🛡️ 價值區間 (Value Area 70%)</div>
-                <div class="stat-value" style="font-size:15px;">{vp.get('val_price', 0):.2f} ~ {vp.get('vah_price', 0):.2f} 元</div>
+                <div class="stat-value" style="font-size:15px;">{vp.get('va_low', vp.get('val_price', 0)):.2f} ~ {vp.get('va_high', vp.get('vah_price', 0)):.2f} 元</div>
             </div>
             <div class="stat-item">
                 <div class="stat-label">⚡ 投信 5日淨買賣</div>
-                <div class="stat-value" style="color:var(--accent-cyan);">{inst.get('trust_5d', 0):+d} 張</div>
+                <div class="stat-value" style="color:var(--accent-cyan);">{inst_summary.get('trust_5d', 0):+d} 張</div>
             </div>
             <div class="stat-item">
                 <div class="stat-label">🌐 外資 5日淨買賣</div>
-                <div class="stat-value" style="color:var(--accent-blue);">{inst.get('foreign_5d', 0):+d} 張</div>
+                <div class="stat-value" style="color:var(--accent-blue);">{inst_summary.get('foreign_5d', 0):+d} 張</div>
             </div>
             <div class="stat-item">
                 <div class="stat-label">📊 融資 5日增減</div>
-                <div class="stat-value" style="color:var(--accent-yellow);">{inst.get('margin_5d', 0):+d} 張</div>
+                <div class="stat-value" style="color:var(--accent-yellow);">{inst_summary.get('margin_5d', 0):+d} 張</div>
             </div>
             <div class="stat-item">
                 <div class="stat-label">🔥 今日權證多空比</div>
