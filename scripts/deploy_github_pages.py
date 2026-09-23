@@ -130,9 +130,18 @@ def deploy():
         return True
     else:
         print(f"\n[X] 推送至 GitHub 時發生錯誤:\n{p_err or p_out}")
-        print("\n排查建議：")
-        print("1. 請確認 GitHub 是否已完成認證授權 (Personal Access Token 或瀏覽器登入)。")
-        print("2. 若遠端已有其他 commit，可先執行: git pull origin main --rebase 後再試。")
+        err_msg = (p_err + " " + p_out).lower()
+        if "could not read username" in err_msg or "logon failed" in err_msg or "authentication failed" in err_msg or "permission to" in err_msg:
+            print("\n" + "=" * 70)
+            print("💡 【登入認證失敗 - 快速解決方法】:")
+            print("GitHub 自 2021 年起已停用帳號密碼登入，必須使用 Personal Access Token (PAT)。")
+            print("👉 請直接在資料夾雙擊執行：【 set_github_token.bat 】")
+            print("   貼上您的 GitHub Token (ghp_...)，系統將自動完成永久授權並立即發布！")
+            print("=" * 70)
+        else:
+            print("\n排查建議：")
+            print("1. 請確認 GitHub 是否已完成認證授權 (Personal Access Token 或瀏覽器登入)。")
+            print("2. 若遠端已有其他 commit，可先執行: git pull origin main --rebase 後再試。")
         return False
 
 
