@@ -835,7 +835,7 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
     if not fut_rows: fut_rows = "<tr><td colspan='6'>尚無資料</td></tr>"
     cb_rows = "".join([f"<tr><td>#{i}</td><td>{r[0]}</td><td style='font-weight:bold;color:#60a5fa;'>{r[1]}</td><td>{r[5]}</td><td>{r[2]:.2f}</td><td class='{'text-bull' if r[3]<=0 else ''}'>{r[3]:.2f}%</td><td style='color:#fbbf24;'>{r[4]:,}</td></tr>" for i, r in enumerate(hot_cbs, 1)])
     if not cb_rows: cb_rows = "<tr><td colspan='7'>今日無符合低溢價且具流動性之可轉債</td></tr>"
-    extra_section = f"""<div style="margin-top:40px;border-top:2px dashed #334155;padding-top:30px;"><h2 style="color:#fff;margin-bottom:20px;font-size:22px;">🔥 市場籌碼焦點：個股期貨與可轉債</h2><div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(400px,1fr));gap:20px;"><div style="background:rgba(15,23,42,0.7);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:15px;"><h3 style="color:#fca5a5;margin-top:0;">📉 個股期貨「前十大交易人空單」排行 Top 20</h3><div style="font-size:12px;color:#94a3b8;margin-bottom:10px;">資料日期：{fut_date} (排除大盤與指數期貨)</div><div class="xiaoge-table-wrapper"><table class="xiaoge-table"><thead><tr><th>排名</th><th>代號</th><th>契約名稱</th><th>前十大空單</th><th>前十大淨額</th><th>市場未平倉</th></tr></thead><tbody>{fut_rows}</tbody></table></div></div><div style="background:rgba(15,23,42,0.7);border:1px solid rgba(59,130,246,0.3);border-radius:10px;padding:15px;"><h3 style="color:#93c5fd;margin-top:0;">💡 值得關注的可轉債 (低溢價+流動性)</h3><div style="font-size:12px;color:#94a3b8;margin-bottom:10px;">資料日期：{cb_date} (條件：溢價率&lt;10%, 成交量&gt;50張, 價格98~120)</div><div class="xiaoge-table-wrapper"><table class="xiaoge-table"><thead><tr><th>排名</th><th>代號</th><th>CB名稱</th><th>現股</th><th>收盤價</th><th>溢價率</th><th>成交量(張)</th></tr></thead><tbody>{cb_rows}</tbody></table></div></div></div></div>"""
+    extra_section = f"""<div style="margin-top:40px;border-top:2px dashed #334155;padding-top:30px;"><h2 style="color:#fff;margin-bottom:20px;font-size:22px;">🔥 市場籌碼焦點：個股期貨與可轉債</h2><div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 400px), 1fr));gap:20px;"><div style="background:rgba(15,23,42,0.7);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:15px;"><h3 style="color:#fca5a5;margin-top:0;">📉 個股期貨「前十大交易人空單」排行 Top 20</h3><div style="font-size:12px;color:#94a3b8;margin-bottom:10px;">資料日期：{fut_date} (排除大盤與指數期貨)</div><div class="xiaoge-table-wrapper"><table class="xiaoge-table"><thead><tr><th>排名</th><th>代號</th><th>契約名稱</th><th>前十大空單</th><th>前十大淨額</th><th>市場未平倉</th></tr></thead><tbody>{fut_rows}</tbody></table></div></div><div style="background:rgba(15,23,42,0.7);border:1px solid rgba(59,130,246,0.3);border-radius:10px;padding:15px;"><h3 style="color:#93c5fd;margin-top:0;">💡 值得關注的可轉債 (低溢價+流動性)</h3><div style="font-size:12px;color:#94a3b8;margin-bottom:10px;">資料日期：{cb_date} (條件：溢價率&lt;10%, 成交量&gt;50張, 價格98~120)</div><div class="xiaoge-table-wrapper"><table class="xiaoge-table"><thead><tr><th>排名</th><th>代號</th><th>CB名稱</th><th>現股</th><th>收盤價</th><th>溢價率</th><th>成交量(張)</th></tr></thead><tbody>{cb_rows}</tbody></table></div></div></div></div>"""
     
     html_content = f"""<!DOCTYPE html>
 
@@ -942,7 +942,7 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
             margin-bottom: 36px;
         }}
         @media (max-width: 1024px) {{
-            .hero-split-grid {{ grid-template-columns: 1fr; }}
+            .hero-split-grid {{ grid-template-columns: minmax(0, 1fr); }}
         }}
         
         .hero-card {{
@@ -997,7 +997,7 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
             margin-bottom: 16px;
         }}
         @media (max-width: 600px) {{
-            .gauge-inner-grid {{ grid-template-columns: 1fr; }}
+            .gauge-inner-grid {{ grid-template-columns: minmax(0, 1fr); }}
         }}
         .gauge-box {{
             text-align: center;
@@ -1204,7 +1204,7 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
             gap: 10px;
         }}
         @media (max-width: 550px) {{
-            .margin-grid {{ grid-template-columns: 1fr; }}
+            .margin-grid {{ grid-template-columns: minmax(0, 1fr); }}
         }}
         .margin-cell {{
             background: rgba(30, 41, 59, 0.5);
@@ -1255,7 +1255,7 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
             margin-bottom: 8px;
         }}
         @media (max-width: 650px) {{
-            .tx-grid {{ grid-template-columns: 1fr; }}
+            .tx-grid {{ grid-template-columns: minmax(0, 1fr); }}
         }}
         .tx-card {{
             background: rgba(30, 41, 59, 0.5);
@@ -1380,7 +1380,7 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
         /* Stock Cards */
         .cards-list {{
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: minmax(0, 1fr);
             gap: 18px;
             margin-bottom: 40px;
         }}
@@ -1807,7 +1807,7 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
                 font-size: 12px;
             }}
             .hero-split-grid {{
-                grid-template-columns: 1fr;
+                grid-template-columns: minmax(0, 1fr);
                 gap: 16px;
                 margin-bottom: 24px;
             }}
@@ -1818,7 +1818,7 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
                 font-size: 20px;
             }}
             .gauge-inner-grid {{
-                grid-template-columns: 1fr;
+                grid-template-columns: minmax(0, 1fr);
                 gap: 14px;
             }}
             .gauge-box {{
@@ -1882,11 +1882,11 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
                 padding: 10px 12px;
             }}
             .warrant-grid {{
-                grid-template-columns: 1fr;
+                grid-template-columns: minmax(0, 1fr);
                 gap: 8px;
             }}
             .exec-grid {{
-                grid-template-columns: 1fr;
+                grid-template-columns: minmax(0, 1fr);
                 gap: 10px;
             }}
             .exec-val {{
@@ -1896,7 +1896,7 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
 
         @media (max-width: 480px) {{
             .sub-metrics-grid {{
-                grid-template-columns: 1fr;
+                grid-template-columns: minmax(0, 1fr);
             }}
             .chips-grid {{
                 grid-template-columns: repeat(2, 1fr);

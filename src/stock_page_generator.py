@@ -957,7 +957,7 @@ class StockPageGenerator:
 
         return f"""
         <div class="xiaoge-warrant-box">
-            <table class="xiaoge-table">
+            <div class="xiaoge-table-wrapper" style="overflow-x: auto; max-width: 100%; width: 100%;"><table class="xiaoge-table">
                 <thead>
                     <tr>
                         <th>評級</th>
@@ -975,6 +975,6 @@ class StockPageGenerator:
                 <tbody>
                     {rows}
                 </tbody>
-            </table>
+            </table></div>
         </div>
         """
