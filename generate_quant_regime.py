@@ -1949,7 +1949,7 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
                     <!-- Whole-Market Warrant Flow Box (Retained & Highlighted) -->
                     <div class="warrant-radar-box">
                         <div class="w-radar-header">
-                            <span>★ 全市場權證多空買賣總額指標 (Warrant Money Flow)</span>
+                            <span>★ 大盤指數權證多空買賣總額指標 (Index Warrant Money Flow)</span>
                             <span class="text-bull font-bold">{wm['warrant_sentiment']}</span>
                         </div>
                         <div class="w-radar-stats">

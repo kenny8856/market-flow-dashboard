@@ -289,18 +289,22 @@ class QuantRegimeScreener:
                 is_call = ('購' in w_name or '牛' in w_name)
                 is_put = ('售' in w_name or '熊' in w_name)
                 
+                is_index_warrant = any(k in w_name for k in ['台灣50', '臺股指', '群臺', 'T50正2'])
+                
                 if is_call:
-                    total_call_amount += amt
-                    total_call_lots += lots
-                    call_count += 1
+                    if is_index_warrant:
+                        total_call_amount += amt
+                        total_call_lots += lots
+                        call_count += 1
                     if s_id:
                         stock_warrants[s_id]['call_amt'] += amt
                         stock_warrants[s_id]['call_lots'] += lots
                         stock_warrants[s_id]['call_cnt'] += 1
                 elif is_put:
-                    total_put_amount += amt
-                    total_put_lots += lots
-                    put_count += 1
+                    if is_index_warrant:
+                        total_put_amount += amt
+                        total_put_lots += lots
+                        put_count += 1
                     if s_id:
                         stock_warrants[s_id]['put_amt'] += amt
                         stock_warrants[s_id]['put_lots'] += lots
