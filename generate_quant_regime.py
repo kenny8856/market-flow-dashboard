@@ -258,7 +258,64 @@ def render_xiaoge_warrants_html(warrants, opt_type_label="認購 CALL"):
     """
 
 
+
+def get_extra_data():
+    import sqlite3, os
+    
+    # Futures
+    fut_date = ""
+    top20_fut = []
+    try:
+        conn = sqlite3.connect('db/taifex_large_trader.db')
+        c = conn.cursor()
+        c.execute('SELECT MAX(date) FROM futures_large_traders')
+        row = c.fetchone()
+        if row and row[0]:
+            fut_date = row[0]
+            exclude_keywords = ['臺股', '臺指', '電子', '金融', '半導體', '航運', 'ETF', '非金電', '櫃買', '生技', '富櫃', '道瓊', '那斯達克', '標普', '東證', '美元', '匯率', '選擇權']
+            c.execute("""
+                SELECT contract_code, contract_name, sell_top10, net_top10, market_oi
+                FROM futures_large_traders
+                WHERE date=? AND contract_type='所有契約'
+                ORDER BY sell_top10 DESC
+            """, (fut_date,))
+            rows = c.fetchall()
+            for r in rows:
+                if not any(k in r[1] for k in exclude_keywords):
+                    top20_fut.append(r)
+                if len(top20_fut) >= 20: break
+        conn.close()
+    except:
+        pass
+        
+    # CBs
+    cb_date = ""
+    hot_cbs = []
+    try:
+        if os.path.exists('db/cb_market.db'):
+            conn = sqlite3.connect('db/cb_market.db')
+            c = conn.cursor()
+            c.execute('SELECT MAX(date) FROM daily_cb_quotes')
+            row = c.fetchone()
+            if row and row[0]:
+                cb_date = row[0]
+                c.execute("""
+                    SELECT cb_id, cb_name, close_price, premium_rate, volume_lots, underlying_name
+                    FROM daily_cb_quotes
+                    WHERE date=? AND close_price IS NOT NULL AND premium_rate IS NOT NULL
+                    AND volume_lots >= 50 AND premium_rate <= 10.0 AND close_price BETWEEN 98 AND 120
+                    ORDER BY volume_lots DESC
+                    LIMIT 20
+                """, (cb_date,))
+                hot_cbs = c.fetchall()
+            conn.close()
+    except:
+        pass
+        
+    return fut_date, top20_fut, cb_date, hot_cbs
+
 def generate_html(output_path="quant_regime.html"):
+
     screener = QuantRegimeScreener()
     data = screener.run_analysis()
     
