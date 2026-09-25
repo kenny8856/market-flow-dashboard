@@ -1406,7 +1406,7 @@
 
         <div id="tab-us-giants" class="tab-content">
             
-    <!-- US Top 10 Giants Component -->
+    <!-- US Top 10 Giants & 240+ Sector Mapping Component -->
     <style>
         .us-giants-wrapper {
             padding: 10px 0 30px 0;
@@ -1419,11 +1419,6 @@
             border-radius: 12px;
             padding: 20px 24px;
             margin-bottom: 24px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
         .giant-hero-title {
@@ -1441,7 +1436,7 @@
         }
         .giant-metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 12px;
             width: 100%;
             margin-top: 14px;
@@ -1463,6 +1458,36 @@
             margin-top: 2px;
         }
 
+        /* 子分頁導航 (巨頭維度 vs 板塊維度) */
+        .radar-subnav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #1f2937;
+            padding-bottom: 12px;
+        }
+        .subnav-btn {
+            background: #111827;
+            border: 1px solid #1f2937;
+            color: #94a3b8;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .subnav-btn:hover {
+            border-color: #38bdf8;
+            color: #e2e8f0;
+        }
+        .subnav-btn.active {
+            background: #0284c7;
+            border-color: #38bdf8;
+            color: #fff;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+        }
+
         /* 巨頭卡片選擇列 */
         .giants-cards-scroll {
             display: flex;
@@ -1471,13 +1496,8 @@
             padding-bottom: 12px;
             margin-bottom: 24px;
         }
-        .giants-cards-scroll::-webkit-scrollbar {
-            height: 6px;
-        }
-        .giants-cards-scroll::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 3px;
-        }
+        .giants-cards-scroll::-webkit-scrollbar { height: 6px; }
+        .giants-cards-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
         .giant-select-card {
             flex: 0 0 160px;
             background: #111827;
@@ -1487,45 +1507,18 @@
             cursor: pointer;
             transition: all 0.2s ease;
             position: relative;
-            overflow: hidden;
         }
-        .giant-select-card:hover {
-            border-color: #38bdf8;
-            transform: translateY(-2px);
-        }
+        .giant-select-card:hover { border-color: #38bdf8; transform: translateY(-2px); }
         .giant-select-card.active {
             border-color: #38bdf8;
             background: linear-gradient(180deg, rgba(56, 189, 248, 0.15) 0%, rgba(17, 24, 39, 0.9) 100%);
             box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
         }
-        .giant-badge-rank {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            font-size: 11px;
-            font-weight: 700;
-            color: #64748b;
-        }
-        .giant-card-ticker {
-            font-size: 18px;
-            font-weight: 800;
-            color: #f8fafc;
-        }
-        .giant-card-name {
-            font-size: 13px;
-            color: #94a3b8;
-            margin-bottom: 8px;
-        }
-        .giant-card-mcap {
-            font-size: 11px;
-            color: #f59e0b;
-            font-weight: 600;
-        }
-        .giant-card-twcount {
-            font-size: 11px;
-            color: #10b981;
-            margin-top: 4px;
-        }
+        .giant-badge-rank { position: absolute; top: 8px; right: 8px; font-size: 11px; font-weight: 700; color: #64748b; }
+        .giant-card-ticker { font-size: 18px; font-weight: 800; color: #f8fafc; }
+        .giant-card-name { font-size: 13px; color: #94a3b8; margin-bottom: 8px; }
+        .giant-card-mcap { font-size: 11px; color: #f59e0b; font-weight: 600; }
+        .giant-card-twcount { font-size: 11px; color: #10b981; margin-top: 4px; }
 
         /* 雙欄主內容 */
         .giants-main-grid {
@@ -1534,9 +1527,7 @@
             gap: 20px;
         }
         @media (max-width: 1024px) {
-            .giants-main-grid {
-                grid-template-columns: 1fr;
-            }
+            .giants-main-grid { grid-template-columns: 1fr; }
         }
 
         .giant-panel {
@@ -1562,7 +1553,6 @@
             gap: 8px;
         }
 
-        /* 供應鏈表格 */
         .sc-table {
             width: 100%;
             border-collapse: collapse;
@@ -1581,19 +1571,9 @@
             border-bottom: 1px solid rgba(255,255,255,0.05);
             vertical-align: middle;
         }
-        .sc-table tr:hover td {
-            background: rgba(56, 189, 248, 0.04);
-        }
-        .tw-stock-tag {
-            font-weight: 700;
-            color: #38bdf8;
-            display: inline-block;
-        }
-        .tw-stock-name {
-            color: #e2e8f0;
-            font-weight: 600;
-            margin-left: 4px;
-        }
+        .sc-table tr:hover td { background: rgba(56, 189, 248, 0.04); }
+        .tw-stock-tag { font-weight: 700; color: #38bdf8; display: inline-block; }
+        .tw-stock-name { color: #e2e8f0; font-weight: 600; margin-left: 4px; }
         .pct-bar-wrap {
             width: 100%;
             background: rgba(255,255,255,0.06);
@@ -1614,25 +1594,38 @@
             border-radius: 4px;
             font-weight: 600;
         }
-        .tier-1 {
-            background: rgba(239, 68, 68, 0.15);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-        .tier-2 {
-            background: rgba(245, 158, 11, 0.15);
-            color: #fbbf24;
-            border: 1px solid rgba(245, 158, 11, 0.3);
-        }
+        .tier-1 { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .tier-2 { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
 
-        /* 事件驅動模擬器卡片 */
-        .simulator-box {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(244, 63, 94, 0.25);
-            border-radius: 10px;
-            padding: 16px;
+        /* 板塊按鈕標籤列 */
+        .sector-pills-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
             margin-bottom: 20px;
         }
+        .sector-pill {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #cbd5e1;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sector-pill:hover { border-color: #38bdf8; color: #38bdf8; }
+        .sector-pill.active {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: #38bdf8;
+            color: #38bdf8;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+        }
+
         .sim-input-row {
             display: flex;
             gap: 10px;
@@ -1650,10 +1643,7 @@
             font-weight: 700;
             transition: all 0.2s;
         }
-        .sim-btn:hover {
-            background: #dc2626;
-            box-shadow: 0 0 10px rgba(239,68,68,0.4);
-        }
+        .sim-btn:hover { background: #dc2626; box-shadow: 0 0 10px rgba(239,68,68,0.4); }
         .sim-btn-preset {
             background: #1e293b;
             border: 1px solid #334155;
@@ -1663,10 +1653,7 @@
             font-size: 12px;
             cursor: pointer;
         }
-        .sim-btn-preset:hover {
-            border-color: #38bdf8;
-            color: #38bdf8;
-        }
+        .sim-btn-preset:hover { border-color: #38bdf8; color: #38bdf8; }
         .sim-output-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -1686,10 +1673,10 @@
         <div class="giant-hero-banner">
             <div>
                 <div class="giant-hero-title">
-                    <span>🏛️ 美股十大巨頭 × 台灣供應鏈雷達</span>
+                    <span>🏛️ 美股十大巨頭 × 240+ 板塊台灣供應鏈雷達</span>
                 </div>
                 <div class="giant-hero-sub">
-                    即時剖析美股 Magnificient 7 + 半導體三巨頭（NVDA, AAPL, MSFT, AMZN, GOOGL, META, TSLA, AVGO, AMD, QCOM）對台股營收佔比與市值牽引權重
+                    即時剖析美股十大科技巨頭與 243 檔美股核心標的（涵蓋光通信、半導體設備、AI基建、重電電力、記憶體、太空國防等）對台股各族群的純度佔比與傳導敏感度
                 </div>
                 <div class="giant-metrics-grid">
                     <div class="giant-stat-card">
@@ -1697,127 +1684,173 @@
                         <div class="giant-stat-lbl">美股十大巨頭總市值</div>
                     </div>
                     <div class="giant-stat-card">
-                        <div class="giant-stat-val" style="color:#10b981;">28+ 檔核心大廠</div>
-                        <div class="giant-stat-lbl">台股核心供應鏈成員</div>
+                        <div class="giant-stat-val" style="color:#10b981;">243 檔 / 12 板塊</div>
+                        <div class="giant-stat-lbl">美股高純度監控池</div>
                     </div>
                     <div class="giant-stat-card">
-                        <div class="giant-stat-val" style="color:#f59e0b;">20.1 兆新台幣</div>
-                        <div class="giant-stat-lbl">台股市值總牽引規模</div>
+                        <div class="giant-stat-val" style="color:#f59e0b;">50+ 檔核心台廠</div>
+                        <div class="giant-stat-lbl">台灣高純度直接受惠股</div>
                     </div>
                     <div class="giant-stat-card">
-                        <div class="giant-stat-val" style="color:#f43f5e;">AAPL & NVDA</div>
-                        <div class="giant-stat-lbl">牽動力最高前兩大巨頭</div>
+                        <div class="giant-stat-val" style="color:#f43f5e;">即時傳導估計</div>
+                        <div class="giant-stat-lbl">美股夜盤暴動推算</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 橫向滑動卡片：選擇十大巨頭 -->
-        <div class="giants-cards-scroll" id="giantSelectorScroll">
-            <!-- 由 JS 動態注入 10 大巨頭卡片 -->
+        <!-- 維度切換 Subnav -->
+        <div class="radar-subnav">
+            <button class="subnav-btn active" id="btnModeGiants" onclick="switchRadarMode('giants')">🏛️ 美股十大巨頭直連模式</button>
+            <button class="subnav-btn" id="btnModeSectors" onclick="switchRadarMode('sectors')">📡 美股垂直板塊映射模式 (240+ 檔美股)</button>
         </div>
 
-        <!-- 主內容區塊 (左側供應鏈詳細表，右側事件驅動試算器 + 台廠通吃反查) -->
-        <div class="giants-main-grid">
-            <!-- 左側：供應鏈深度透視 -->
-            <div class="giant-panel">
-                <div class="panel-header">
-                    <div class="panel-title" id="activeGiantTitle">
-                        <span>🎯 供應鏈營收曝險與供貨產品</span>
-                    </div>
-                    <div style="font-size:12px; color:#64748b;" id="activeGiantSub"></div>
-                </div>
-
-                <div style="overflow-x: auto;">
-                    <table class="sc-table">
-                        <thead>
-                            <tr>
-                                <th>受惠台廠</th>
-                                <th>供應鏈環節</th>
-                                <th>供應具體產品 / 專案</th>
-                                <th style="width:130px;">估計營收佔比</th>
-                                <th>層級</th>
-                            </tr>
-                        </thead>
-                        <tbody id="scTableBody">
-                            <!-- JS 動態填入 -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- 右側：事件驅動即時推算器 + 台廠反查 -->
-            <div style="display:flex; flex-direction:column; gap:20px;">
-                <!-- 模組 A: 事件驅動試算器 -->
-                <div class="giant-panel" style="border-color:rgba(239, 68, 68, 0.3);">
-                    <div class="panel-title" style="color:#f87171;">
-                        <span>⚡ 跨市場事件驅動試算器</span>
-                    </div>
-                    <div style="font-size:12px; color:#94a3b8; margin: 4px 0 12px 0;">
-                        當該巨頭盤後財報或昨夜美股暴漲暴跌時，推算隔日台廠理論開盤波動與大盤點數牽引
-                    </div>
-
-                    <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
-                        <button class="sim-btn-preset" onclick="setSimChange(8.0)">財報大好 (+8%)</button>
-                        <button class="sim-btn-preset" onclick="setSimChange(4.0)">強勢上漲 (+4%)</button>
-                        <button class="sim-btn-preset" onclick="setSimChange(-4.0)">重挫回檔 (-4%)</button>
-                        <button class="sim-btn-preset" onclick="setSimChange(-8.0)">財報利空 (-8%)</button>
-                    </div>
-
-                    <div class="sim-input-row">
-                        <span style="font-size:13px;">設定美股波動:</span>
-                        <input type="number" id="simChgInput" value="8.0" step="0.5" style="width:70px; background:#0f172a; border:1px solid #334155; color:#fff; padding:6px 8px; border-radius:6px; font-weight:700;">
-                        <span>%</span>
-                        <button class="sim-btn" onclick="executeSimulation()">試算衝擊</button>
-                    </div>
-
-                    <div class="sim-output-grid" id="simOutputBox">
-                        <!-- JS 填入 -->
-                    </div>
-                </div>
-
-                <!-- 模組 B: 台廠反查通吃巨頭 -->
+        <!-- ================= 模式 1: 十大巨頭模式 ================= -->
+        <div id="modeGiantsArea">
+            <div class="giants-cards-scroll" id="giantSelectorScroll"></div>
+            <div class="giants-main-grid">
                 <div class="giant-panel">
-                    <div class="panel-title" style="color:#38bdf8;">
-                        <span>🔍 台廠通吃哪幾家美股巨頭？</span>
+                    <div class="panel-header">
+                        <div class="panel-title" id="activeGiantTitle"><span>🎯 供應鏈營收曝險與供貨產品</span></div>
+                        <div style="font-size:12px; color:#64748b;" id="activeGiantSub"></div>
                     </div>
-                    <div style="font-size:12px; color:#94a3b8; margin: 4px 0 12px 0;">
-                        選擇特定指標台廠，檢視其客戶分散度與各大巨頭合計佔比
+                    <div style="overflow-x: auto;">
+                        <table class="sc-table">
+                            <thead>
+                                <tr>
+                                    <th>受惠台廠</th>
+                                    <th>供應鏈環節</th>
+                                    <th>供應具體產品 / 專案</th>
+                                    <th style="width:130px;">估計營收佔比</th>
+                                    <th>層級</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scTableBody"></tbody>
+                        </table>
                     </div>
-                    <select id="twStockSelect" onchange="renderTwReverseLookup()" style="width:100%; background:#0f172a; border:1px solid #334155; color:#38bdf8; padding:8px 12px; border-radius:6px; font-weight:700; font-size:14px; margin-bottom:12px;">
-                        <!-- JS 填入 options -->
-                    </select>
+                </div>
 
-                    <div id="twReverseResult">
-                        <!-- JS 填入反查內容 -->
+                <div style="display:flex; flex-direction:column; gap:20px;">
+                    <div class="giant-panel" style="border-color:rgba(239, 68, 68, 0.3);">
+                        <div class="panel-title" style="color:#f87171;"><span>⚡ 巨頭事件驅動試算器</span></div>
+                        <div style="font-size:12px; color:#94a3b8; margin: 4px 0 12px 0;">美股盤後財報或波動時，推算台廠開盤與大盤點數牽引</div>
+                        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
+                            <button class="sim-btn-preset" onclick="setSimChange(8.0)">財報大好 (+8%)</button>
+                            <button class="sim-btn-preset" onclick="setSimChange(4.0)">強勢上漲 (+4%)</button>
+                            <button class="sim-btn-preset" onclick="setSimChange(-4.0)">重挫回檔 (-4%)</button>
+                            <button class="sim-btn-preset" onclick="setSimChange(-8.0)">財報利空 (-8%)</button>
+                        </div>
+                        <div class="sim-input-row">
+                            <span style="font-size:13px;">設定波動:</span>
+                            <input type="number" id="simChgInput" value="8.0" step="0.5" style="width:70px; background:#0f172a; border:1px solid #334155; color:#fff; padding:6px 8px; border-radius:6px; font-weight:700;">
+                            <span>%</span>
+                            <button class="sim-btn" onclick="executeSimulation()">試算衝擊</button>
+                        </div>
+                        <div class="sim-output-grid" id="simOutputBox"></div>
+                    </div>
+
+                    <div class="giant-panel">
+                        <div class="panel-title" style="color:#38bdf8;"><span>🔍 台廠通吃哪幾家美股巨頭？</span></div>
+                        <div style="font-size:12px; color:#94a3b8; margin: 4px 0 12px 0;">選擇指標台廠檢視各大巨頭客戶佔比</div>
+                        <select id="twStockSelect" onchange="renderTwReverseLookup()" style="width:100%; background:#0f172a; border:1px solid #334155; color:#38bdf8; padding:8px 12px; border-radius:6px; font-weight:700; font-size:14px; margin-bottom:12px;"></select>
+                        <div id="twReverseResult"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 模式 2: 板塊映射模式 ================= -->
+        <div id="modeSectorsArea" style="display:none;">
+            <!-- 板塊選單按鈕列 -->
+            <div class="sector-pills-wrap" id="sectorPillsContainer"></div>
+
+            <div class="giants-main-grid">
+                <!-- 左側：板塊成分台廠 -->
+                <div class="giant-panel">
+                    <div class="panel-header">
+                        <div class="panel-title" id="activeSectorTitle"><span>📡 美股垂直板塊 ↔ 台灣高純度受惠族群</span></div>
+                        <div style="font-size:12px; color:#64748b;" id="activeSectorSub"></div>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="sc-table">
+                            <thead>
+                                <tr>
+                                    <th>台股標的</th>
+                                    <th>產品角色與業務重點</th>
+                                    <th style="width:130px;">純度關聯度</th>
+                                    <th>敏感度 Beta</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sectorTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 右側：板塊傳導試算器 -->
+                <div style="display:flex; flex-direction:column; gap:20px;">
+                    <div class="giant-panel" style="border-color:rgba(56, 189, 248, 0.3);">
+                        <div class="panel-title" style="color:#38bdf8;"><span>⚡ 板塊隔日開盤傳導試算器</span></div>
+                        <div style="font-size:12px; color:#94a3b8; margin: 4px 0 12px 0;">昨夜美股該板塊大漲大跌時，推算台廠開盤連動幅度</div>
+                        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
+                            <button class="sim-btn-preset" onclick="setSecChange(6.0)">板塊狂飆 (+6%)</button>
+                            <button class="sim-btn-preset" onclick="setSecChange(3.0)">溫和上漲 (+3%)</button>
+                            <button class="sim-btn-preset" onclick="setSecChange(-3.0)">板塊回跌 (-3%)</button>
+                            <button class="sim-btn-preset" onclick="setSecChange(-6.0)">板塊重挫 (-6%)</button>
+                        </div>
+                        <div class="sim-input-row">
+                            <span style="font-size:13px;">美股板塊漲跌:</span>
+                            <input type="number" id="secChgInput" value="6.0" step="0.5" style="width:70px; background:#0f172a; border:1px solid #334155; color:#fff; padding:6px 8px; border-radius:6px; font-weight:700;">
+                            <span>%</span>
+                            <button class="sim-btn" style="background:#0284c7;" onclick="executeSectorSimulation()">推算連動</button>
+                        </div>
+                        <div class="sim-output-grid" id="secOutputBox"></div>
+                    </div>
+
+                    <div class="giant-panel">
+                        <div class="panel-title" style="color:#10b981;"><span>🇺🇸 美股成分股對照 (243 檔清單)</span></div>
+                        <div style="font-size:12px; color:#94a3b8; margin: 4px 0 12px 0;">該板塊美股監控標的</div>
+                        <div id="sectorUsStockList" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 巨頭雷達前端互動邏輯 -->
+    <!-- 前端互動腳本 -->
     <script>
     (function() {
         const GIANTS_DATA = [{"us_ticker": "AAPL", "name_en": "Apple Inc.", "name_zh": "蘋果", "market_cap_bil_usd": 3450.0, "core_segment": "消費電子/個人運算/自研晶片", "key_products": "iPhone 16/17, Mac M4/M5, iPad, Apple Silicon", "total_partners_count": 7, "weighted_tw_mcap_influence_bil_twd": 7482.6, "key_sector_focus": "消費電子/晶圓代工/高階光學/組裝 (台積電、鴻海、大立光)"}, {"us_ticker": "NVDA", "name_en": "NVIDIA Corp.", "name_zh": "輝達", "market_cap_bil_usd": 3500.0, "core_segment": "AI加速運算/GPU/網路", "key_products": "Blackwell GB200/B200, Hopper H100/H200, Spectrum-X", "total_partners_count": 13, "weighted_tw_mcap_influence_bil_twd": 4219.1, "key_sector_focus": "AI算力叢集/先進封裝/水冷散熱/滑軌 (台積電、廣達、奇鋐、川湖)"}, {"us_ticker": "AMD", "name_en": "Advanced Micro Devices", "name_zh": "超微", "market_cap_bil_usd": 240.0, "core_segment": "資料中心CPU/AI加速卡/PC晶片", "key_products": "EPYC 伺服器CPU, Instinct MI300/MI325/MI350X", "total_partners_count": 5, "weighted_tw_mcap_influence_bil_twd": 1891.7, "key_sector_focus": "HPC晶片代工/3D封裝/均熱片 (台積電、健策、欣興)"}, {"us_ticker": "QCOM", "name_en": "Qualcomm Inc.", "name_zh": "高通", "market_cap_bil_usd": 190.0, "core_segment": "智慧型手機AP/AI PC/車用運算", "key_products": "Snapdragon 8 Gen4, Snapdragon X Elite, 數位座艙", "total_partners_count": 3, "weighted_tw_mcap_influence_bil_twd": 1790.0, "key_sector_focus": "手機旗艦AP/晶片測試/AI PC (台積電、京元電、日月光)"}, {"us_ticker": "AVGO", "name_en": "Broadcom Inc.", "name_zh": "博通", "market_cap_bil_usd": 820.0, "core_segment": "網通晶片/客製化AI ASIC", "key_products": "Tomahawk 5/6 網通IC, 客製化CSP ASIC, 矽光子CPO", "total_partners_count": 4, "weighted_tw_mcap_influence_bil_twd": 1725.8, "key_sector_focus": "網通高階載板/矽光子CPO/交換器 (欣興、聯亞、智邦)"}, {"us_ticker": "AMZN", "name_en": "Amazon.com Inc.", "name_zh": "亞馬遜", "market_cap_bil_usd": 2100.0, "core_segment": "雲端基礎設施/電商/AI ASIC", "key_products": "AWS Cloud, Trainium/Inferentia ASIC, Graviton", "total_partners_count": 5, "weighted_tw_mcap_influence_bil_twd": 1123.5, "key_sector_focus": "自研Trainium ASIC/白牌機櫃/電子紙 (世芯-KY、元太、緯穎)"}, {"us_ticker": "TSLA", "name_en": "Tesla Inc.", "name_zh": "特斯拉", "market_cap_bil_usd": 850.0, "core_segment": "電動車/自動駕駛/儲能/機器人", "key_products": "Model 3/Y, CyberTruck, FSD/HW4.0/HW5.0, Megapack", "total_partners_count": 5, "weighted_tw_mcap_influence_bil_twd": 827.7, "key_sector_focus": "電動車減速齒輪/車用高壓線束/沖壓 (和大、貿聯-KY、乙盛-KY)"}, {"us_ticker": "MSFT", "name_en": "Microsoft Corp.", "name_zh": "微軟", "market_cap_bil_usd": 3150.0, "core_segment": "企業軟體/公有雲/AI資料中心", "key_products": "Azure AI Infrastructure, OpenAI Superclusters, Surface", "total_partners_count": 4, "weighted_tw_mcap_influence_bil_twd": 500.1, "key_sector_focus": "雲端資料中心/白牌伺服器/高速交換器 (緯穎、廣達、智邦)"}, {"us_ticker": "GOOGL", "name_en": "Alphabet Inc.", "name_zh": "Google/字母榜", "market_cap_bil_usd": 2250.0, "core_segment": "雲端服務/搜尋/自研AI晶片", "key_products": "Google Cloud (GCP), 自研 TPU v5/v6, Pixel", "total_partners_count": 4, "weighted_tw_mcap_influence_bil_twd": 388.3, "key_sector_focus": "自研TPU/雲端伺服器/ASIC (廣達、聯發科、智邦)"}, {"us_ticker": "META", "name_en": "Meta Platforms Inc.", "name_zh": "Meta", "market_cap_bil_usd": 1500.0, "core_segment": "社群媒體/元宇宙/生成式AI", "key_products": "Meta AI Cluster (Llama 3/4), Quest 3, Ray-Ban Meta", "total_partners_count": 4, "weighted_tw_mcap_influence_bil_twd": 319.5, "key_sector_focus": "Llama AI叢集/VR光學透鏡/OCP交換器 (緯穎、玉晶光、智邦)"}];
         const REL_DATA = [{"id": 18, "tw_ticker": "4958", "tw_name": "臻鼎-KY", "us_ticker": "AAPL", "us_name": "蘋果", "relation_category": "軟板與高階PCB", "supplied_product": "iPhone/Apple Watch 軟板(FPC)、SLP類載板", "est_revenue_pct_low": 55.0, "est_revenue_pct_high": 65.0, "est_revenue_pct_mid": 60.0, "tier_level": "Tier 1 軟板全球龍頭", "official_basis": "財報第一大客戶揭露、Apple供應商名冊", "industry": "PCB/軟板FPC", "est_market_cap_bil_twd": 110.0}, {"id": 15, "tw_ticker": "2317", "tw_name": "鴻海", "us_ticker": "AAPL", "us_name": "蘋果", "relation_category": "電子組裝ODM", "supplied_product": "iPhone Pro/Pro Max 高階機型主要組裝、iPad/Mac代工", "est_revenue_pct_low": 45.0, "est_revenue_pct_high": 52.0, "est_revenue_pct_mid": 48.5, "tier_level": "Tier 1 第一大代工廠", "official_basis": "財報最大客戶營收揭露，佔鴻海總營收近半", "industry": "電子代工服務(EMS/ODM)", "est_market_cap_bil_twd": 2500.0}, {"id": 17, "tw_ticker": "3406", "tw_name": "玉晶光", "us_ticker": "AAPL", "us_name": "蘋果", "relation_category": "光學鏡頭與VR透鏡", "supplied_product": "iPhone 超廣角鏡頭、潛望鏡頭、Vision Pro Pancake 透鏡", "est_revenue_pct_low": 42.0, "est_revenue_pct_high": 52.0, "est_revenue_pct_mid": 47.0, "tier_level": "Tier 1 主要鏡頭主供", "official_basis": "年報營收單一客戶逾四成、Apple供應商名冊", "industry": "光學鏡頭/VR透鏡", "est_market_cap_bil_twd": 60.0}, {"id": 16, "tw_ticker": "3008", "tw_name": "大立光", "us_ticker": "AAPL", "us_name": "蘋果", "relation_category": "光學鏡頭", "supplied_product": "iPhone 高階潛望式長焦鏡頭、7P/8P 主鏡頭", "est_revenue_pct_low": 40.0, "est_revenue_pct_high": 50.0, "est_revenue_pct_mid": 45.0, "tier_level": "Tier 1 鏡頭第一大主供", "official_basis": "年報客戶名單與出貨拆解、Apple官方供應商名冊", "industry": "光學鏡頭", "est_market_cap_bil_twd": 320.0}, {"id": 14, "tw_ticker": "2330", "tw_name": "台積電", "us_ticker": "AAPL", "us_name": "蘋果", "relation_category": "晶圓代工", "supplied_product": "A18/A19手機晶片、M4/M5晶片全系列 3nm/2nm 獨家代工", "est_revenue_pct_low": 20.0, "est_revenue_pct_high": 25.0, "est_revenue_pct_mid": 22.5, "tier_level": "Tier 1 全球獨家主供", "official_basis": "長期財報最大客戶(客戶A)年佔比約22~25%", "industry": "半導體晶圓代工", "est_market_cap_bil_twd": 26000.0}, {"id": 19, "tw_ticker": "3037", "tw_name": "欣興", "us_ticker": "AAPL", "us_name": "蘋果", "relation_category": "載板與PCB", "supplied_product": "Apple M系列/A系列 ABF載板、高階HDI", "est_revenue_pct_low": 18.0, "est_revenue_pct_high": 25.0, "est_revenue_pct_mid": 21.5, "tier_level": "Tier 1 主要載板供應商", "official_basis": "Apple供應商名單與載板出貨結構", "industry": "ABF/BT載板", "est_market_cap_bil_twd": 260.0}, {"id": 20, "tw_ticker": "3711", "tw_name": "日月光投控", "us_ticker": "AAPL", "us_name": "蘋果", "relation_category": "系統級封裝(SiP)", "supplied_product": "Apple Watch / AirPods / iPhone 射頻與通訊SiP模組", "est_revenue_pct_low": 15.0, "est_revenue_pct_high": 20.0, "est_revenue_pct_mid": 17.5, "tier_level": "Tier 1 SiP第一大封測", "official_basis": "Apple官方供應鏈名冊成員", "industry": "半導體封裝測試", "est_market_cap_bil_twd": 720.0}, {"id": 50, "tw_ticker": "3653", "tw_name": "健策", "us_ticker": "AMD", "us_name": "超微", "relation_category": "均熱片機構件", "supplied_product": "EPYC 伺服器 CPU 專用高散熱均熱片", "est_revenue_pct_low": 16.0, "est_revenue_pct_high": 24.0, "est_revenue_pct_mid": 20.0, "tier_level": "Tier 1 第一大均熱片主供", "official_basis": "健策全球伺服器CPU均熱片市佔領先", "industry": "均熱片/散熱機構件", "est_market_cap_bil_twd": 160.0}, {"id": 49, "tw_ticker": "3037", "tw_name": "欣興", "us_ticker": "AMD", "us_name": "超微", "relation_category": "ABF 載板", "supplied_product": "MI300 AI 晶片超大型高階 ABF 載板主供", "est_revenue_pct_low": 14.0, "est_revenue_pct_high": 20.0, "est_revenue_pct_mid": 17.0, "tier_level": "Tier 1 核心載板主供", "official_basis": "法人報告拆解AMD載板分配佔比", "industry": "ABF/BT載板", "est_market_cap_bil_twd": 260.0}, {"id": 48, "tw_ticker": "3711", "tw_name": "日月光投控", "us_ticker": "AMD", "us_name": "超微", "relation_category": "半導體封裝測試", "supplied_product": "EPYC 伺服器處理器封裝、系統級測試", "est_revenue_pct_low": 6.0, "est_revenue_pct_high": 9.0, "est_revenue_pct_mid": 7.5, "tier_level": "Tier 1 封測主力夥伴", "official_basis": "AMD全球主要封測代工廠", "industry": "半導體封裝測試", "est_market_cap_bil_twd": 720.0}, {"id": 47, "tw_ticker": "2330", "tw_name": "台積電", "us_ticker": "AMD", "us_name": "超微", "relation_category": "晶圓代工與3D封裝", "supplied_product": "Zen 5 CPU、MI300/MI325 GPU 晶圓代工與 3D SoIC 封裝", "est_revenue_pct_low": 5.0, "est_revenue_pct_high": 8.0, "est_revenue_pct_mid": 6.5, "tier_level": "Tier 1 全系列獨家晶圓代工", "official_basis": "台積電前三大高效能運算(HPC)客戶", "industry": "半導體晶圓代工", "est_market_cap_bil_twd": 26000.0}, {"id": 51, "tw_ticker": "2382", "tw_name": "廣達", "us_ticker": "AMD", "us_name": "超微", "relation_category": "AI伺服器整機", "supplied_product": "AMD Instinct MI300X 伺服器機架代工", "est_revenue_pct_low": 5.0, "est_revenue_pct_high": 8.0, "est_revenue_pct_mid": 6.5, "tier_level": "Tier 1 合作夥伴", "official_basis": "雲端伺服器多元化方案", "industry": "AI伺服器/筆電ODM", "est_market_cap_bil_twd": 1100.0}, {"id": 25, "tw_ticker": "3661", "tw_name": "世芯-KY", "us_ticker": "AMZN", "us_name": "亞馬遜", "relation_category": "客製化ASIC晶片設計", "supplied_product": "AWS 自研 AI 晶片 Trainium 1/2/3 獨家架構與量產服務", "est_revenue_pct_low": 58.0, "est_revenue_pct_high": 70.0, "est_revenue_pct_mid": 64.0, "tier_level": "Tier 1 戰略級獨家ASIC夥伴", "official_basis": "法說會確認：北美雲端大客戶(AWS)佔世芯營收逾六成", "industry": "ASIC/晶片設計服務", "est_market_cap_bil_twd": 180.0}, {"id": 28, "tw_ticker": "8069", "tw_name": "元太", "us_ticker": "AMZN", "us_name": "亞馬遜", "relation_category": "電子紙顯示模組", "supplied_product": "Kindle 電子書閱讀器全系列電子紙顯示螢幕", "est_revenue_pct_low": 35.0, "est_revenue_pct_high": 45.0, "est_revenue_pct_mid": 40.0, "tier_level": "Tier 1 全球獨家專利壟斷", "official_basis": "元太消費性電子主力產品線，專利獨家供給Amazon", "industry": "電子紙顯示器", "est_market_cap_bil_twd": 280.0}, {"id": 27, "tw_ticker": "2345", "tw_name": "智邦", "us_ticker": "AMZN", "us_name": "亞馬遜", "relation_category": "資料中心交換機", "supplied_product": "AWS 資料中心 400G 交換器主供", "est_revenue_pct_low": 15.0, "est_revenue_pct_high": 20.0, "est_revenue_pct_mid": 17.5, "tier_level": "Tier 1 核心網通廠", "official_basis": "法人研究報告與供應鏈確認", "industry": "網通白牌交換器", "est_market_cap_bil_twd": 330.0}, {"id": 26, "tw_ticker": "6669", "tw_name": "緯穎", "us_ticker": "AMZN", "us_name": "亞馬遜", "relation_category": "雲端伺服器", "supplied_product": "AWS 第三方伺服器與專案機櫃出貨", "est_revenue_pct_low": 10.0, "est_revenue_pct_high": 16.0, "est_revenue_pct_mid": 13.0, "tier_level": "Tier 1 核心夥伴", "official_basis": "緯穎第三大CSP客戶", "industry": "雲端白牌伺服器", "est_market_cap_bil_twd": 450.0}, {"id": 29, "tw_ticker": "2330", "tw_name": "台積電", "us_ticker": "AMZN", "us_name": "亞馬遜", "relation_category": "晶圓代工", "supplied_product": "AWS Graviton CPU & Trainium AI 晶片代工", "est_revenue_pct_low": 2.0, "est_revenue_pct_high": 4.0, "est_revenue_pct_mid": 3.0, "tier_level": "Tier 1 晶圓代工夥伴", "official_basis": "台積電先進製程客戶", "industry": "半導體晶圓代工", "est_market_cap_bil_twd": 26000.0}, {"id": 46, "tw_ticker": "3081", "tw_name": "聯亞", "us_ticker": "AVGO", "us_name": "博通", "relation_category": "矽光子光通訊磊晶", "supplied_product": "CPO 光引擎專用雷射磊晶片 (CW Laser ERL)", "est_revenue_pct_low": 18.0, "est_revenue_pct_high": 28.0, "est_revenue_pct_mid": 23.0, "tier_level": "Tier 1 關鍵材料供應商", "official_basis": "聯亞法說會矽光子客戶結構", "industry": "矽光子光通訊磊晶", "est_market_cap_bil_twd": 35.0}, {"id": 45, "tw_ticker": "3037", "tw_name": "欣興", "us_ticker": "AVGO", "us_name": "博通", "relation_category": "高階ABF載板", "supplied_product": "Tomahawk 系列超大型高層數 ABF 載板", "est_revenue_pct_low": 10.0, "est_revenue_pct_high": 16.0, "est_revenue_pct_mid": 13.0, "tier_level": "Tier 1 載板核心主供", "official_basis": "外資載板研究報告客戶拆解", "industry": "ABF/BT載板", "est_market_cap_bil_twd": 260.0}, {"id": 44, "tw_ticker": "3711", "tw_name": "日月光投控", "us_ticker": "AVGO", "us_name": "博通", "relation_category": "先進封測", "supplied_product": "高階網通IC覆晶封裝(Flip Chip)、SiP封測", "est_revenue_pct_low": 8.0, "est_revenue_pct_high": 12.0, "est_revenue_pct_mid": 10.0, "tier_level": "Tier 1 封裝主力夥伴", "official_basis": "日月光重要網通客戶名單", "industry": "半導體封裝測試", "est_market_cap_bil_twd": 720.0}, {"id": 43, "tw_ticker": "2330", "tw_name": "台積電", "us_ticker": "AVGO", "us_name": "博通", "relation_category": "晶圓代工與CPO", "supplied_product": "高階 5nm/3nm 網通晶片代工、矽光子(CPO)封裝", "est_revenue_pct_low": 5.0, "est_revenue_pct_high": 7.5, "est_revenue_pct_mid": 6.2, "tier_level": "Tier 1 晶圓代工第一大主供", "official_basis": "博通為台積電前六大客戶之一", "industry": "半導體晶圓代工", "est_market_cap_bil_twd": 26000.0}, {"id": 30, "tw_ticker": "2382", "tw_name": "廣達", "us_ticker": "GOOGL", "us_name": "Alphabet/Google", "relation_category": "伺服器機架ODM", "supplied_product": "Google Cloud (GCP) 資料中心伺服器機櫃主要代工廠", "est_revenue_pct_low": 15.0, "est_revenue_pct_high": 22.0, "est_revenue_pct_mid": 18.5, "tier_level": "Tier 1 最大伺服器主供", "official_basis": "廣達長年為Google伺服器最大白牌ODM夥伴", "industry": "AI伺服器/筆電ODM", "est_market_cap_bil_twd": 1100.0}, {"id": 32, "tw_ticker": "2345", "tw_name": "智邦", "us_ticker": "GOOGL", "us_name": "Alphabet/Google", "relation_category": "交換機網通設備", "supplied_product": "Google 資料中心 Jupiter 架構高速白牌交換機", "est_revenue_pct_low": 12.0, "est_revenue_pct_high": 18.0, "est_revenue_pct_mid": 15.0, "tier_level": "Tier 1 網通核心主供", "official_basis": "Google資料中心高速交換機供應鏈", "industry": "網通白牌交換器", "est_market_cap_bil_twd": 330.0}, {"id": 33, "tw_ticker": "2356", "tw_name": "英業達", "us_ticker": "GOOGL", "us_name": "Alphabet/Google", "relation_category": "伺服器主機板", "supplied_product": "Google TPU 伺服器主機板代工", "est_revenue_pct_low": 8.0, "est_revenue_pct_high": 14.0, "est_revenue_pct_mid": 11.0, "tier_level": "Tier 2 主要代工廠", "official_basis": "英業達雲端伺服器出貨結構", "industry": "雲端伺服器代工", "est_market_cap_bil_twd": 180.0}, {"id": 31, "tw_ticker": "2454", "tw_name": "聯發科", "us_ticker": "GOOGL", "us_name": "Alphabet/Google", "relation_category": "ASIC與邊緣AI晶片", "supplied_product": "Google TPU 客製化晶片共同開發、終端產品通訊IC", "est_revenue_pct_low": 4.0, "est_revenue_pct_high": 7.0, "est_revenue_pct_mid": 5.5, "tier_level": "Tier 1 戰略合作夥伴", "official_basis": "外資半導體報告拆解聯發科ASIC業務", "industry": "IC設計", "est_market_cap_bil_twd": 2100.0}, {"id": 34, "tw_ticker": "6669", "tw_name": "緯穎", "us_ticker": "META", "us_name": "Meta", "relation_category": "AI與雲端伺服器機櫃", "supplied_product": "Meta AI 資料中心(Llama大模型叢集)專屬伺服器機架", "est_revenue_pct_low": 32.0, "est_revenue_pct_high": 42.0, "est_revenue_pct_mid": 37.0, "tier_level": "Tier 1 兩大支柱客戶之一", "official_basis": "緯穎公開財報：Meta為長期前兩大客戶，佔比三至四成", "industry": "雲端白牌伺服器", "est_market_cap_bil_twd": 450.0}, {"id": 35, "tw_ticker": "3406", "tw_name": "玉晶光", "us_ticker": "META", "us_name": "Meta", "relation_category": "VR光學Pancake透鏡", "supplied_product": "Meta Quest 3 / Quest Pro 專用VR Pancake透鏡", "est_revenue_pct_low": 18.0, "est_revenue_pct_high": 25.0, "est_revenue_pct_mid": 21.5, "tier_level": "Tier 1 獨家/主要光學主供", "official_basis": "法說會VR鏡頭產品線營收拆解", "industry": "光學鏡頭/VR透鏡", "est_market_cap_bil_twd": 60.0}, {"id": 36, "tw_ticker": "2345", "tw_name": "智邦", "us_ticker": "META", "us_name": "Meta", "relation_category": "開放網路交換器", "supplied_product": "Meta OCP (Open Compute Project) 高速交換器", "est_revenue_pct_low": 14.0, "est_revenue_pct_high": 20.0, "est_revenue_pct_mid": 17.0, "tier_level": "Tier 1 OCP創始與主力製造廠", "official_basis": "智邦OCP開源交換機主力客戶", "industry": "網通白牌交換器", "est_market_cap_bil_twd": 330.0}, {"id": 37, "tw_ticker": "2454", "tw_name": "聯發科", "us_ticker": "META", "us_name": "Meta", "relation_category": "穿戴與VR晶片", "supplied_product": "Ray-Ban Meta 智慧眼鏡、VR 晶片協同研發", "est_revenue_pct_low": 3.0, "est_revenue_pct_high": 5.0, "est_revenue_pct_mid": 4.0, "tier_level": "Tier 1 關鍵晶片夥伴", "official_basis": "Meta Connect官方發布會合作技術", "industry": "IC設計", "est_market_cap_bil_twd": 2100.0}, {"id": 21, "tw_ticker": "6669", "tw_name": "緯穎", "us_ticker": "MSFT", "us_name": "微軟", "relation_category": "雲端白牌伺服器", "supplied_product": "Azure 資料中心 AI / 一般運算白牌伺服器機櫃", "est_revenue_pct_low": 45.0, "est_revenue_pct_high": 55.0, "est_revenue_pct_mid": 50.0, "tier_level": "Tier 1 最大伺服器主供", "official_basis": "緯穎年報公開揭露：微軟為前兩大客戶，佔比約50%", "industry": "雲端白牌伺服器", "est_market_cap_bil_twd": 450.0}, {"id": 23, "tw_ticker": "2345", "tw_name": "智邦", "us_ticker": "MSFT", "us_name": "微軟", "relation_category": "資料中心交換器", "supplied_product": "400G/800G 白牌資料中心交換機 (SONiC架構)", "est_revenue_pct_low": 15.0, "est_revenue_pct_high": 22.0, "est_revenue_pct_mid": 18.5, "tier_level": "Tier 1 網通主供", "official_basis": "微軟開放網路架構核心交換器製造商", "industry": "網通白牌交換器", "est_market_cap_bil_twd": 330.0}, {"id": 22, "tw_ticker": "2382", "tw_name": "廣達", "us_ticker": "MSFT", "us_name": "微軟", "relation_category": "伺服器機櫃ODM", "supplied_product": "Azure 雲端伺服器與AI叢集機櫃整合", "est_revenue_pct_low": 14.0, "est_revenue_pct_high": 20.0, "est_revenue_pct_mid": 17.0, "tier_level": "Tier 1 核心ODM夥伴", "official_basis": "法人研報與雲端客戶拆解", "industry": "AI伺服器/筆電ODM", "est_market_cap_bil_twd": 1100.0}, {"id": 24, "tw_ticker": "2356", "tw_name": "英業達", "us_ticker": "MSFT", "us_name": "微軟", "relation_category": "伺服器主機板與組裝", "supplied_product": "微軟伺服器主機板(L6)與整機代工", "est_revenue_pct_low": 12.0, "est_revenue_pct_high": 18.0, "est_revenue_pct_mid": 15.0, "tier_level": "Tier 1 主要主機板夥伴", "official_basis": "英業達雲端伺服器出貨客戶結構", "industry": "雲端伺服器代工", "est_market_cap_bil_twd": 180.0}, {"id": 8, "tw_ticker": "2059", "tw_name": "川湖", "us_ticker": "NVDA", "us_name": "輝達", "relation_category": "伺服器導軌機構件", "supplied_product": "AI伺服器高承重專用導軌、機架滑軌 (全球市佔逾85%)", "est_revenue_pct_low": 35.0, "est_revenue_pct_high": 45.0, "est_revenue_pct_mid": 40.0, "tier_level": "Tier 1 壟斷級供應商", "official_basis": "財報毛利率70%+之專利導軌拆解、券商認證", "industry": "伺服器導軌機構件", "est_market_cap_bil_twd": 110.0}, {"id": 9, "tw_ticker": "3653", "tw_name": "健策", "us_ticker": "NVDA", "us_name": "輝達", "relation_category": "均熱片/散熱機構件", "supplied_product": "B200/H100 晶片高階均熱片 (Heat Spreader)", "est_revenue_pct_low": 28.0, "est_revenue_pct_high": 38.0, "est_revenue_pct_mid": 33.0, "tier_level": "Tier 1 獨家/主供", "official_basis": "全球晶片均熱片市佔霸主、法人報告認證", "industry": "均熱片/散熱機構件", "est_market_cap_bil_twd": 160.0}, {"id": 13, "tw_ticker": "8210", "tw_name": "勤誠", "us_ticker": "NVDA", "us_name": "輝達", "relation_category": "伺服器機殼與機架", "supplied_product": "AI伺服器標準1U/2U/4U/8U機殼與機架機構件", "est_revenue_pct_low": 28.0, "est_revenue_pct_high": 38.0, "est_revenue_pct_mid": 33.0, "tier_level": "Tier 1 機殼主力主供", "official_basis": "MGX公版機殼合作夥伴", "industry": "AI伺服器機殼", "est_market_cap_bil_twd": 35.0}, {"id": 6, "tw_ticker": "3017", "tw_name": "奇鋐", "us_ticker": "NVDA", "us_name": "輝達", "relation_category": "散熱模組與水冷系統", "supplied_product": "3D VC均熱板、GB200冷卻水冷板 (Cold Plate)、風扇", "est_revenue_pct_low": 25.0, "est_revenue_pct_high": 35.0, "est_revenue_pct_mid": 30.0, "tier_level": "Tier 1 認證主供", "official_basis": "NVIDIA原廠合格供應商(AVL)、大摩散熱專題研報", "industry": "散熱模組/水冷系統", "est_market_cap_bil_twd": 250.0}, {"id": 10, "tw_ticker": "2368", "tw_name": "金像電", "us_ticker": "NVDA", "us_name": "輝達", "relation_category": "高階PCB板", "supplied_product": "AI伺服器UBB(通用基板)/OAM、高層數PCB電路板", "est_revenue_pct_low": 25.0, "est_revenue_pct_high": 35.0, "est_revenue_pct_mid": 30.0, "tier_level": "Tier 1 核心PCB主供", "official_basis": "券商供應鏈訪查、AI營收佔比法說會確認", "industry": "高階PCB伺服器板", "est_market_cap_bil_twd": 120.0}, {"id": 7, "tw_ticker": "3324", "tw_name": "雙鴻", "us_ticker": "NVDA", "us_name": "輝達", "relation_category": "水冷散熱模組", "supplied_product": "水冷板 (Cold Plate)、冷卻液分配歧管 (CDM)", "est_revenue_pct_low": 22.0, "est_revenue_pct_high": 30.0, "est_revenue_pct_mid": 26.0, "tier_level": "Tier 1 認證主供", "official_basis": "法說會水冷營收佔比揭露、NVIDIA供應鏈認證", "industry": "散熱模組/水冷板", "est_market_cap_bil_twd": 65.0}, {"id": 3, "tw_ticker": "2382", "tw_name": "廣達", "us_ticker": "NVDA", "us_name": "輝達", "relation_category": "AI伺服器整機ODM", "supplied_product": "GB200/HGX/MGX 伺服器整機組裝、L10/L11系統整合", "est_revenue_pct_low": 18.0, "est_revenue_pct_high": 25.0, "est_revenue_pct_mid": 21.5, "tier_level": "Tier 1 核心主供", "official_basis": "法說會AI伺服器出貨比重、GTC首選夥伴", "industry": "AI伺服器/筆電ODM", "est_market_cap_bil_twd": 1100.0}, {"id": 4, "tw_ticker": "3231", "tw_name": "緯創", "us_ticker": "NVDA", "us_name": "輝達", "relation_category": "GPU運算主基板", "supplied_product": "DGX/HGX GPU Baseboard 運算基板主要供應商", "est_revenue_pct_low": 15.0, "est_revenue_pct_high": 22.0, "est_revenue_pct_mid": 18.5, "tier_level": "Tier 1 核心主供", "official_basis": "財報重大部門揭露、NVIDIA主要基板供應商", "industry": "GPU運算基板/代工", "est_market_cap_bil_twd": 330.0}, {"id": 5, "tw_ticker": "6669", "tw_name": "緯穎", "us_ticker": "NVDA", "us_name": "輝達", "relation_category": "AI伺服器機櫃", "supplied_product": "NVL72 氣冷/水冷機櫃整機出貨", "est_revenue_pct_low": 12.0, "est_revenue_pct_high": 18.0, "est_revenue_pct_mid": 15.0, "tier_level": "Tier 1 主要ODM", "official_basis": "法人研究報告與公開出貨客戶群", "industry": "雲端白牌伺服器", "est_market_cap_bil_twd": 450.0}, {"id": 2, "tw_ticker": "2317", "tw_name": "鴻海", "us_ticker": "NVDA", "us_name": "輝達", "relation_category": "AI伺服器機櫃與代工", "supplied_product": "GB200 NVL72整機機櫃、Compute Tray運算托盤、液冷系統整合", "est_revenue_pct_low": 10.0, "est_revenue_pct_high": 15.0, "est_revenue_pct_mid": 12.5, "tier_level": "Tier 1 核心主供", "official_basis": "黃仁勳GTC官方背板點名、鴻海科技日揭露", "industry": "電子代工服務(EMS/ODM)", "est_market_cap_bil_twd": 2500.0}, {"id": 11, "tw_ticker": "2308", "tw_name": "台達電", "us_ticker": "NVDA", "us_name": "輝達", "relation_category": "電源與能源管理", "supplied_product": "AI伺服器高壓直流電源架構(54V/800V)、水冷散熱CDU", "est_revenue_pct_low": 10.0, "est_revenue_pct_high": 15.0, "est_revenue_pct_mid": 12.5, "tier_level": "Tier 1 獨家級電源主供", "official_basis": "NVIDIA官方公版指定電源合作夥伴", "industry": "電源供應/散熱/綠能", "est_market_cap_bil_twd": 1050.0}, {"id": 1, "tw_ticker": "2330", "tw_name": "台積電", "us_ticker": "NVDA", "us_name": "輝達", "relation_category": "晶圓代工與先進封裝", "supplied_product": "4nm/3nm GPU晶圓代工、CoWoS-S/L 先進封裝", "est_revenue_pct_low": 10.0, "est_revenue_pct_high": 14.0, "est_revenue_pct_mid": 12.0, "tier_level": "Tier 1 獨家/核心主供", "official_basis": "財報客戶揭露與法說會驗證、GTC官方夥伴", "industry": "半導體晶圓代工", "est_market_cap_bil_twd": 26000.0}, {"id": 12, "tw_ticker": "3711", "tw_name": "日月光投控", "us_ticker": "NVDA", "us_name": "輝達", "relation_category": "半導體封測代工", "supplied_product": "CoWoS 後段封裝、SiP系統級模組與測試", "est_revenue_pct_low": 6.0, "est_revenue_pct_high": 9.0, "est_revenue_pct_mid": 7.5, "tier_level": "Tier 1 封測主供", "official_basis": "台積電外溢CoWoS封裝夥伴", "industry": "半導體封裝測試", "est_market_cap_bil_twd": 720.0}, {"id": 53, "tw_ticker": "2449", "tw_name": "京元電子", "us_ticker": "QCOM", "us_name": "高通", "relation_category": "晶圓預燒與成品測試", "supplied_product": "手機與AI PC處理器晶片測試代工", "est_revenue_pct_low": 16.0, "est_revenue_pct_high": 24.0, "est_revenue_pct_mid": 20.0, "tier_level": "Tier 1 最大委外測試代工廠", "official_basis": "京元電前兩大客戶，營收佔比約兩成", "industry": "半導體測試代工", "est_market_cap_bil_twd": 140.0}, {"id": 54, "tw_ticker": "3711", "tw_name": "日月光投控", "us_ticker": "QCOM", "us_name": "高通", "relation_category": "封裝與模組測試", "supplied_product": "手機射頻前端(RFFE)模組、通訊SiP封測", "est_revenue_pct_low": 8.0, "est_revenue_pct_high": 12.0, "est_revenue_pct_mid": 10.0, "tier_level": "Tier 1 封測合作夥伴", "official_basis": "高通主要封裝代工夥伴", "industry": "半導體封裝測試", "est_market_cap_bil_twd": 720.0}, {"id": 52, "tw_ticker": "2330", "tw_name": "台積電", "us_ticker": "QCOM", "us_name": "高通", "relation_category": "晶圓代工", "supplied_product": "Snapdragon 8 Gen 3/4、Snapdragon X Elite 晶圓代工", "est_revenue_pct_low": 5.0, "est_revenue_pct_high": 8.0, "est_revenue_pct_mid": 6.5, "tier_level": "Tier 1 旗艦晶片主力代工", "official_basis": "高通旗艦晶片回歸台積電先進製程", "industry": "半導體晶圓代工", "est_market_cap_bil_twd": 26000.0}, {"id": 39, "tw_ticker": "5243", "tw_name": "乙盛-KY", "us_ticker": "TSLA", "us_name": "特斯拉", "relation_category": "車用沖壓機構件", "supplied_product": "Model Y、Cybertruck 車體沖壓件與電池機構外殼", "est_revenue_pct_low": 32.0, "est_revenue_pct_high": 42.0, "est_revenue_pct_mid": 37.0, "tier_level": "Tier 1 墨西哥廠配套主供", "official_basis": "乙盛墨西哥廠專供特斯拉德州廠", "industry": "車用沖壓件/機構件", "est_market_cap_bil_twd": 12.0}, {"id": 38, "tw_ticker": "1536", "tw_name": "和大", "us_ticker": "TSLA", "us_name": "特斯拉", "relation_category": "電動車減速齒輪機構", "supplied_product": "Tesla Model 3/Y/Cybertruck 減速齒輪箱與傳動軸", "est_revenue_pct_low": 28.0, "est_revenue_pct_high": 36.0, "est_revenue_pct_mid": 32.0, "tier_level": "Tier 1 核心主供", "official_basis": "和大公開財報與重大客戶說明，特斯拉為第一大客戶", "industry": "車用傳動齒輪箱", "est_market_cap_bil_twd": 15.0}, {"id": 40, "tw_ticker": "3665", "tw_name": "貿聯-KY", "us_ticker": "TSLA", "us_name": "特斯拉", "relation_category": "高壓線束與連接器", "supplied_product": "車用超高壓電源線束、Megapack 儲能系統線束", "est_revenue_pct_low": 14.0, "est_revenue_pct_high": 20.0, "est_revenue_pct_mid": 17.0, "tier_level": "Tier 1 創始線束核心主供", "official_basis": "特斯拉最早期的台灣核心線束夥伴", "industry": "車用與伺服器高壓線束", "est_market_cap_bil_twd": 85.0}, {"id": 41, "tw_ticker": "2360", "tw_name": "致茂", "us_ticker": "TSLA", "us_name": "特斯拉", "relation_category": "自動化量測與檢測設備", "supplied_product": "電動車電池包(Battery Pack)/BMS與電驅系統檢測設備", "est_revenue_pct_low": 12.0, "est_revenue_pct_high": 18.0, "est_revenue_pct_mid": 15.0, "tier_level": "Tier 1 車規測試指定儀器", "official_basis": "特斯拉電池生產線指定量測儀器供應商", "industry": "半導體/電池量測儀器", "est_market_cap_bil_twd": 160.0}, {"id": 42, "tw_ticker": "2330", "tw_name": "台積電", "us_ticker": "TSLA", "us_name": "特斯拉", "relation_category": "自駕與AI晶片代工", "supplied_product": "Tesla HW4.0 / HW5.0 FSD 全自動駕駛晶片、Dojo 晶片", "est_revenue_pct_low": 2.0, "est_revenue_pct_high": 4.0, "est_revenue_pct_mid": 3.0, "tier_level": "Tier 1 獨家先進製程代工", "official_basis": "特斯拉晶片外包台積電5nm/3nm", "industry": "半導體晶圓代工", "est_market_cap_bil_twd": 26000.0}];
         const TW_DATA = [{"tw_ticker": "2330", "name": "台積電", "market": "TWSE", "industry": "半導體晶圓代工", "est_market_cap_bil_twd": 26000.0}, {"tw_ticker": "2317", "name": "鴻海", "market": "TWSE", "industry": "電子代工服務(EMS/ODM)", "est_market_cap_bil_twd": 2500.0}, {"tw_ticker": "2454", "name": "聯發科", "market": "TWSE", "industry": "IC設計", "est_market_cap_bil_twd": 2100.0}, {"tw_ticker": "2382", "name": "廣達", "market": "TWSE", "industry": "AI伺服器/筆電ODM", "est_market_cap_bil_twd": 1100.0}, {"tw_ticker": "2308", "name": "台達電", "market": "TWSE", "industry": "電源供應/散熱/綠能", "est_market_cap_bil_twd": 1050.0}, {"tw_ticker": "3711", "name": "日月光投控", "market": "TWSE", "industry": "半導體封裝測試", "est_market_cap_bil_twd": 720.0}, {"tw_ticker": "6669", "name": "緯穎", "market": "TWSE", "industry": "雲端白牌伺服器", "est_market_cap_bil_twd": 450.0}, {"tw_ticker": "3231", "name": "緯創", "market": "TWSE", "industry": "GPU運算基板/代工", "est_market_cap_bil_twd": 330.0}, {"tw_ticker": "2345", "name": "智邦", "market": "TWSE", "industry": "網通白牌交換器", "est_market_cap_bil_twd": 330.0}, {"tw_ticker": "3008", "name": "大立光", "market": "TWSE", "industry": "光學鏡頭", "est_market_cap_bil_twd": 320.0}, {"tw_ticker": "8069", "name": "元太", "market": "TPEx", "industry": "電子紙顯示器", "est_market_cap_bil_twd": 280.0}, {"tw_ticker": "3037", "name": "欣興", "market": "TWSE", "industry": "ABF/BT載板", "est_market_cap_bil_twd": 260.0}, {"tw_ticker": "3017", "name": "奇鋐", "market": "TWSE", "industry": "散熱模組/水冷系統", "est_market_cap_bil_twd": 250.0}, {"tw_ticker": "3661", "name": "世芯-KY", "market": "TWSE", "industry": "ASIC/晶片設計服務", "est_market_cap_bil_twd": 180.0}, {"tw_ticker": "2356", "name": "英業達", "market": "TWSE", "industry": "雲端伺服器代工", "est_market_cap_bil_twd": 180.0}, {"tw_ticker": "3653", "name": "健策", "market": "TWSE", "industry": "均熱片/散熱機構件", "est_market_cap_bil_twd": 160.0}, {"tw_ticker": "2360", "name": "致茂", "market": "TWSE", "industry": "半導體/電池量測儀器", "est_market_cap_bil_twd": 160.0}, {"tw_ticker": "2449", "name": "京元電子", "market": "TWSE", "industry": "半導體測試代工", "est_market_cap_bil_twd": 140.0}, {"tw_ticker": "2368", "name": "金像電", "market": "TWSE", "industry": "高階PCB伺服器板", "est_market_cap_bil_twd": 120.0}, {"tw_ticker": "2059", "name": "川湖", "market": "TWSE", "industry": "伺服器導軌機構件", "est_market_cap_bil_twd": 110.0}, {"tw_ticker": "4958", "name": "臻鼎-KY", "market": "TWSE", "industry": "PCB/軟板FPC", "est_market_cap_bil_twd": 110.0}, {"tw_ticker": "3665", "name": "貿聯-KY", "market": "TWSE", "industry": "車用與伺服器高壓線束", "est_market_cap_bil_twd": 85.0}, {"tw_ticker": "3324", "name": "雙鴻", "market": "TWSE", "industry": "散熱模組/水冷板", "est_market_cap_bil_twd": 65.0}, {"tw_ticker": "3406", "name": "玉晶光", "market": "TWSE", "industry": "光學鏡頭/VR透鏡", "est_market_cap_bil_twd": 60.0}, {"tw_ticker": "8210", "name": "勤誠", "market": "TWSE", "industry": "AI伺服器機殼", "est_market_cap_bil_twd": 35.0}, {"tw_ticker": "3081", "name": "聯亞", "market": "TPEx", "industry": "矽光子光通訊磊晶", "est_market_cap_bil_twd": 35.0}, {"tw_ticker": "1536", "name": "和大", "market": "TWSE", "industry": "車用傳動齒輪箱", "est_market_cap_bil_twd": 15.0}, {"tw_ticker": "5243", "name": "乙盛-KY", "market": "TWSE", "industry": "車用沖壓件/機構件", "est_market_cap_bil_twd": 12.0}];
+        const SECTORS_DATA = [{"sector_name": "光通信", "tier_level": "Tier 1 直接供應鏈", "description": "AI高速傳輸/矽光子CPO/光收發模組/光纖玻璃", "is_active_for_tw": 1, "sample_us_stocks": "CRDO, ALAB, CIEN, GLW", "tw_stock_count": 6}, {"sector_name": "半導體設備", "tier_level": "Tier 1 直接供應鏈", "description": "先進製程晶圓製造設備/EUV/先進封裝CoWoS設備", "is_active_for_tw": 1, "sample_us_stocks": "ASML, KLAC, LRCX, AMAT, TER", "tw_stock_count": 6}, {"sector_name": "AI基建", "tier_level": "Tier 1 直接供應鏈", "description": "AI伺服器/水冷散熱/機櫃/高壓電源供應", "is_active_for_tw": 1, "sample_us_stocks": "CRWV, NBIS, APLD, VRT, ETN", "tw_stock_count": 6}, {"sector_name": "電力", "tier_level": "Tier 1 直接供應鏈", "description": "AI資料中心電網/變壓器重電設備/綠能儲能", "is_active_for_tw": 1, "sample_us_stocks": "CEG, VST, NRG, SMR, OKLO, TLN", "tw_stock_count": 4}, {"sector_name": "電動車", "tier_level": "Tier 1 直接供應鏈", "description": "電動車傳動系統/高壓線束/車身沖壓/車用PCB", "is_active_for_tw": 1, "sample_us_stocks": "F, GM, RIVN, LCID, XPEV, LI", "tw_stock_count": 4}, {"sector_name": "記憶體", "tier_level": "Tier 1 直接供應鏈", "description": "NAND Flash/DRAM模組/硬碟存儲控制器", "is_active_for_tw": 1, "sample_us_stocks": "STX", "tw_stock_count": 3}, {"sector_name": "太空", "tier_level": "Tier 1 直接供應鏈", "description": "低軌衛星地面接收站/衛星通訊相控陣天線", "is_active_for_tw": 1, "sample_us_stocks": "RKLB, ASTS, ACHR, JOBY, LUNR, RDW", "tw_stock_count": 3}, {"sector_name": "國防", "tier_level": "Tier 1 直接供應鏈", "description": "無人機系統/航太軍工零組件/高階精密機構件", "is_active_for_tw": 1, "sample_us_stocks": "LHX, AVAV, KTOS", "tw_stock_count": 3}, {"sector_name": "半導體", "tier_level": "Tier 1 直接供應鏈", "description": "晶圓代工/晶片設計/封測/類比與功率半導體", "is_active_for_tw": 1, "sample_us_stocks": "QCOM, TXN, ADI, MCHP, ON, ARM", "tw_stock_count": 0}, {"sector_name": "量子", "tier_level": "Tier 2 前瞻題材連動", "description": "量子運算研發/前瞻實驗室晶片與低溫控制", "is_active_for_tw": 1, "sample_us_stocks": "IONQ, RGTI, QBTS", "tw_stock_count": 0}, {"sector_name": "加密股", "tier_level": "Tier 2 情緒與資金連動", "description": "比特幣挖礦/加密貨幣交易所/顯卡與主機板連動", "is_active_for_tw": 1, "sample_us_stocks": "MARA, RIOT, CLSK, HUT, CORZ, IREN", "tw_stock_count": 3}, {"sector_name": "軟體平台", "tier_level": "Tier 2 情緒與資金連動", "description": "雲端運算/大數據AI軟體/資安防禦平台", "is_active_for_tw": 1, "sample_us_stocks": "CRM, ADBE, CSCO, IBM, NOW, INTU", "tw_stock_count": 2}];
+        const SECTOR_TW_DATA = [{"id": 13, "sector_name": "AI基建", "tw_ticker": "3017", "tw_name": "奇鋐", "product_role": "3D VC / 水冷板 (Cold Plate) / 機架散熱", "pure_play_pct": 55.0, "sensitivity_beta": 1.4}, {"id": 14, "sector_name": "AI基建", "tw_ticker": "3324", "tw_name": "雙鴻", "product_role": "水冷分歧管 (CDM) / 水冷散熱模組", "pure_play_pct": 50.0, "sensitivity_beta": 1.4}, {"id": 15, "sector_name": "AI基建", "tw_ticker": "2059", "tw_name": "川湖", "product_role": "AI機櫃專用高承重滑軌 (全球市佔第一)", "pure_play_pct": 50.0, "sensitivity_beta": 1.45}, {"id": 18, "sector_name": "AI基建", "tw_ticker": "8210", "tw_name": "勤誠", "product_role": "AI伺服器機殼與高階模組化機架", "pure_play_pct": 45.0, "sensitivity_beta": 1.3}, {"id": 16, "sector_name": "AI基建", "tw_ticker": "2382", "tw_name": "廣達", "product_role": "AI伺服器整機機櫃代工 (L10/L11)", "pure_play_pct": 40.0, "sensitivity_beta": 1.25}, {"id": 17, "sector_name": "AI基建", "tw_ticker": "3231", "tw_name": "緯創", "product_role": "GPU 運算主基板與伺服器主機板", "pure_play_pct": 35.0, "sensitivity_beta": 1.2}, {"id": 3, "sector_name": "光通信", "tw_ticker": "6442", "tw_name": "光聖", "product_role": "光纖跳接線與主動光纜 (AOC)", "pure_play_pct": 70.0, "sensitivity_beta": 1.4}, {"id": 1, "sector_name": "光通信", "tw_ticker": "3081", "tw_name": "聯亞", "product_role": "矽光子雷達CW雷射磊晶片 (CPO核心供貨)", "pure_play_pct": 65.0, "sensitivity_beta": 1.55}, {"id": 5, "sector_name": "光通信", "tw_ticker": "3163", "tw_name": "波若威", "product_role": "光波分復用器與光纖跳線模組", "pure_play_pct": 60.0, "sensitivity_beta": 1.3}, {"id": 6, "sector_name": "光通信", "tw_ticker": "4977", "tw_name": "眾達-KY", "product_role": "超高速 800G 光收發模組外殼與組裝", "pure_play_pct": 55.0, "sensitivity_beta": 1.35}, {"id": 2, "sector_name": "光通信", "tw_ticker": "3450", "tw_name": "聯鈞", "product_role": "矽光子光收發模組封測代工", "pure_play_pct": 50.0, "sensitivity_beta": 1.45}, {"id": 4, "sector_name": "光通信", "tw_ticker": "6451", "tw_name": "訊芯-KY", "product_role": "CPO 光電共封裝系統級模組", "pure_play_pct": 45.0, "sensitivity_beta": 1.4}, {"id": 40, "sector_name": "加密股", "tw_ticker": "6150", "tw_name": "撼訊", "product_role": "AMD 顯卡純度最高之專屬供應商", "pure_play_pct": 60.0, "sensitivity_beta": 1.5}, {"id": 38, "sector_name": "加密股", "tw_ticker": "2376", "tw_name": "技嘉", "product_role": "加密挖礦高階顯卡與 AI 算力伺服器", "pure_play_pct": 35.0, "sensitivity_beta": 1.3}, {"id": 39, "sector_name": "加密股", "tw_ticker": "2377", "tw_name": "微星", "product_role": "高階 GPU 電競顯卡與算力板卡", "pure_play_pct": 30.0, "sensitivity_beta": 1.25}, {"id": 9, "sector_name": "半導體設備", "tw_ticker": "3413", "tw_name": "京鼎", "product_role": "AMAT 應用材料蝕刻設備模組主力代工", "pure_play_pct": 75.0, "sensitivity_beta": 1.35}, {"id": 12, "sector_name": "半導體設備", "tw_ticker": "6187", "tw_name": "萬潤", "product_role": "CoWoS 先進封裝點膠與貼片檢測機", "pure_play_pct": 70.0, "sensitivity_beta": 1.5}, {"id": 10, "sector_name": "半導體設備", "tw_ticker": "3131", "tw_name": "弘塑", "product_role": "CoWoS 濕製程單晶圓清洗與蝕刻設備", "pure_play_pct": 65.0, "sensitivity_beta": 1.5}, {"id": 7, "sector_name": "半導體設備", "tw_ticker": "3680", "tw_name": "家登", "product_role": "EUV Pod 極紫外光光罩盒 (全球市佔 85%+)", "pure_play_pct": 60.0, "sensitivity_beta": 1.4}, {"id": 11, "sector_name": "半導體設備", "tw_ticker": "3583", "tw_name": "辛耘", "product_role": "CoWoS 濕製程設備代工與再生晶圓", "pure_play_pct": 50.0, "sensitivity_beta": 1.45}, {"id": 8, "sector_name": "半導體設備", "tw_ticker": "6196", "tw_name": "帆宣", "product_role": "ASML 光刻機模組代工/廠務工程", "pure_play_pct": 45.0, "sensitivity_beta": 1.25}, {"id": 29, "sector_name": "國防", "tw_ticker": "8033", "tw_name": "雷虎", "product_role": "軍用無人機研發與台灣國防標案", "pure_play_pct": 70.0, "sensitivity_beta": 1.6}, {"id": 31, "sector_name": "國防", "tw_ticker": "2634", "tw_name": "漢翔", "product_role": "軍機結構件製造與國防無人機維保", "pure_play_pct": 45.0, "sensitivity_beta": 1.2}, {"id": 30, "sector_name": "國防", "tw_ticker": "6829", "tw_name": "千附精密", "product_role": "美系愛國者飛彈零組件精密加工", "pure_play_pct": 40.0, "sensitivity_beta": 1.35}, {"id": 23, "sector_name": "太空", "tw_ticker": "3491", "tw_name": "昇達科", "product_role": "SpaceX / ASTS 毫米波天線元件主力供應", "pure_play_pct": 55.0, "sensitivity_beta": 1.5}, {"id": 24, "sector_name": "太空", "tw_ticker": "6285", "tw_name": "啟碁", "product_role": "低軌衛星地面接收路由器與天線", "pure_play_pct": 30.0, "sensitivity_beta": 1.25}, {"id": 25, "sector_name": "太空", "tw_ticker": "2313", "tw_name": "華通", "product_role": "低軌衛星專用高階 HDI 電路板主力主供", "pure_play_pct": 25.0, "sensitivity_beta": 1.3}, {"id": 28, "sector_name": "記憶體", "tw_ticker": "4967", "tw_name": "十銓", "product_role": "高頻電競記憶體與儲存模組", "pure_play_pct": 65.0, "sensitivity_beta": 1.4}, {"id": 26, "sector_name": "記憶體", "tw_ticker": "3260", "tw_name": "威剛", "product_role": "DRAM / NAND Flash 模組現貨經銷", "pure_play_pct": 60.0, "sensitivity_beta": 1.35}, {"id": 27, "sector_name": "記憶體", "tw_ticker": "8299", "tw_name": "群聯", "product_role": "NAND 控制 IC / PCIe Gen5 企業級存儲", "pure_play_pct": 50.0, "sensitivity_beta": 1.3}, {"id": 37, "sector_name": "軟體平台", "tw_ticker": "6690", "tw_name": "安碁資訊", "product_role": "SOC 資安監控與防護合規服務", "pure_play_pct": 55.0, "sensitivity_beta": 1.15}, {"id": 36, "sector_name": "軟體平台", "tw_ticker": "3029", "tw_name": "零壹", "product_role": "企業雲端架構與大數據平台代理", "pure_play_pct": 50.0, "sensitivity_beta": 1.15}, {"id": 19, "sector_name": "電力", "tw_ticker": "1519", "tw_name": "華城", "product_role": "美國變壓器訂單大外銷 (500kV超高壓變壓器)", "pure_play_pct": 55.0, "sensitivity_beta": 1.5}, {"id": 20, "sector_name": "電力", "tw_ticker": "1503", "tw_name": "士電", "product_role": "變壓器與配電盤北美外銷專案", "pure_play_pct": 40.0, "sensitivity_beta": 1.3}, {"id": 21, "sector_name": "電力", "tw_ticker": "1513", "tw_name": "中興電", "product_role": "GIS 高壓氣體絕緣開關設備", "pure_play_pct": 35.0, "sensitivity_beta": 1.25}, {"id": 22, "sector_name": "電力", "tw_ticker": "1514", "tw_name": "亞力", "product_role": "晶圓廠建廠電力系統與變壓器", "pure_play_pct": 35.0, "sensitivity_beta": 1.25}, {"id": 33, "sector_name": "電動車", "tw_ticker": "1536", "tw_name": "和大", "product_role": "電動車專用高扭力減速齒輪箱", "pure_play_pct": 50.0, "sensitivity_beta": 1.35}, {"id": 34, "sector_name": "電動車", "tw_ticker": "5243", "tw_name": "乙盛-KY", "product_role": "車體高張力沖壓件與電池機構件", "pure_play_pct": 45.0, "sensitivity_beta": 1.3}, {"id": 35, "sector_name": "電動車", "tw_ticker": "3715", "tw_name": "定穎投控", "product_role": "高階車用 HDI 多層板與自駕網通板", "pure_play_pct": 45.0, "sensitivity_beta": 1.3}, {"id": 32, "sector_name": "電動車", "tw_ticker": "3665", "tw_name": "貿聯-KY", "product_role": "車用超高壓線束與儲能高壓連接器", "pure_play_pct": 35.0, "sensitivity_beta": 1.25}];
 
-        let currentGiant = GIANTS_DATA[0].us_ticker; // 預設 NVDA
+        let currentGiant = GIANTS_DATA[0].us_ticker;
+        let currentSector = SECTORS_DATA[0].sector_name;
 
-        // 初始化
-        function initGiants() {
+        function init() {
             renderGiantSelector();
             renderActiveGiant(currentGiant);
             initTwDropdown();
             renderTwReverseLookup();
             executeSimulation();
+
+            renderSectorPills();
+            renderActiveSector(currentSector);
+            executeSectorSimulation();
         }
 
-        // 渲染上方巨頭卡片列
+        window.switchRadarMode = function(mode) {
+            document.getElementById('btnModeGiants').classList.toggle('active', mode === 'giants');
+            document.getElementById('btnModeSectors').classList.toggle('active', mode === 'sectors');
+            document.getElementById('modeGiantsArea').style.display = mode === 'giants' ? 'block' : 'none';
+            document.getElementById('modeSectorsArea').style.display = mode === 'sectors' ? 'block' : 'none';
+        };
+
+        /* === 巨頭模式邏輯 === */
         function renderGiantSelector() {
-            const container = document.getElementById('giantSelectorScroll');
-            container.innerHTML = GIANTS_DATA.map((g, idx) => `
+            const c = document.getElementById('giantSelectorScroll');
+            c.innerHTML = GIANTS_DATA.map((g, idx) => `
                 <div class="giant-select-card ${g.us_ticker === currentGiant ? 'active' : ''}" onclick="selectGiant('${g.us_ticker}')">
                     <div class="giant-badge-rank">#${idx + 1}</div>
                     <div class="giant-card-ticker">${g.us_ticker}</div>
@@ -1835,25 +1868,15 @@
             executeSimulation();
         };
 
-        // 渲染選取之巨頭供應鏈表
         function renderActiveGiant(ticker) {
             const g = GIANTS_DATA.find(x => x.us_ticker === ticker);
             if (!g) return;
-
-            document.getElementById('activeGiantTitle').innerHTML = `
-                <span>🏛️ 【${g.name_zh} ${g.us_ticker}】台灣主要供應鏈清單</span>
-            `;
+            document.getElementById('activeGiantTitle').innerHTML = `<span>🏛️ 【${g.name_zh} ${g.us_ticker}】台灣主要供應鏈清單</span>`;
             document.getElementById('activeGiantSub').innerText = `${g.core_segment} • 核心產品: ${g.key_products}`;
-
-            const relations = REL_DATA.filter(r => r.us_ticker === ticker).sort((a,b) => b.est_revenue_pct_mid - a.est_revenue_pct_mid);
-            const tbody = document.getElementById('scTableBody');
-
-            tbody.innerHTML = relations.map(r => `
+            const rels = REL_DATA.filter(r => r.us_ticker === ticker).sort((a,b) => b.est_revenue_pct_mid - a.est_revenue_pct_mid);
+            document.getElementById('scTableBody').innerHTML = rels.map(r => `
                 <tr>
-                    <td>
-                        <span class="tw-stock-tag">${r.tw_ticker}</span>
-                        <span class="tw-stock-name">${r.tw_name}</span>
-                    </td>
+                    <td><span class="tw-stock-tag">${r.tw_ticker}</span><span class="tw-stock-name">${r.tw_name}</span></td>
                     <td style="color:#94a3b8;">${r.relation_category}</td>
                     <td style="font-weight:500;">${r.supplied_product}</td>
                     <td>
@@ -1861,96 +1884,62 @@
                             <span>${r.est_revenue_pct_mid}%</span>
                             <span style="font-size:11px; color:#64748b;">(${r.est_revenue_pct_low}~${r.est_revenue_pct_high}%)</span>
                         </div>
-                        <div class="pct-bar-wrap">
-                            <div class="pct-bar-fill" style="width:${Math.min(100, r.est_revenue_pct_mid * 1.5)}%;"></div>
-                        </div>
+                        <div class="pct-bar-wrap"><div class="pct-bar-fill" style="width:${Math.min(100, r.est_revenue_pct_mid * 1.5)}%;"></div></div>
                     </td>
-                    <td>
-                        <span class="tier-badge ${r.tier_level.includes('Tier 1') ? 'tier-1' : 'tier-2'}">${r.tier_level.split(' ')[0]}</span>
-                    </td>
+                    <td><span class="tier-badge ${r.tier_level.includes('Tier 1') ? 'tier-1' : 'tier-2'}">${r.tier_level.split(' ')[0]}</span></td>
                 </tr>
             `).join('');
         }
 
-        // 事件驅動試算器
         window.setSimChange = function(val) {
             document.getElementById('simChgInput').value = val;
             executeSimulation();
         };
 
         window.executeSimulation = function() {
-            const g = GIANTS_DATA.find(x => x.us_ticker === currentGiant);
             const chg = parseFloat(document.getElementById('simChgInput').value) || 0.0;
-            const relations = REL_DATA.filter(r => r.us_ticker === currentGiant).sort((a,b) => b.est_revenue_pct_mid - a.est_revenue_pct_mid);
-
+            const rels = REL_DATA.filter(r => r.us_ticker === currentGiant).sort((a,b) => b.est_revenue_pct_mid - a.est_revenue_pct_mid);
             let pointSum = 0;
-            if (relations.length > 0) {
-                // 估計台積電與權值點數
-                relations.forEach(r => {
-                    let beta = 1.0;
-                    if (r.supplied_product.includes('水冷') || r.supplied_product.includes('導軌')) beta = 1.45;
-                    else if (r.supplied_product.includes('ASIC') || r.supplied_product.includes('設計')) beta = 1.40;
-                    else if (r.supplied_product.includes('機櫃') || r.supplied_product.includes('伺服器')) beta = 1.25;
-
-                    const impact = chg * Math.pow(r.est_revenue_pct_mid / 100.0, 0.65) * beta;
-                    if (r.tw_ticker === '2330') pointSum += impact * 85.0;
-                    else if (r.tw_ticker === '2317') pointSum += impact * 10.0;
-                    else if (r.tw_ticker === '2382') pointSum += impact * 5.0;
-                });
-            }
-
-            const topPick = relations[0] ? relations[0] : null;
-            const topImpact = topPick ? (chg * Math.pow(topPick.est_revenue_pct_mid / 100.0, 0.65) * 1.45) : 0;
-
-            const box = document.getElementById('simOutputBox');
-            box.innerHTML = `
+            rels.forEach(r => {
+                let beta = 1.0;
+                if (r.supplied_product.includes('水冷') || r.supplied_product.includes('導軌')) beta = 1.45;
+                else if (r.supplied_product.includes('ASIC') || r.supplied_product.includes('設計')) beta = 1.40;
+                else if (r.supplied_product.includes('機櫃') || r.supplied_product.includes('伺服器')) beta = 1.25;
+                const impact = chg * Math.pow(r.est_revenue_pct_mid / 100.0, 0.65) * beta;
+                if (r.tw_ticker === '2330') pointSum += impact * 85.0;
+                else if (r.tw_ticker === '2317') pointSum += impact * 10.0;
+                else if (r.tw_ticker === '2382') pointSum += impact * 5.0;
+            });
+            const top = rels[0];
+            const topImpact = top ? (chg * Math.pow(top.est_revenue_pct_mid / 100.0, 0.65) * 1.45) : 0;
+            document.getElementById('simOutputBox').innerHTML = `
                 <div class="sim-out-card">
                     <div style="font-size:11px; color:#94a3b8;">大盤開盤理論跳空</div>
-                    <div style="font-size:18px; font-weight:800; color:${pointSum >= 0 ? '#ef4444' : '#10b981'};">
-                        ${pointSum >= 0 ? '+' : ''}${pointSum.toFixed(1)} 點
-                    </div>
+                    <div style="font-size:18px; font-weight:800; color:${pointSum >= 0 ? '#ef4444' : '#10b981'};">${pointSum >= 0 ? '+' : ''}${pointSum.toFixed(1)} 點</div>
                 </div>
                 <div class="sim-out-card">
                     <div style="font-size:11px; color:#94a3b8;">最高彈性標的衝擊</div>
-                    <div style="font-size:18px; font-weight:800; color:${topImpact >= 0 ? '#ef4444' : '#10b981'};">
-                        ${topImpact >= 0 ? '+' : ''}${topImpact.toFixed(1)}%
-                    </div>
-                    <div style="font-size:11px; color:#38bdf8;">${topPick ? topPick.tw_ticker + ' ' + topPick.tw_name : '-'}</div>
+                    <div style="font-size:18px; font-weight:800; color:${topImpact >= 0 ? '#ef4444' : '#10b981'};">${topImpact >= 0 ? '+' : ''}${topImpact.toFixed(1)}%</div>
+                    <div style="font-size:11px; color:#38bdf8;">${top ? top.tw_ticker + ' ' + top.tw_name : '-'}</div>
                 </div>
             `;
         };
 
-        // 初始化台廠反查下拉選單
         function initTwDropdown() {
             const sel = document.getElementById('twStockSelect');
-            // 只列出有出現在 relations 的台廠代號
-            const validTickers = [...new Set(REL_DATA.map(r => r.tw_ticker))];
-            const twValid = TW_DATA.filter(t => validTickers.includes(t.tw_ticker));
-
-            sel.innerHTML = twValid.map(t => `
-                <option value="${t.tw_ticker}">${t.tw_ticker} ${t.name} (${t.industry})</option>
-            `).join('');
-
-            sel.value = '2330'; // 預設台積電
+            const valid = [...new Set(REL_DATA.map(r => r.tw_ticker))];
+            sel.innerHTML = TW_DATA.filter(t => valid.includes(t.tw_ticker)).map(t => `<option value="${t.tw_ticker}">${t.tw_ticker} ${t.name} (${t.industry})</option>`).join('');
+            sel.value = '2330';
         }
 
         window.renderTwReverseLookup = function() {
             const ticker = document.getElementById('twStockSelect').value;
             const rels = REL_DATA.filter(r => r.tw_ticker === ticker).sort((a,b) => b.est_revenue_pct_mid - a.est_revenue_pct_mid);
-            const container = document.getElementById('twReverseResult');
-
-            if (rels.length === 0) {
-                container.innerHTML = "<div style='color:#64748b;'>暫無關聯資料</div>";
-                return;
-            }
-
-            const totalPct = rels.reduce((sum, r) => sum + r.est_revenue_pct_mid, 0);
-
-            container.innerHTML = `
+            const total = rels.reduce((s, r) => s + r.est_revenue_pct_mid, 0);
+            document.getElementById('twReverseResult').innerHTML = `
                 <div style="background:#0f172a; border-radius:8px; padding:12px; border:1px solid #1e293b;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:13px;">
-                        <span style="color:#94a3b8;">美股巨頭合計佔比:</span>
-                        <span style="font-weight:700; color:#f59e0b;">${totalPct.toFixed(1)}%</span>
+                        <span style="color:#94a3b8;">美股巨頭合計佔比:</span><span style="font-weight:700; color:#f59e0b;">${total.toFixed(1)}%</span>
                     </div>
                     ${rels.map(r => `
                         <div style="margin-bottom:10px;">
@@ -1958,9 +1947,7 @@
                                 <span style="font-weight:700; color:#f1f5f9;">${r.us_ticker} (${r.us_name})</span>
                                 <span style="color:#38bdf8; font-weight:700;">${r.est_revenue_pct_mid}%</span>
                             </div>
-                            <div class="pct-bar-wrap">
-                                <div class="pct-bar-fill" style="width:${Math.min(100, r.est_revenue_pct_mid * 1.6)}%;"></div>
-                            </div>
+                            <div class="pct-bar-wrap"><div class="pct-bar-fill" style="width:${Math.min(100, r.est_revenue_pct_mid * 1.6)}%;"></div></div>
                             <div style="font-size:11px; color:#64748b; margin-top:2px;">${r.supplied_product}</div>
                         </div>
                     `).join('')}
@@ -1968,9 +1955,80 @@
             `;
         };
 
-        // 當切換到此 tab 時觸發一次調整
-        window.addEventListener('load', initGiants);
-        setTimeout(initGiants, 300);
+        /* === 板塊模式邏輯 === */
+        function renderSectorPills() {
+            const c = document.getElementById('sectorPillsContainer');
+            c.innerHTML = SECTORS_DATA.map(s => `
+                <div class="sector-pill ${s.sector_name === currentSector ? 'active' : ''}" onclick="selectSector('${s.sector_name}')">
+                    <span>${s.sector_name}</span>
+                    <span style="font-size:11px; opacity:0.75;">(${s.tw_stock_count}檔)</span>
+                </div>
+            `).join('');
+        }
+
+        window.selectSector = function(sec) {
+            currentSector = sec;
+            renderSectorPills();
+            renderActiveSector(sec);
+            executeSectorSimulation();
+        };
+
+        function renderActiveSector(sec) {
+            const s = SECTORS_DATA.find(x => x.sector_name === sec);
+            if (!s) return;
+            document.getElementById('activeSectorTitle').innerHTML = `<span>📡 【美股 ${sec} 板塊】對應台灣核心受惠股</span>`;
+            document.getElementById('activeSectorSub').innerText = `${s.tier_level} • 範疇: ${s.description}`;
+            const twStocks = SECTOR_TW_DATA.filter(x => x.sector_name === sec).sort((a,b) => b.pure_play_pct - a.pure_play_pct);
+            document.getElementById('sectorTableBody').innerHTML = twStocks.map(r => `
+                <tr>
+                    <td><span class="tw-stock-tag">${r.tw_ticker}</span><span class="tw-stock-name">${r.tw_name}</span></td>
+                    <td style="font-weight:500;">${r.product_role}</td>
+                    <td>
+                        <div style="display:flex; justify-content:space-between; font-weight:700; color:#38bdf8;">
+                            <span>${r.pure_play_pct}%</span>
+                        </div>
+                        <div class="pct-bar-wrap"><div class="pct-bar-fill" style="width:${r.pure_play_pct}%;"></div></div>
+                    </td>
+                    <td><span style="color:#f59e0b; font-weight:700;">${r.sensitivity_beta}x</span></td>
+                </tr>
+            `).join('');
+
+            // 美股成分股標籤
+            const usStocks = s.sample_us_stocks ? s.sample_us_stocks.split(', ') : [];
+            document.getElementById('sectorUsStockList').innerHTML = usStocks.map(u => `
+                <span style="background:#1e293b; border:1px solid #334155; padding:4px 8px; border-radius:4px; font-size:12px; color:#38bdf8; font-weight:600;">${u}</span>
+            `).join('');
+        }
+
+        window.setSecChange = function(val) {
+            document.getElementById('secChgInput').value = val;
+            executeSectorSimulation();
+        };
+
+        window.executeSectorSimulation = function() {
+            const chg = parseFloat(document.getElementById('secChgInput').value) || 0.0;
+            const twStocks = SECTOR_TW_DATA.filter(x => x.sector_name === currentSector).sort((a,b) => b.pure_play_pct - a.pure_play_pct);
+            if (twStocks.length === 0) return;
+            const top = twStocks[0];
+            const topImpact = chg * Math.sqrt(top.pure_play_pct / 100.0) * top.sensitivity_beta;
+            const avgBeta = twStocks.reduce((sum, x) => sum + x.sensitivity_beta, 0) / twStocks.length;
+            const avgImpact = chg * 0.75 * avgBeta;
+
+            document.getElementById('secOutputBox').innerHTML = `
+                <div class="sim-out-card">
+                    <div style="font-size:11px; color:#94a3b8;">族群平均理論連動</div>
+                    <div style="font-size:18px; font-weight:800; color:${avgImpact >= 0 ? '#ef4444' : '#10b981'};">${avgImpact >= 0 ? '+' : ''}${avgImpact.toFixed(1)}%</div>
+                </div>
+                <div class="sim-out-card">
+                    <div style="font-size:11px; color:#94a3b8;">首選純度衝擊標的</div>
+                    <div style="font-size:18px; font-weight:800; color:${topImpact >= 0 ? '#ef4444' : '#10b981'};">${topImpact >= 0 ? '+' : ''}${topImpact.toFixed(1)}%</div>
+                    <div style="font-size:11px; color:#38bdf8;">${top.tw_ticker} ${top.tw_name}</div>
+                </div>
+            `;
+        };
+
+        window.addEventListener('load', init);
+        setTimeout(init, 300);
     })();
     </script>
     
@@ -4319,7 +4377,7 @@
         <!-- Footer -->
         <div style="margin-top:40px;border-top:2px dashed #334155;padding-top:30px;"><h2 style="color:#fff;margin-bottom:20px;font-size:22px;">🔥 市場籌碼焦點：個股期貨與可轉債</h2><div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 400px), 1fr));gap:20px;"><div style="background:rgba(15,23,42,0.7);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:15px;"><h3 style="color:#fca5a5;margin-top:0;">📉 個股期貨「前十大交易人空單」排行 Top 20</h3><div style="font-size:12px;color:#94a3b8;margin-bottom:10px;">資料日期：2026-09-24 (排除大盤與指數期貨)</div><div class="xiaoge-table-wrapper"><table class="xiaoge-table"><thead><tr><th>排名</th><th>代號</th><th>契約名稱</th><th>前十大空單</th><th>前十大淨額</th><th>市場未平倉</th></tr></thead><tbody><tr><td>#1</td><td>CC</td><td style='font-weight:bold;color:#facc15;'>聯電期貨</td><td class='text-bear'>73,565</td><td class='text-bear'>-32,922</td><td>96,721</td></tr><tr><td>#2</td><td>QF</td><td style='font-weight:bold;color:#facc15;'>小型台積電期貨</td><td class='text-bear'>69,379</td><td class='text-bear'>-60,764</td><td>79,723</td></tr><tr><td>#3</td><td>CH</td><td style='font-weight:bold;color:#facc15;'>友達期貨</td><td class='text-bear'>33,330</td><td class='text-bear'>-18,205</td><td>39,837</td></tr><tr><td>#4</td><td>DQ</td><td style='font-weight:bold;color:#facc15;'>群創期貨</td><td class='text-bear'>28,123</td><td class='text-bear'>-14,521</td><td>32,485</td></tr><tr><td>#5</td><td>DH</td><td style='font-weight:bold;color:#facc15;'>鴻海期貨</td><td class='text-bear'>22,624</td><td class='text-bear'>-6,349</td><td>24,783</td></tr><tr><td>#6</td><td>QE</td><td style='font-weight:bold;color:#facc15;'>小型國巨期貨</td><td class='text-bear'>20,219</td><td class='text-bear'>-15,767</td><td>21,720</td></tr><tr><td>#7</td><td>CD</td><td style='font-weight:bold;color:#facc15;'>台積電期貨</td><td class='text-bear'>17,951</td><td class='text-bear'>-2,501</td><td>31,560</td></tr><tr><td>#8</td><td>RV</td><td style='font-weight:bold;color:#facc15;'>小型台達電期貨</td><td class='text-bear'>14,510</td><td class='text-bear'>-10,652</td><td>16,633</td></tr><tr><td>#9</td><td>FZ</td><td style='font-weight:bold;color:#facc15;'>華邦電期貨</td><td class='text-bear'>13,423</td><td class='text-bear'>-5,781</td><td>15,988</td></tr><tr><td>#10</td><td>QZ</td><td style='font-weight:bold;color:#facc15;'>力積電期貨</td><td class='text-bear'>13,397</td><td class='text-bear'>-1,972</td><td>18,170</td></tr><tr><td>#11</td><td>QN</td><td style='font-weight:bold;color:#facc15;'>小型群聯期貨</td><td class='text-bear'>12,139</td><td class='text-bear'>-7,373</td><td>13,417</td></tr><tr><td>#12</td><td>PU</td><td style='font-weight:bold;color:#facc15;'>小型聯發科期貨</td><td class='text-bear'>11,866</td><td class='text-bear'>-9,383</td><td>14,457</td></tr><tr><td>#13</td><td>PW</td><td style='font-weight:bold;color:#facc15;'>小型緯穎期貨</td><td class='text-bear'>11,640</td><td class='text-bear'>-4,306</td><td>14,633</td></tr><tr><td>#14</td><td>PB</td><td style='font-weight:bold;color:#facc15;'>小型環球晶期貨</td><td class='text-bear'>11,617</td><td class='text-bear'>-9,339</td><td>12,973</td></tr><tr><td>#15</td><td>QI</td><td style='font-weight:bold;color:#facc15;'>小型穩懋期貨</td><td class='text-bear'>11,212</td><td class='text-bear'>-5,127</td><td>11,770</td></tr><tr><td>#16</td><td>PL</td><td style='font-weight:bold;color:#facc15;'>合晶期貨</td><td class='text-bear'>10,650</td><td class='text-bear'>-4,892</td><td>11,292</td></tr><tr><td>#17</td><td>LX</td><td style='font-weight:bold;color:#facc15;'>國巨期貨</td><td class='text-bear'>10,103</td><td class='text-bear'>-3,781</td><td>11,817</td></tr><tr><td>#18</td><td>KU</td><td style='font-weight:bold;color:#facc15;'>台玻期貨</td><td class='text-bear'>9,399</td><td class='text-bear'>-2,954</td><td>9,524</td></tr><tr><td>#19</td><td>NS</td><td style='font-weight:bold;color:#facc15;'>頎邦期貨</td><td class='text-bear'>8,873</td><td class='text-bear'>-4,572</td><td>11,681</td></tr><tr><td>#20</td><td>CA</td><td style='font-weight:bold;color:#facc15;'>南亞期貨</td><td class='text-bear'>8,511</td><td class='text-bear'>-4,070</td><td>10,185</td></tr></tbody></table></div></div><div style="background:rgba(15,23,42,0.7);border:1px solid rgba(59,130,246,0.3);border-radius:10px;padding:15px;"><h3 style="color:#93c5fd;margin-top:0;">💡 值得關注的可轉債 (低溢價+流動性)</h3><div style="font-size:12px;color:#94a3b8;margin-bottom:10px;">資料日期：2026-09-24 (條件：溢價率&lt;10%, 成交量&gt;50張, 價格98~120)</div><div class="xiaoge-table-wrapper"><table class="xiaoge-table"><thead><tr><th>排名</th><th>代號</th><th>CB名稱</th><th>現股</th><th>收盤價</th><th>溢價率</th><th>成交量(張)</th></tr></thead><tbody><tr><td>#1</td><td>27562</td><td style='font-weight:bold;color:#60a5fa;'>聯發國際二</td><td>聯發國際</td><td>103.50</td><td class=''>5.63%</td><td style='color:#fbbf24;'>292</td></tr><tr><td>#2</td><td>30454</td><td style='font-weight:bold;color:#60a5fa;'>台灣大四</td><td>台灣大</td><td>107.60</td><td class='text-bull'>-0.31%</td><td style='color:#fbbf24;'>116</td></tr><tr><td>#3</td><td>45416</td><td style='font-weight:bold;color:#60a5fa;'>晟田六</td><td>晟田</td><td>100.80</td><td class=''>6.75%</td><td style='color:#fbbf24;'>105</td></tr><tr><td>#4</td><td>31415</td><td style='font-weight:bold;color:#60a5fa;'>晶宏五</td><td>晶宏</td><td>112.40</td><td class=''>9.63%</td><td style='color:#fbbf24;'>90</td></tr><tr><td>#5</td><td>77131</td><td style='font-weight:bold;color:#60a5fa;'>威力德生醫一</td><td>威力德生醫</td><td>105.00</td><td class='text-bull'>-0.97%</td><td style='color:#fbbf24;'>70</td></tr></tbody></table></div></div></div></div>
         <div class="footer">
-            TW-Stock Quantitative Research System • 100% 離線純自給自足 (純 SVG 向量圖形) • 產出時間: 2026-09-25 19:03:47
+            TW-Stock Quantitative Research System • 100% 離線純自給自足 (純 SVG 向量圖形) • 產出時間: 2026-09-25 21:33:27
         </div>
     </div>
 
