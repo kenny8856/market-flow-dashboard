@@ -1576,6 +1576,22 @@
             vertical-align: middle;
         }
         .sc-table tr:hover td { background: rgba(56, 189, 248, 0.04); }
+        .tw-stock-link {
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 2px 6px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .tw-stock-link:hover {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+            transform: translateX(2px);
+        }
         .tw-stock-tag { font-weight: 700; color: #38bdf8; display: inline-block; }
         .tw-stock-name { color: #e2e8f0; font-weight: 600; margin-left: 4px; }
         .pct-bar-wrap {
@@ -1880,7 +1896,7 @@
             const rels = REL_DATA.filter(r => r.us_ticker === ticker).sort((a,b) => b.est_revenue_pct_mid - a.est_revenue_pct_mid);
             document.getElementById('scTableBody').innerHTML = rels.map(r => `
                 <tr>
-                    <td><span class="tw-stock-tag">${r.tw_ticker}</span><span class="tw-stock-name">${r.tw_name}</span></td>
+                    <td><a href="stock_${r.tw_ticker}.html" target="_blank" class="tw-stock-link" title="點擊查閱 ${r.tw_name} K線、3週期POC與權證分析"><span class="tw-stock-tag">${r.tw_ticker}</span><span class="tw-stock-name">${r.tw_name}</span><span style="font-size:11px; color:#38bdf8;">📊</span></a></td>
                     <td style="color:#94a3b8;">${r.relation_category}</td>
                     <td style="font-weight:500;">${r.supplied_product}</td>
                     <td>
@@ -1985,7 +2001,7 @@
             const twStocks = SECTOR_TW_DATA.filter(x => x.sector_name === sec).sort((a,b) => b.pure_play_pct - a.pure_play_pct);
             document.getElementById('sectorTableBody').innerHTML = twStocks.map(r => `
                 <tr>
-                    <td><span class="tw-stock-tag">${r.tw_ticker}</span><span class="tw-stock-name">${r.tw_name}</span></td>
+                    <td><a href="stock_${r.tw_ticker}.html" target="_blank" class="tw-stock-link" title="點擊查閱 ${r.tw_name} K線、3週期POC與權證分析"><span class="tw-stock-tag">${r.tw_ticker}</span><span class="tw-stock-name">${r.tw_name}</span><span style="font-size:11px; color:#38bdf8;">📊</span></a></td>
                     <td style="font-weight:500;">${r.product_role}</td>
                     <td>
                         <div style="display:flex; justify-content:space-between; font-weight:700; color:#38bdf8;">
@@ -4384,7 +4400,7 @@
         
         <!-- Footer -->
         <div class="footer">
-            TW-Stock Quantitative Research System • 100% 離線純自給自足 (純 SVG 向量圖形) • 產出時間: 2026-09-25 22:35:23
+            TW-Stock Quantitative Research System • 100% 離線純自給自足 (純 SVG 向量圖形) • 產出時間: 2026-09-25 23:17:25
         </div>
     </div>
 
