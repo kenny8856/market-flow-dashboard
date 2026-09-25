@@ -620,10 +620,12 @@ class StockPageGenerator:
                 <div class="stat-label">🌐 外資 5日淨買賣</div>
                 <div class="stat-value" style="color:var(--accent-blue);">{foreign_5d_str}</div>
             </div>
+            {'' if stock_id in ['TAIEX', 'TPEx'] else f'''
             <div class="stat-item">
                 <div class="stat-label">📊 融資 5日增減</div>
                 <div class="stat-value" style="color:var(--accent-yellow);">{margin_5d_str}</div>
             </div>
+            '''}
             <div class="stat-item">
                 <div class="stat-label">🔥 今日權證多空比</div>
                 <div class="stat-value" style="font-size:15px;">認購 {w_summary.get('call_ratio', 0)}% : 認售 {w_summary.get('put_ratio', 0)}%</div>
@@ -669,13 +671,13 @@ class StockPageGenerator:
             <div id="volume-chart-container" class="chart-box-vol"></div>
 
             <!-- 副圖 2：外資與投信每日多空金額 (Institutional Flow) -->
-            <div class="chart-legend" style="margin-top: 10px; margin-bottom: 4px;">
+            <div class="chart-legend" style="margin-top: 10px; margin-bottom: 4px; {'''display:none;''' if stock_id == 'TPEx' else ''}">
                 <div class="legend-item" style="font-weight:700; color:var(--text-primary);">🏛️ 外資與投信每日多空金額 ({'億元' if stock_id in ['TAIEX', 'TPEx'] else '萬元'})</div>
                 <div class="legend-item"><span class="legend-dot" style="background:#38bdf8;"></span> 外資買超 (天藍柱)</div>
                 <div class="legend-item"><span class="legend-dot" style="background:#64748b;"></span> 外資賣超 (灰柱)</div>
                 <div class="legend-item"><span class="legend-dot" style="background:#f43f5e;"></span> 投信多空淨額 (桃紅線)</div>
             </div>
-            <div id="inst-chart-container" class="chart-box-inst"></div>
+            <div id="inst-chart-container" class="chart-box-inst" style="{'''display:none;''' if stock_id == 'TPEx' else ''}"></div>
 
             <!-- 副圖 3：個股關聯權證每日多空資金流 (Warrant Flow) -->
             <div class="chart-legend" style="margin-top: 10px; margin-bottom: 4px;">
@@ -834,6 +836,9 @@ class StockPageGenerator:
             const isIndex = (['TAIEX', 'TPEx'].includes('{stock_id}'));
             const unitName = isIndex ? '億' : '萬';
             const instContainer = document.getElementById('inst-chart-container');
+            let instChart = null;
+            if ('{stock_id}' !== 'TPEx') {{
+
             const instChart = LightweightCharts.createChart(instContainer, Object.assign({{}}, commonChartOptions, {{
                 width: instContainer.clientWidth,
                 height: instContainer.clientHeight,
@@ -907,7 +912,7 @@ class StockPageGenerator:
             }});
             netLineSeries.setData(warrantNetData);
 
-            const allCharts = [klineChart, volumeChart, instChart, warrantChart];
+            const allCharts = [klineChart, volumeChart, instChart, warrantChart].filter(c => c !== null);
 
             // 四圖時間軸與邏輯區間連動 (Smooth Logical Range Sync)
             allCharts.forEach(c1 => {{
@@ -944,7 +949,7 @@ class StockPageGenerator:
                 if (volumeChart !== sourceChart && volumeMap.has(t)) {{
                     try {{ volumeChart.setCrosshairPosition(volumeMap.get(t), t, volumeSeries); }} catch(e) {{}}
                 }}
-                if (instChart !== sourceChart && instMap.has(t)) {{
+                if (instChart && instChart !== sourceChart && instMap.has(t)) {{
                     try {{ instChart.setCrosshairPosition(instMap.get(t), t, foreignSeries); }} catch(e) {{}}
                 }}
                 if (warrantChart !== sourceChart && warrantMap.has(t)) {{
@@ -954,7 +959,7 @@ class StockPageGenerator:
 
             klineChart.subscribeCrosshairMove(p => syncCrosshair(klineChart, p));
             volumeChart.subscribeCrosshairMove(p => syncCrosshair(volumeChart, p));
-            instChart.subscribeCrosshairMove(p => syncCrosshair(instChart, p));
+            if(instChart) instChart.subscribeCrosshairMove(p => syncCrosshair(instChart, p));
             warrantChart.subscribeCrosshairMove(p => syncCrosshair(warrantChart, p));
 
             // 精確同步右側價格刻度寬度 (保證四張圖繪圖區與網格線 100% 垂直對齊)
