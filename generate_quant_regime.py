@@ -341,6 +341,16 @@ def generate_html(output_path="quant_regime.html"):
     except Exception as e:
         print(f"Error generating index pages: {e}")
 
+    try:
+        from scripts.generate_us_giants_component import generate_us_giants_html
+        us_giants_html = generate_us_giants_html()
+        print("Generated US Giants Supply Chain radar component.")
+    except Exception as e:
+        print(f"Error generating us_giants_html: {e}")
+        us_giants_html = "<div style='color:red;'>無法載入美股巨頭雷達</div>" 
+    except Exception as e:
+        print(f"Error generating index pages: {e}")
+
     # 原有的個股產出
     try:
         from src.stock_page_generator import StockPageGenerator
@@ -2048,6 +2058,7 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
                 <button class="tab-btn active" onclick="switchTab(event, 'tab-macro')">📊 多空儀表板</button>
                 <button class="tab-btn" onclick="switchTab(event, 'tab-taiex')">📈 加權指數</button>
                 <button class="tab-btn" onclick="switchTab(event, 'tab-tpex')">📈 櫃買指數</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-us-giants')">🏛️ 美股巨頭雷達</button>
                 <button class="tab-btn" onclick="switchTab(event, 'tab-longs')">🟢 多方標的 ({len(longs)})</button>
                 <button class="tab-btn" onclick="switchTab(event, 'tab-shorts')">🔴 空方標的 ({len(shorts)})</button>
             </div>
@@ -2246,6 +2257,10 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
             <div class="iframe-container">
                 <iframe src="stock_TPEx.html?v=1790331785" style="width:100%; height:100%; border:none;"></iframe>
             </div>
+        </div>
+
+        <div id="tab-us-giants" class="tab-content">
+            {us_giants_html}
         </div>
 
         <div id="tab-longs" class="tab-content">
