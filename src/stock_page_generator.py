@@ -38,32 +38,33 @@ class StockPageGenerator:
         conn = sqlite3.connect(db_path)
         c = conn.cursor()
 
-        # 1. 查詢日 K 線 (過濾 2025-09-01 至今連續有效歷史)
+        # 1. 查詢日 K 線 (過濾 2025-01-01 至今連續有效歷史)
         c.execute("""
             SELECT date, open_price, high_price, low_price, close_price, volume_lots, amount
             FROM daily_quotes
-            WHERE stock_id = ? AND close_price > 0 AND date >= '2025-09-01'
+            WHERE stock_id = ? AND close_price > 0 AND date >= '2025-01-01'
             ORDER BY date ASC
         """, (stock_id,))
         raw_quotes = c.fetchall()
 
-        # 2. 查詢該股每日認購/認售權證成交額
+        # 2. 查詢該股每日認購/認售權證成交額 (加權指數的標的代號為 IX0001)
+        underlying_param = 'IX0001' if stock_id == 'TAIEX' else stock_id
         c.execute("""
             SELECT date,
                    SUM(CASE WHEN warrant_id NOT LIKE '%P' AND warrant_name NOT LIKE '%售%' AND warrant_name NOT LIKE '%熊%' THEN trade_amount ELSE 0 END) as call_amt,
                    SUM(CASE WHEN warrant_id LIKE '%P' OR warrant_name LIKE '%售%' OR warrant_name LIKE '%熊%' THEN trade_amount ELSE 0 END) as put_amt
             FROM daily_warrants
-            WHERE underlying_stock_id = ? AND date >= '2025-09-01'
+            WHERE underlying_stock_id = ? AND date >= '2025-01-01'
             GROUP BY date
             ORDER BY date ASC
-        """, (stock_id,))
+        """, (underlying_param,))
         raw_warrants = c.fetchall()
 
         # 3. 查詢該股每日外資與投信買賣超 (股數與張數)
         c.execute("""
             SELECT date, foreign_net, trust_net, foreign_net_lots, trust_net_lots
             FROM daily_institutional
-            WHERE stock_id = ? AND date >= '2025-09-01'
+            WHERE stock_id = ? AND date >= '2025-01-01'
             ORDER BY date ASC
         """, (stock_id,))
         raw_inst = c.fetchall()
@@ -109,9 +110,15 @@ class StockPageGenerator:
                 'foreign_net_shares': 0, 'trust_net_shares': 0,
                 'foreign_net_lots': 0, 'trust_net_lots': 0
             })
-            # 計算多空金額 (萬元): 淨買賣股數 * 當日收盤價 / 10000
-            inst_info['foreign_amt_wan'] = round((inst_info['foreign_net_shares'] * close_p) / 10000.0, 1)
-            inst_info['trust_amt_wan'] = round((inst_info['trust_net_shares'] * close_p) / 10000.0, 1)
+            # 計算多空金額
+            if stock_id in ['TAIEX', 'TPEx']:
+                # 指數的大盤金額已經在資料庫中是「元」，我們除以一億換算成「億元」
+                inst_info['foreign_amt_wan'] = round(inst_info['foreign_net_shares'] / 100000000.0, 1)
+                inst_info['trust_amt_wan'] = round(inst_info['trust_net_shares'] / 100000000.0, 1)
+            else:
+                # 個股: 淨買賣股數 * 當日收盤價 / 10000 = 萬元
+                inst_info['foreign_amt_wan'] = round((inst_info['foreign_net_shares'] * close_p) / 10000.0, 1)
+                inst_info['trust_amt_wan'] = round((inst_info['trust_net_shares'] * close_p) / 10000.0, 1)
 
             quotes_list.append({
                 'date': q_date,
@@ -129,6 +136,23 @@ class StockPageGenerator:
             'quotes': quotes_list,
             'warrant_history_days': len(raw_warrants)
         }
+
+
+    def _calculate_poc(self, quotes, days: int):
+        if not quotes: return None
+        target = quotes[-days:] if len(quotes) > days else quotes
+        if not target: return None
+        min_p = min(q['low'] for q in target)
+        max_p = max(q['high'] for q in target)
+        if min_p == max_p: return min_p
+        bins = 50
+        tick = (max_p - min_p) / bins
+        profile = {}
+        for q in target:
+            idx = int((q['close'] - min_p) / tick) if tick > 0 else 0
+            profile[idx] = profile.get(idx, 0) + q['volume']
+        best_idx = max(profile, key=profile.get)
+        return round(min_p + best_idx * tick + (tick / 2), 2)
 
     def generate_page(self, stock_info: Dict[str, Any]) -> str:
         """
@@ -148,6 +172,14 @@ class StockPageGenerator:
 
         data = self.fetch_stock_quotes_and_warrants(stock_id, market_type)
         quotes = data['quotes']
+
+        poc_60 = self._calculate_poc(quotes, 60)
+        poc_120 = self._calculate_poc(quotes, 120)
+        poc_240 = self._calculate_poc(quotes, 240)
+        poc_60_str = str(poc_60) if poc_60 else "null"
+        poc_120_str = str(poc_120) if poc_120 else "null"
+        poc_240_str = str(poc_240) if poc_240 else "null"
+
 
         # 計算九轉序列與 13 不連續計數
         td_quotes = calculate_td_sequential(quotes)
@@ -624,7 +656,7 @@ class StockPageGenerator:
 
             <!-- 副圖 2：外資與投信每日多空金額 (Institutional Flow) -->
             <div class="chart-legend" style="margin-top: 10px; margin-bottom: 4px;">
-                <div class="legend-item" style="font-weight:700; color:var(--text-primary);">🏛️ 外資與投信每日多空金額 (萬元)</div>
+                <div class="legend-item" style="font-weight:700; color:var(--text-primary);">🏛️ 外資與投信每日多空金額 ({'億元' if stock_id in ['TAIEX', 'TPEx'] else '萬元'})</div>
                 <div class="legend-item"><span class="legend-dot" style="background:#38bdf8;"></span> 外資買超 (天藍柱)</div>
                 <div class="legend-item"><span class="legend-dot" style="background:#64748b;"></span> 外資賣超 (灰柱)</div>
                 <div class="legend-item"><span class="legend-dot" style="background:#f43f5e;"></span> 投信多空淨額 (桃紅線)</div>
@@ -727,6 +759,41 @@ class StockPageGenerator:
             }});
             candleSeries.setData(klineData);
             candleSeries.setMarkers(markersData);
+
+            const poc60 = {poc_60_str};
+            if (poc60 !== null) {{
+                candleSeries.createPriceLine({{
+                    price: poc60,
+                    color: '#eab308',
+                    lineWidth: 2,
+                    lineStyle: LightweightCharts.LineStyle.Dotted,
+                    axisLabelVisible: true,
+                    title: 'POC(60)'
+                }});
+            }}
+            const poc120 = {poc_120_str};
+            if (poc120 !== null) {{
+                candleSeries.createPriceLine({{
+                    price: poc120,
+                    color: '#f97316',
+                    lineWidth: 2,
+                    lineStyle: LightweightCharts.LineStyle.Dashed,
+                    axisLabelVisible: true,
+                    title: 'POC(120)'
+                }});
+            }}
+            const poc240 = {poc_240_str};
+            if (poc240 !== null) {{
+                candleSeries.createPriceLine({{
+                    price: poc240,
+                    color: '#ec4899',
+                    lineWidth: 2,
+                    lineStyle: LightweightCharts.LineStyle.LargeDashed,
+                    axisLabelVisible: true,
+                    title: 'POC(240)'
+                }});
+            }}
+
 
             // 2. 初始化副圖 1：獨立成交量 (解決重疊問題)
             const volumeContainer = document.getElementById('volume-chart-container');

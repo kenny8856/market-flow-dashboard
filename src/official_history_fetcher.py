@@ -128,6 +128,29 @@ class OfficialHistoryFetcher:
                             })
                     break
 
+        try:
+            fm_url = "https://api.finmindtrade.com/api/v4/data"
+            fm_res = requests.get(fm_url, params={"dataset": "TaiwanStockPrice", "data_id": "TAIEX", "start_date": date_str, "end_date": date_str}).json()
+            if fm_res.get("msg") == "success" and fm_res.get("data"):
+                r = fm_res["data"][0]
+                vol_shares = r.get("Trading_Volume", 0)
+                quotes_list.append({
+                    "date": date_str,
+                    "stock_id": "TAIEX",
+                    "stock_name": "加權指數",
+                    "open_price": r.get("open", 0.0),
+                    "high_price": r.get("max", 0.0),
+                    "low_price": r.get("min", 0.0),
+                    "close_price": r.get("close", 0.0),
+                    "change_price": r.get("spread", 0.0),
+                    "volume_shares": vol_shares,
+                    "volume_lots": vol_shares // 1000,
+                    "amount": r.get("Trading_money", 0),
+                    "transaction_count": r.get("Trading_turnover", 0)
+                })
+        except Exception:
+            pass
+
         # 2. 抓取三大法人買賣超 (T86)
         url_inst = f"https://www.twse.com.tw/rwd/zh/fund/T86?date={ymd}&selectType=ALLBUT0999&response=json"
         res_inst = self._get_json(url_inst)
@@ -265,6 +288,29 @@ class OfficialHistoryFetcher:
                             "amount": clean_int(row.get("TransactionAmount")),
                             "transaction_count": clean_int(row.get("TransactionNumber"))
                         })
+
+        try:
+            fm_url = "https://api.finmindtrade.com/api/v4/data"
+            fm_res = requests.get(fm_url, params={"dataset": "TaiwanStockPrice", "data_id": "TPEx", "start_date": date_str, "end_date": date_str}).json()
+            if fm_res.get("msg") == "success" and fm_res.get("data"):
+                r = fm_res["data"][0]
+                vol_shares = r.get("Trading_Volume", 0)
+                quotes_list.append({
+                    "date": date_str,
+                    "stock_id": "TPEx",
+                    "stock_name": "櫃買指數",
+                    "open_price": r.get("open", 0.0),
+                    "high_price": r.get("max", 0.0),
+                    "low_price": r.get("min", 0.0),
+                    "close_price": r.get("close", 0.0),
+                    "change_price": r.get("spread", 0.0),
+                    "volume_shares": vol_shares,
+                    "volume_lots": vol_shares // 1000,
+                    "amount": r.get("Trading_money", 0),
+                    "transaction_count": r.get("Trading_turnover", 0)
+                })
+        except Exception:
+            pass
 
         # 2. 抓取三大法人明細 (3itrade_hedge_result.php)
         url_inst = f"https://www.tpex.org.tw/web/stock/3insti/daily_trade/3itrade_hedge_result.php?l=zh-tw&d={roc_date_slash}&se=EW&t=D&o=json"

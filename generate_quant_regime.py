@@ -325,7 +325,36 @@ def generate_html(output_path="quant_regime.html"):
     longs = data['top_longs']
     shorts = data['top_shorts']
     
-    # 為每檔選出的多方/空方標的自動產出專屬獨立分析頁面 (含K棒/九轉序列/13不連續/權證資金流)
+    # 為加權與櫃買指數產出頁面
+    try:
+        from src.stock_page_generator import StockPageGenerator
+        stock_gen = StockPageGenerator()
+        
+        stock_gen.generate_page({
+            'id': 'TAIEX',
+            'name': '加權指數',
+            'market_type': 'TWSE',
+            'side': 'LONG',
+            'rank': 0,
+            'price': 0,
+            'ret_5d': 0
+        })
+        
+        stock_gen.generate_page({
+            'id': 'TPEx',
+            'name': '櫃買指數',
+            'market_type': 'TPEX',
+            'side': 'LONG',
+            'rank': 0,
+            'price': 0,
+            'ret_5d': 0
+        })
+        
+        print("Generated TAIEX and TPEx pages with POC.")
+    except Exception as e:
+        print(f"Error generating index pages: {e}")
+
+    # 原有的個股產出
     try:
         from src.stock_page_generator import StockPageGenerator
         stock_gen = StockPageGenerator()
@@ -1921,6 +1950,95 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
             padding-top: 20px;
             border-top: 1px solid var(--border-color);
         }}
+
+        /* Tabs UI */
+        .tabs-container {{
+            margin-bottom: 24px;
+        }}
+        .tabs-nav {{
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 10px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            -webkit-overflow-scrolling: touch;
+        }}
+        .tabs-nav::-webkit-scrollbar {{
+            height: 4px;
+        }}
+        .tabs-nav::-webkit-scrollbar-thumb {{
+            background: var(--border-color);
+            border-radius: 4px;
+        }}
+        .tab-btn {{
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-secondary);
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }}
+        .tab-btn:hover {{
+            background: rgba(255,255,255,0.08);
+            color: var(--text-primary);
+        }}
+        .tab-btn.active {{
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+        }}
+        
+        
+                .tab-content {{
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            visibility: hidden;
+            width: 100%;
+        }}
+        .tab-content.active {{
+            position: relative;
+            top: 0;
+            left: 0;
+            visibility: visible;
+            animation: fadeIn 0.4s ease;
+        }}
+        .iframe-container {{
+            width: 100%;
+            height: 1200px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--bg-card);
+        }}
+        @keyframes fadeIn {{
+            from {{ opacity: 0; transform: translateY(10px); }}
+            to {{ opacity: 1; transform: translateY(0); }}
+        }}
+        @media (max-width: 768px) {{
+            .tab-btn {{ font-size: 14px; padding: 8px 14px; }}
+                    .tab-content {{
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            visibility: hidden;
+            width: 100%;
+        }}
+        .tab-content.active {{
+            position: relative;
+            top: 0;
+            left: 0;
+            visibility: visible;
+            animation: fadeIn 0.4s ease;
+        }}
+        .iframe-container {{ height: 800px; }}
+        }}
     </style>
 </head>
 <body>
@@ -1937,6 +2055,18 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
             </div>
         </div>
         
+        <!-- Tabs Navigation -->
+        <div class="tabs-container">
+            <div class="tabs-nav">
+                <button class="tab-btn active" onclick="switchTab(event, 'tab-macro')">📊 多空儀表板</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-taiex')">📈 加權指數</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-tpex')">📈 櫃買指數</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-longs')">🟢 多方標的 ({len(longs)})</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-shorts')">🔴 空方標的 ({len(shorts)})</button>
+            </div>
+        </div>
+
+        <div id="tab-macro" class="tab-content active">
         <!-- Top 50-50 Hero Grid -->
         <div class="hero-split-grid">
             <!-- Left Panel: Module 1 Breadth Filter -->
@@ -2116,9 +2246,28 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
                 </div>
             </div>
         </div>
-        
-        {long_section_html}
-        {short_section_html}
+
+        </div> <!-- End tab-macro -->
+
+        <div id="tab-taiex" class="tab-content">
+            <div class="iframe-container">
+                <iframe src="stock_TAIEX.html" style="width:100%; height:100%; border:none;"></iframe>
+            </div>
+        </div>
+
+        <div id="tab-tpex" class="tab-content">
+            <div class="iframe-container">
+                <iframe src="stock_TPEx.html" style="width:100%; height:100%; border:none;"></iframe>
+            </div>
+        </div>
+
+        <div id="tab-longs" class="tab-content">
+            {long_section_html}
+        </div>
+
+        <div id="tab-shorts" class="tab-content">
+            {short_section_html}
+        </div>
         
         <!-- Footer -->
         {extra_section}
@@ -2129,6 +2278,12 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
 
     <!-- 剪貼簿互動腳本 (原生 JavaScript，零外網依賴) -->
     <script>
+        function switchTab(evt, tabId) {{
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }}
         function copyPlan() {{
             const text = {copy_json};
             if (navigator.clipboard && window.isSecureContext) {{

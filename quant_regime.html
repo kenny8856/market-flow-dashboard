@@ -1082,6 +1082,95 @@
             padding-top: 20px;
             border-top: 1px solid var(--border-color);
         }
+
+        /* Tabs UI */
+        .tabs-container {
+            margin-bottom: 24px;
+        }
+        .tabs-nav {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 10px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            -webkit-overflow-scrolling: touch;
+        }
+        .tabs-nav::-webkit-scrollbar {
+            height: 4px;
+        }
+        .tabs-nav::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        .tab-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-secondary);
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+        .tab-btn:hover {
+            background: rgba(255,255,255,0.08);
+            color: var(--text-primary);
+        }
+        .tab-btn.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+        }
+        
+        
+                .tab-content {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            visibility: hidden;
+            width: 100%;
+        }
+        .tab-content.active {
+            position: relative;
+            top: 0;
+            left: 0;
+            visibility: visible;
+            animation: fadeIn 0.4s ease;
+        }
+        .iframe-container {
+            width: 100%;
+            height: 1200px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--bg-card);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) {
+            .tab-btn { font-size: 14px; padding: 8px 14px; }
+                    .tab-content {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            visibility: hidden;
+            width: 100%;
+        }
+        .tab-content.active {
+            position: relative;
+            top: 0;
+            left: 0;
+            visibility: visible;
+            animation: fadeIn 0.4s ease;
+        }
+        .iframe-container { height: 800px; }
+        }
     </style>
 </head>
 <body>
@@ -1098,6 +1187,18 @@
             </div>
         </div>
         
+        <!-- Tabs Navigation -->
+        <div class="tabs-container">
+            <div class="tabs-nav">
+                <button class="tab-btn active" onclick="switchTab(event, 'tab-macro')">📊 多空儀表板</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-taiex')">📈 加權指數</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-tpex')">📈 櫃買指數</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-longs')">🟢 多方標的 (10)</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-shorts')">🔴 空方標的 (0)</button>
+            </div>
+        </div>
+
+        <div id="tab-macro" class="tab-content active">
         <!-- Top 50-50 Hero Grid -->
         <div class="hero-split-grid">
             <!-- Left Panel: Module 1 Breadth Filter -->
@@ -1287,8 +1388,23 @@
                 </div>
             </div>
         </div>
-        
-        
+
+        </div> <!-- End tab-macro -->
+
+        <div id="tab-taiex" class="tab-content">
+            <div class="iframe-container">
+                <iframe src="stock_TAIEX.html" style="width:100%; height:100%; border:none;"></iframe>
+            </div>
+        </div>
+
+        <div id="tab-tpex" class="tab-content">
+            <div class="iframe-container">
+                <iframe src="stock_TPEx.html" style="width:100%; height:100%; border:none;"></iframe>
+            </div>
+        </div>
+
+        <div id="tab-longs" class="tab-content">
+            
         <!-- Module 2 & 3: Long Targets -->
         <div class="section-header">
             <div>
@@ -3604,7 +3720,10 @@
         
         </div>
         
-        
+        </div>
+
+        <div id="tab-shorts" class="tab-content">
+            
         <!-- Module 2 & 3: Short Targets (Empty on Bullish) -->
         <div class="section-header">
             <div>
@@ -3622,16 +3741,23 @@
             </div>
         </div>
         
+        </div>
         
         <!-- Footer -->
         <div style="margin-top:40px;border-top:2px dashed #334155;padding-top:30px;"><h2 style="color:#fff;margin-bottom:20px;font-size:22px;">🔥 市場籌碼焦點：個股期貨與可轉債</h2><div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 400px), 1fr));gap:20px;"><div style="background:rgba(15,23,42,0.7);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:15px;"><h3 style="color:#fca5a5;margin-top:0;">📉 個股期貨「前十大交易人空單」排行 Top 20</h3><div style="font-size:12px;color:#94a3b8;margin-bottom:10px;">資料日期：2026-09-24 (排除大盤與指數期貨)</div><div class="xiaoge-table-wrapper"><table class="xiaoge-table"><thead><tr><th>排名</th><th>代號</th><th>契約名稱</th><th>前十大空單</th><th>前十大淨額</th><th>市場未平倉</th></tr></thead><tbody><tr><td>#1</td><td>CC</td><td style='font-weight:bold;color:#facc15;'>聯電期貨</td><td class='text-bear'>73,565</td><td class='text-bear'>-32,922</td><td>96,721</td></tr><tr><td>#2</td><td>QF</td><td style='font-weight:bold;color:#facc15;'>小型台積電期貨</td><td class='text-bear'>69,379</td><td class='text-bear'>-60,764</td><td>79,723</td></tr><tr><td>#3</td><td>CH</td><td style='font-weight:bold;color:#facc15;'>友達期貨</td><td class='text-bear'>33,330</td><td class='text-bear'>-18,205</td><td>39,837</td></tr><tr><td>#4</td><td>DQ</td><td style='font-weight:bold;color:#facc15;'>群創期貨</td><td class='text-bear'>28,123</td><td class='text-bear'>-14,521</td><td>32,485</td></tr><tr><td>#5</td><td>DH</td><td style='font-weight:bold;color:#facc15;'>鴻海期貨</td><td class='text-bear'>22,624</td><td class='text-bear'>-6,349</td><td>24,783</td></tr><tr><td>#6</td><td>QE</td><td style='font-weight:bold;color:#facc15;'>小型國巨期貨</td><td class='text-bear'>20,219</td><td class='text-bear'>-15,767</td><td>21,720</td></tr><tr><td>#7</td><td>CD</td><td style='font-weight:bold;color:#facc15;'>台積電期貨</td><td class='text-bear'>17,951</td><td class='text-bear'>-2,501</td><td>31,560</td></tr><tr><td>#8</td><td>RV</td><td style='font-weight:bold;color:#facc15;'>小型台達電期貨</td><td class='text-bear'>14,510</td><td class='text-bear'>-10,652</td><td>16,633</td></tr><tr><td>#9</td><td>FZ</td><td style='font-weight:bold;color:#facc15;'>華邦電期貨</td><td class='text-bear'>13,423</td><td class='text-bear'>-5,781</td><td>15,988</td></tr><tr><td>#10</td><td>QZ</td><td style='font-weight:bold;color:#facc15;'>力積電期貨</td><td class='text-bear'>13,397</td><td class='text-bear'>-1,972</td><td>18,170</td></tr><tr><td>#11</td><td>QN</td><td style='font-weight:bold;color:#facc15;'>小型群聯期貨</td><td class='text-bear'>12,139</td><td class='text-bear'>-7,373</td><td>13,417</td></tr><tr><td>#12</td><td>PU</td><td style='font-weight:bold;color:#facc15;'>小型聯發科期貨</td><td class='text-bear'>11,866</td><td class='text-bear'>-9,383</td><td>14,457</td></tr><tr><td>#13</td><td>PW</td><td style='font-weight:bold;color:#facc15;'>小型緯穎期貨</td><td class='text-bear'>11,640</td><td class='text-bear'>-4,306</td><td>14,633</td></tr><tr><td>#14</td><td>PB</td><td style='font-weight:bold;color:#facc15;'>小型環球晶期貨</td><td class='text-bear'>11,617</td><td class='text-bear'>-9,339</td><td>12,973</td></tr><tr><td>#15</td><td>QI</td><td style='font-weight:bold;color:#facc15;'>小型穩懋期貨</td><td class='text-bear'>11,212</td><td class='text-bear'>-5,127</td><td>11,770</td></tr><tr><td>#16</td><td>PL</td><td style='font-weight:bold;color:#facc15;'>合晶期貨</td><td class='text-bear'>10,650</td><td class='text-bear'>-4,892</td><td>11,292</td></tr><tr><td>#17</td><td>LX</td><td style='font-weight:bold;color:#facc15;'>國巨期貨</td><td class='text-bear'>10,103</td><td class='text-bear'>-3,781</td><td>11,817</td></tr><tr><td>#18</td><td>KU</td><td style='font-weight:bold;color:#facc15;'>台玻期貨</td><td class='text-bear'>9,399</td><td class='text-bear'>-2,954</td><td>9,524</td></tr><tr><td>#19</td><td>NS</td><td style='font-weight:bold;color:#facc15;'>頎邦期貨</td><td class='text-bear'>8,873</td><td class='text-bear'>-4,572</td><td>11,681</td></tr><tr><td>#20</td><td>CA</td><td style='font-weight:bold;color:#facc15;'>南亞期貨</td><td class='text-bear'>8,511</td><td class='text-bear'>-4,070</td><td>10,185</td></tr></tbody></table></div></div><div style="background:rgba(15,23,42,0.7);border:1px solid rgba(59,130,246,0.3);border-radius:10px;padding:15px;"><h3 style="color:#93c5fd;margin-top:0;">💡 值得關注的可轉債 (低溢價+流動性)</h3><div style="font-size:12px;color:#94a3b8;margin-bottom:10px;">資料日期：2026-09-24 (條件：溢價率&lt;10%, 成交量&gt;50張, 價格98~120)</div><div class="xiaoge-table-wrapper"><table class="xiaoge-table"><thead><tr><th>排名</th><th>代號</th><th>CB名稱</th><th>現股</th><th>收盤價</th><th>溢價率</th><th>成交量(張)</th></tr></thead><tbody><tr><td>#1</td><td>27562</td><td style='font-weight:bold;color:#60a5fa;'>聯發國際二</td><td>聯發國際</td><td>103.50</td><td class=''>5.63%</td><td style='color:#fbbf24;'>292</td></tr><tr><td>#2</td><td>30454</td><td style='font-weight:bold;color:#60a5fa;'>台灣大四</td><td>台灣大</td><td>107.60</td><td class='text-bull'>-0.31%</td><td style='color:#fbbf24;'>116</td></tr><tr><td>#3</td><td>45416</td><td style='font-weight:bold;color:#60a5fa;'>晟田六</td><td>晟田</td><td>100.80</td><td class=''>6.75%</td><td style='color:#fbbf24;'>105</td></tr><tr><td>#4</td><td>31415</td><td style='font-weight:bold;color:#60a5fa;'>晶宏五</td><td>晶宏</td><td>112.40</td><td class=''>9.63%</td><td style='color:#fbbf24;'>90</td></tr><tr><td>#5</td><td>77131</td><td style='font-weight:bold;color:#60a5fa;'>威力德生醫一</td><td>威力德生醫</td><td>105.00</td><td class='text-bull'>-0.97%</td><td style='color:#fbbf24;'>70</td></tr></tbody></table></div></div></div></div>
         <div class="footer">
-            TW-Stock Quantitative Research System • 100% 離線純自給自足 (純 SVG 向量圖形) • 產出時間: 2026-09-25 12:59:42
+            TW-Stock Quantitative Research System • 100% 離線純自給自足 (純 SVG 向量圖形) • 產出時間: 2026-09-25 17:20:55
         </div>
     </div>
 
     <!-- 剪貼簿互動腳本 (原生 JavaScript，零外網依賴) -->
     <script>
+        function switchTab(evt, tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
         function copyPlan() {
             const text = "【台股投行機構 3 模組實戰計畫】基準日: 2026-09-24\n============================================================\n[模組 1: 市場狀態] 防禦警戒狀態 (Neutral / De-grossing) | 總曝險上限: 30% 以下\n市場季線寬度: 40.67% | 加權維持率: 193.87% | 櫃買維持率: 190.07%\n大盤融資金額: 加權 6,151.03億 (+87.36億) | 櫃買 2,117.28億 (+8.76億)\nTX 特法結構: 前五大 +19,625口 (近月 +20,737 / 遠月 -1,112)\n外資期貨淨空單: -77,031口 (-7,415.09億元)\n[溫度計與聯動配置] 評分: 59.5分 (中性偏多 (Moderate Bull)) | 聯動: 多方聚焦模式 (多方 Top 10 ｜ 空方 0 檔) | 認購佔比: 77.7%\n\n🟢【做多標的 Top 10 (Volume Profile 90日密集區定價 + 權證小哥嚴選推薦)】\n#1 6526 達發 | 現價: 840.00 | 密集區進場: 758.33 | 停損: 607.52 (-19.9%) | 目標: 984.55 (+29.8%) | POC: 697.06 | 首選權證: 075912 達發凱基61購02(差槓比0.131%, 槓桿3.42x, 天數116天)\n#2 2404 漢唐 | 現價: 1285.00 | 密集區進場: 1295.62 | 停損: 1058.12 (-18.3%) | 目標: 1651.87 (+27.5%) | POC: 1170.94 | 首選權證: 053423 漢唐兆豐61購02(差槓比0.230%, 槓桿5.87x, 天數118天)\n#3 2034 允強 | 現價: 22.80 | 密集區進場: 21.16 | 停損: 19.69 (-6.9%) | 目標: 23.36 (+10.4%) | POC: 20.16 | 首選權證: 073812 允強國票64購01(差槓比0.415%, 槓桿2.43x, 天數190天)\n#4 8150 南茂 | 現價: 112.00 | 密集區進場: 111.66 | 停損: 87.94 (-21.2%) | 目標: 147.24 (+31.9%) | POC: 96.09 | 首選權證: 083599 南茂群益63購02(差槓比0.151%, 槓桿2.84x, 天數159天)\n#5 3035 智原 | 現價: 206.50 | 密集區進場: 225.30 | 停損: 178.51 (-20.8%) | 目標: 295.49 (+31.2%) | POC: 209.29 | 首選權證: 087464 智原群益63購05(差槓比0.091%, 槓桿3.19x, 天數179天)\n#6 2527 宏璟 | 現價: 47.95 | 密集區進場: 49.59 | 停損: 39.94 (-19.5%) | 目標: 64.07 (+29.2%) | POC: 43.56 | 首選權證: 074560 宏璟國票61購01(差槓比0.208%, 槓桿3.93x, 天數105天)\n#7 6257 矽格 | 現價: 243.00 | 密集區進場: 247.10 | 停損: 206.60 (-16.4%) | 目標: 307.85 (+24.6%) | POC: 213.35 | 首選權證: 076408 矽格國泰62購01(差槓比0.189%, 槓桿3.07x, 天數151天)\n#8 2347 聯強 | 現價: 94.50 | 密集區進場: 94.25 | 停損: 86.15 (-8.6%) | 目標: 106.40 (+12.9%) | POC: 92.22 | 首選權證: 074796 聯強元大61購01(差槓比0.473%, 槓桿4.31x, 天數106天)\n#9 1560 中砂 | 現價: 971.00 | 密集區進場: 780.00 | 停損: 652.80 (-16.3%) | 目標: 970.80 (+24.5%) | POC: 721.70 | 首選權證: 088266 中砂台新63購01(差槓比0.100%, 槓桿3.2x, 天數180天)\n#10 4770 上品 | 現價: 281.50 | 密集區進場: 257.00 | 停損: 208.60 (-18.8%) | 目標: 329.60 (+28.2%) | POC: 214.10 | 首選權證: 085388 上品永豐63購01(差槓比0.205%, 槓桿3.32x, 天數166天)\n\n🔴【反向做空標的池 (空方 0 檔)】\n大盤處於中性偏多位階 (59.5分)，啟動順勢集中做多機制，暫停逆勢放空。\n============================================================";
             if (navigator.clipboard && window.isSecureContext) {
