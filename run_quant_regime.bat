@@ -13,6 +13,9 @@ echo.
 echo 正在執行全市場多維量化運算並產出離線網頁...
 echo -------------------------------------------------------------------------------
 
+echo 正在清理舊有的 HTML 檔案...
+del /Q stock_*.html 2>nul
+
 python generate_quant_regime.py
 
 if %ERRORLEVEL% equ 0 (
