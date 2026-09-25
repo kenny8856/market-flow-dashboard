@@ -99,8 +99,7 @@ def deploy():
     print(f"[3/4] 遠端倉庫已連線: {remote_url}")
 
     # 5. Git 加入檔案與提交
-    # 追蹤必要網頁、個股頁面、靜態資源與設定檔，嚴格排除 db
-    run_cmd("git add docs/ index.html quant_regime.html assets/ stock_*.html .gitignore")
+    run_cmd("git add .")
     
     # 檢查是否有更動需要 commit
     code, diff_out, _ = run_cmd("git diff --cached --name-only")
@@ -109,6 +108,9 @@ def deploy():
     if diff_out:
         commit_msg = f"Auto deploy market flow dashboard: {now_str}"
         c_code, c_out, c_err = run_cmd(f'git commit -m "{commit_msg}"')
+        if c_code != 0:
+            print(f"[X] Git Commit 失敗，請確認已設定 user.email 與 user.name:\n{c_err or c_out}")
+            return False
         print(f"[4/4] 產生版本紀錄: {commit_msg}")
     else:
         print("[4/4] 檔案內容與遠端最新版相同，無需重複 commit。")

@@ -173,7 +173,7 @@ def render_xiaoge_warrants_html(warrants, opt_type_label="認購 CALL"):
     """
 
 
-def generate_html(output_path="d:/TW_Stock/quant_regime.html"):
+def generate_html(output_path="quant_regime.html"):
     screener = QuantRegimeScreener()
     data = screener.run_analysis()
     

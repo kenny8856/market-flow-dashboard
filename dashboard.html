@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>臺股立體籌碼多空溫度計與實戰策略選股器</title>
+    <style>
+        :root {
+            --bg-primary: #0b0f19;
+            --bg-card: #111827;
+            --bg-card-hover: #1f2937;
+            --border-color: #374151;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --accent-amber: #f59e0b;
+            --accent-purple: #8b5cf6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
+        body { background-color: var(--bg-primary); color: var(--text-primary); line-height: 1.5; padding: 20px 24px; min-height: 100vh; }
+        .container { max-width: 1400px; margin: 0 auto; width: 100%; }
+
+        /* Header */
+        header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; flex-wrap: wrap; gap: 16px; }
+        .title-group h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; }
+        .title-group p { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
+        .meta-pills { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .pill { background: rgba(55, 65, 81, 0.5); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 9999px; font-size: 12px; color: var(--text-secondary); }
+        .pill strong { color: var(--text-primary); }
+
+        /* Layout Grid */
+        .radar-grid { display: grid; grid-template-columns: 420px 1fr; gap: 20px; margin-bottom: 24px; }
+
+        .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; position: relative; }
+        .card-header { font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* Gauge Area */
+        .gauge-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 0; }
+        #gaugeCanvas { width: 100%; max-width: 340px; height: auto; display: block; margin: 0 auto; }
+        .score-display { text-align: center; margin-top: -20px; }
+        .score-number { font-size: 52px; font-weight: 900; line-height: 1; }
+        .regime-badge { display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 15px; margin-top: 8px; color: #fff; }
+        .advice-box { margin-top: 20px; background: rgba(31, 41, 55, 0.6); border-radius: 8px; padding: 14px; border-left: 4px solid #3b82f6; }
+        .advice-alloc { font-weight: 800; font-size: 15px; color: #3b82f6; margin-bottom: 4px; }
+        .advice-text { font-size: 13px; color: var(--text-secondary); line-height: 1.4; }
+
+        /* Pillars Area */
+        .pillars-list { display: flex; flex-direction: column; gap: 12px; }
+        .pillar-item { background: rgba(31, 41, 55, 0.4); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; display: grid; grid-template-columns: 160px 1fr 90px; align-items: center; gap: 16px; }
+        .pillar-name { font-weight: 700; font-size: 14px; }
+        .pillar-weight { font-size: 11px; color: var(--text-secondary); font-weight: 400; }
+        .pillar-progress { height: 8px; background: #374151; border-radius: 4px; overflow: hidden; margin-bottom: 6px; }
+        .pillar-bar { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+        .pillar-desc { font-size: 12px; color: var(--text-secondary); }
+        .pillar-score { text-align: right; font-weight: 800; font-size: 20px; }
+
+        /* History Chart */
+        .chart-card { margin-bottom: 24px; }
+        #trendCanvas { width: 100%; height: 160px; display: block; }
+
+        /* Strategies Section */
+        .tab-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        .tab-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        .tab-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+        .tab-btn.active { background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; }
+        .tab-count { background: rgba(0, 0, 0, 0.25); padding: 2px 8px; border-radius: 12px; font-size: 12px; }
+
+        .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 12px; }
+        .search-box { background: #1f2937; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 14px; color: var(--text-primary); font-size: 13px; width: 260px; }
+        .search-box:focus { outline: none; border-color: var(--accent-blue); }
+
+        .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border-color); border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+        th { background: #1f2937; color: var(--text-secondary); font-weight: 700; padding: 12px 14px; cursor: pointer; user-select: none; white-space: nowrap; }
+        th:hover { color: var(--text-primary); }
+        td { padding: 12px 14px; border-top: 1px solid var(--border-color); white-space: nowrap; }
+        tr:hover td { background: var(--bg-card-hover); }
+
+        .mobile-scroll-hint { display: none; }
+
+        /* Responsive Breakpoints (Tablet & Mobile) */
+        @media (max-width: 1024px) {
+            .radar-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 12px 10px; }
+            header { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 16px; padding-bottom: 14px; }
+            .title-group h1 { font-size: 20px; flex-wrap: wrap; gap: 6px; }
+            .title-group p { font-size: 12px; }
+            .meta-pills { gap: 6px; }
+            .pill { font-size: 11px; padding: 4px 10px; }
+            .card { padding: 14px 12px; }
+            .card-header { font-size: 15px; margin-bottom: 12px; }
+            .score-number { font-size: 42px; }
+            .regime-badge { font-size: 13px; padding: 4px 12px; }
+            .tab-bar {
+                display: flex;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 6px;
+                gap: 6px;
+            }
+            .tab-btn {
+                padding: 8px 12px;
+                font-size: 13px;
+                flex-shrink: 0;
+                white-space: nowrap;
+            }
+            .table-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .search-box {
+                width: 100%;
+            }
+            .mobile-scroll-hint {
+                display: block;
+                font-size: 12px;
+                color: var(--accent-blue);
+                margin-bottom: 6px;
+            }
+            th, td {
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .pillar-item {
+                display: grid;
+                grid-template-columns: 1fr auto;
+                gap: 6px;
+            }
+            .pillar-item > div:nth-child(1) {
+                grid-column: 1 / 2;
+            }
+            .pillar-item > div:nth-child(3) {
+                grid-column: 2 / 3;
+                text-align: right;
+            }
+            .pillar-item > div:nth-child(2) {
+                grid-column: 1 / 3;
+                margin-top: 4px;
+            }
+            .pillar-name { font-size: 13px; }
+            .pillar-score { font-size: 17px; }
+        }
+
+        @media (max-width: 480px) {
+            .title-group h1 { font-size: 18px; }
+            .score-number { font-size: 36px; }
+            .advice-box { padding: 10px 12px; }
+            .advice-alloc { font-size: 14px; }
+            .advice-text { font-size: 12px; }
+        }
+
+        /* Utility Badges */
+        .mkt-twse { background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 2px 6px; border-radius: 4px; font-size: 11px; }
+        .mkt-tpex { background: rgba(139, 92, 246, 0.15); color: #c084fc; padding: 2px 6px; border-radius: 4px; font-size: 11px; }
+        .val-up { color: #ef4444; font-weight: 600; }
+        .val-down { color: #10b981; font-weight: 600; }
+        .badge-warning { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+        .badge-safe { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+
+        footer { text-align: center; color: var(--text-secondary); font-size: 12px; margin-top: 36px; padding-top: 16px; border-top: 1px solid var(--border-color); }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="title-group">
+            <h1>📊 臺股立體籌碼多空溫度計與實戰選股器</h1>
+            <p>橫跨證交所現貨 · 期交所特法部位 · 櫃買可轉債 · 融資融券 · 全市場借券賣出</p>
+        </div>
+        <div class="meta-pills">
+            <span class="pill">基準交易日: <strong>2026-09-22</strong></span>
+            <span class="pill">產生時間: <strong>2026-09-22 23:46:15</strong></span>
+            <span class="pill" style="border-color: #10b981; color: #10b981;">⚡ 100% 純離線模式</span>
+        </div>
+    </header>
+
+    <!-- SECTION 1: RADAR & PILLARS -->
+    <div class="radar-grid">
+        <!-- GAUGE CARD -->
+        <div class="card">
+            <div class="card-header">
+                <span>🎯 大盤多空立體綜合得分</span>
+                <span style="font-size: 12px; color: var(--text-secondary);">五大權重加權</span>
+            </div>
+            <div class="gauge-container">
+                <canvas id="gaugeCanvas" width="340" height="180"></canvas>
+                <div class="score-display">
+                    <div class="score-number" style="color: #3b82f6;">76.2</div>
+                    <div class="regime-badge" style="background-color: #3b82f6;">偏多攻擊 (Bullish)</div>
+                </div>
+            </div>
+            <div class="advice-box">
+                <div class="advice-alloc">💡 建議持股水位 60% ~ 80%</div>
+                <div class="advice-text">多方動能佔優勢，法人偏多籌碼穩健。可布局強勢題材股與潛在軋空標的，嚴設移動停利點。</div>
+            </div>
+        </div>
+
+        <!-- 5 PILLARS CARD -->
+        <div class="card">
+            <div class="card-header">
+                <span>🧩 五大籌碼核心維度評分</span>
+                <span style="font-size: 12px; color: var(--text-secondary);">滿分 100 分</span>
+            </div>
+            <div class="pillars-list">
+                <!-- Pillar 1 -->
+                <div class="pillar-item">
+                    <div>
+                        <div class="pillar-name">期貨特法淨未沖銷</div>
+                        <div class="pillar-weight">權重 25% · 台指期</div>
+                    </div>
+                    <div>
+                        <div class="pillar-progress">
+                            <div class="pillar-bar" style="width: 75%; background: #3b82f6;"></div>
+                        </div>
+                        <div class="pillar-desc">前十大特定法人淨部位: +8,086 口 (較前日 -1,905 口)</div>
+                    </div>
+                    <div class="pillar-score" style="color: #3b82f6;">75分</div>
+                </div>
+
+                <!-- Pillar 2 -->
+                <div class="pillar-item">
+                    <div>
+                        <div class="pillar-name">三大法人現貨動能</div>
+                        <div class="pillar-weight">權重 25% · 外資+投信</div>
+                    </div>
+                    <div>
+                        <div class="pillar-progress">
+                            <div class="pillar-bar" style="width: 90%; background: #10b981;"></div>
+                        </div>
+                        <div class="pillar-desc">外資+投信 5 日累計: +2,924,913 張 (今日 +1,054,452 張)</div>
+                    </div>
+                    <div class="pillar-score" style="color: #10b981;">90分</div>
+                </div>
+
+                <!-- Pillar 3 -->
+                <div class="pillar-item">
+                    <div>
+                        <div class="pillar-name">全市場散戶融資槓桿</div>
+                        <div class="pillar-weight">權重 20% · 散戶槓桿</div>
+                    </div>
+                    <div>
+                        <div class="pillar-progress">
+                            <div class="pillar-bar" style="width: 85%; background: #f59e0b;"></div>
+                        </div>
+                        <div class="pillar-desc">全市場融資當日增減: -82,774 張 (近5日累計 +98,759 張)</div>
+                    </div>
+                    <div class="pillar-score" style="color: #f59e0b;">85分</div>
+                </div>
+
+                <!-- Pillar 4 -->
+                <div class="pillar-item">
+                    <div>
+                        <div class="pillar-name">外資借券賣出放空壓力</div>
+                        <div class="pillar-weight">權重 15% · 機構放空</div>
+                    </div>
+                    <div>
+                        <div class="pillar-progress">
+                            <div class="pillar-bar" style="width: 50%; background: #8b5cf6;"></div>
+                        </div>
+                        <div class="pillar-desc">借券賣出存量變化: +1,816 張 (當日借賣量 219,030 張)</div>
+                    </div>
+                    <div class="pillar-score" style="color: #8b5cf6;">50分</div>
+                </div>
+
+                <!-- Pillar 5 -->
+                <div class="pillar-item">
+                    <div>
+                        <div class="pillar-name">可轉債市場風險偏好</div>
+                        <div class="pillar-weight">權重 15% · 信用利差</div>
+                    </div>
+                    <div>
+                        <div class="pillar-progress">
+                            <div class="pillar-bar" style="width: 70%; background: #ec4899;"></div>
+                        </div>
+                        <div class="pillar-desc">CB 溢價率中位數: 25.5% (百元以下折價債: 40 檔 / 10.6%)</div>
+                    </div>
+                    <div class="pillar-score" style="color: #ec4899;">70分</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: 30-DAY TREND -->
+    <div class="card chart-card">
+        <div class="card-header">
+            <span>📈 近 30 個交易日大盤多空分數走勢圖</span>
+            <span style="font-size: 12px; color: var(--text-secondary);">紅虛線: 65分偏多門檻 | 綠虛線: 45分偏空門檻</span>
+        </div>
+        <canvas id="trendCanvas" width="1350" height="150"></canvas>
+    </div>
+
+    <!-- SECTION 3: TACTICAL SCREENER -->
+    <div class="card">
+        <div class="card-header">
+            <span>⚡ 實戰策略選股器 (Tactical Stock Screener)</span>
+            <span style="font-size: 12px; color: var(--text-secondary);">點擊欄位可正逆向排序</span>
+        </div>
+
+        <div class="tab-bar">
+            <button class="tab-btn active" onclick="switchTab('squeeze')">
+                🚀 黃金主力軋空股 <span class="tab-count">17</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('distribution')">
+                ⚠️ 高檔出貨預警股 <span class="tab-count">0</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('cb_safe')">
+                🛡️ 可轉債保底安全牌 <span class="tab-count">10</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('futures_whales')">
+                🐋 個股期主力重押股 <span class="tab-count">25</span>
+            </button>
+        </div>
+
+        <div class="table-toolbar">
+            <input type="text" id="searchInput" class="search-box" placeholder="🔍 快速搜尋代號或名稱..." onkeyup="filterTable()">
+            <div style="font-size: 12px; color: var(--text-secondary);">共篩選出 <strong id="visibleCount" style="color: var(--text-primary);">0</strong> 檔標的</div>
+        </div>
+
+        <div class="mobile-scroll-hint">👉 提示：可左右滑動表格檢視完整多空數據與財務指標</div>
+
+        <div class="table-container">
+            <table id="dataTable">
+                <thead id="tableHead"></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        臺股立體籌碼分析系統 · 本地端自給自足資料庫架構 · 免外部網路依賴 · 更新時間: 2026-09-22 23:46:15
+    </footer>
+</div>
+
+<script>
+// Embedded Data Payload
+const DASHBOARD_DATA = {"generated_at": "2026-09-22 23:46:15", "regime": {"as_of_date": "2026-09-22", "composite_score": 76.2, "regime": "偏多攻擊 (Bullish)", "badge_color": "#3b82f6", "allocation": "建議持股水位 60% ~ 80%", "action_desc": "多方動能佔優勢，法人偏多籌碼穩健。可布局強勢題材股與潛在軋空標的，嚴設移動停利點。", "pillars": {"taifex": {"name": "期貨特法淨未沖銷", "weight": 25, "score": 75, "value": 8086, "diff": -1905, "date": "2026-09-22", "status_text": "前十大特定法人淨部位: +8,086 口 (較前日 -1,905 口)"}, "institutional": {"name": "三大法人現貨動能", "weight": 25, "score": 90, "value": 2924913, "diff": 1054452, "date": "2026-09-22", "status_text": "外資+投信 5 日累計: +2,924,913 張 (今日 +1,054,452 張)"}, "margin": {"name": "全市場散戶融資槓桿", "weight": 20, "score": 85, "value": 11580515, "diff": -82774, "date": "2026-09-22", "status_text": "全市場融資當日增減: -82,774 張 (近5日累計 +98,759 張)"}, "sbl": {"name": "外資借券賣出放空壓力", "weight": 15, "score": 50, "value": 18307361, "diff": 1816, "date": "2026-09-21", "status_text": "借券賣出存量變化: +1,816 張 (當日借賣量 219,030 張)"}, "cb": {"name": "可轉債市場風險偏好", "weight": 15, "score": 70, "value": 25.5, "diff": 10.6, "date": "2026-09-22", "status_text": "CB 溢價率中位數: 25.5% (百元以下折價債: 40 檔 / 10.6%)"}}, "history_trend": [{"date": "2026-08-12", "score": 48, "tx_net": -1967}, {"date": "2026-08-13", "score": 48, "tx_net": -2271}, {"date": "2026-08-14", "score": 48, "tx_net": -2546}, {"date": "2026-08-17", "score": 48, "tx_net": -1654}, {"date": "2026-08-18", "score": 48, "tx_net": -1130}, {"date": "2026-08-19", "score": 58, "tx_net": 2902}, {"date": "2026-08-20", "score": 58, "tx_net": 4216}, {"date": "2026-08-21", "score": 58, "tx_net": 4237}, {"date": "2026-08-24", "score": 58, "tx_net": 3975}, {"date": "2026-08-25", "score": 58, "tx_net": 4174}, {"date": "2026-08-26", "score": 68, "tx_net": 7567}, {"date": "2026-08-27", "score": 58, "tx_net": 4993}, {"date": "2026-08-28", "score": 58, "tx_net": 4583}, {"date": "2026-08-31", "score": 68, "tx_net": 5791}, {"date": "2026-09-01", "score": 78, "tx_net": 10257}, {"date": "2026-09-02", "score": 58, "tx_net": 4404}, {"date": "2026-09-03", "score": 68, "tx_net": 6427}, {"date": "2026-09-04", "score": 68, "tx_net": 6785}, {"date": "2026-09-07", "score": 68, "tx_net": 7142}, {"date": "2026-09-08", "score": 58, "tx_net": 2285}, {"date": "2026-09-09", "score": 58, "tx_net": 3009}, {"date": "2026-09-10", "score": 58, "tx_net": 263}, {"date": "2026-09-11", "score": 48, "tx_net": -373}, {"date": "2026-09-14", "score": 58, "tx_net": 1705}, {"date": "2026-09-15", "score": 48, "tx_net": -785}, {"date": "2026-09-16", "score": 68, "tx_net": 5923}, {"date": "2026-09-17", "score": 68, "tx_net": 6409}, {"date": "2026-09-18", "score": 68, "tx_net": 9400}, {"date": "2026-09-21", "score": 68, "tx_net": 9991}, {"date": "2026-09-22", "score": 68, "tx_net": 8086}]}, "strategies": {"squeeze": [{"date": "2026-09-22", "stock_id": "00715L", "stock_name": "期街口布蘭特正2", "market_type": "上市", "short_margin_ratio": 121.23, "margin_today_bal": 4122, "short_today_bal": 4997, "short_change": -16, "margin_change": 172, "sbl_utilization": 0.0, "sbl_sell_lots": 0}, {"date": "2026-09-22", "stock_id": "6533", "stock_name": "晶心科", "market_type": "上市", "short_margin_ratio": 59.8, "margin_today_bal": 3005, "short_today_bal": 1797, "short_change": 135, "margin_change": 172, "sbl_utilization": 0.0, "sbl_sell_lots": 0}, {"date": "2026-09-22", "stock_id": "2221", "stock_name": "大甲", "market_type": "上櫃", "short_margin_ratio": 51.13, "margin_today_bal": 1954, "short_today_bal": 999, "short_change": -87, "margin_change": -146, "sbl_utilization": 0.0, "sbl_sell_lots": 0}, {"date": "2026-09-22", "stock_id": "00642U", "stock_name": "期元大S&P石油", "market_type": "上市", "short_margin_ratio": 42.83, "margin_today_bal": 2323, "short_today_bal": 995, "short_change": -511, "margin_change": 773, "sbl_utilization": 0.0, "sbl_sell_lots": 0}, {"date": "2026-09-22", "stock_id": "6226", "stock_name": "光鼎", "market_type": "上市", "short_margin_ratio": 41.96, "margin_today_bal": 4073, "short_today_bal": 1709, "short_change": -201, "margin_change": -333, "sbl_utilization": 0.0, "sbl_sell_lots": 0}, {"date": "2026-09-22", "stock_id": "3441", "stock_name": "聯一光", "market_type": "上櫃", "short_margin_ratio": 37.61, "margin_today_bal": 3542, "short_today_bal": 1332, "short_change": -153, "margin_change": -135, "sbl_utilization": 0.0, "sbl_sell_lots": 0}, {"date": "2026-09-22", "stock_id": "3219", "stock_name": "倚強科", "market_type": "上櫃", "short_margin_ratio": 33.6, "margin_today_bal": 1607, "short_today_bal": 540, "short_change": 44, "margin_change": -90, "sbl_utilization": 0.0, "sbl_sell_lots": 0}, {"date": "2026-09-22", "stock_id": "3717", "stock_name": "聯嘉投控", "market_type": "上市", "short_margin_ratio": 32.69, "margin_today_bal": 16134, "short_today_bal": 5275, "short_change": 1100, "margin_change": 61, "sbl_utilization": 0.0, "sbl_sell_lots": 0}, {"date": "2026-09-22", "stock_id": "2882", "stock_name": "國泰金", "market_type": "上市", "short_margin_ratio": 30.15, "margin_today_bal": 4969, "short_today_bal": 1498, "short_change": 0, "margin_change": 94, "sbl_utilization": 0.0, "sbl_sell_lots": 0}, {"date": "2026-09-22", "stock_id": "6669", "stock_name": "緯穎", "market_type": "上市", "short_margin_ratio": 29.03, "margin_today_bal": 3683, "short_today_bal": 1069, "short_change": -125, "margin_change": 206, "sbl_utilization": 0.0, "sbl_sell_lots": 0}, {"date": "2026-09-22", "stock_id": "2305", "stock_name": "全友", "market_type": "上市", "short_margin_ratio": 28.06, "margin_today_bal": 8449, "short_today_bal": 2371, "short_change": -86, "margin_change": -429, "sbl_utilization": 0.0, "sbl_sell_lots": 0}, {"date": "2026-09-22", "stock_id": "6957", "stock_name": "裕慶-KY", "market_type": "上市", "short_margin_ratio": 25.01, "margin_today_bal": 1991, "short_today_bal": 498, "short_change": 67, "margin_change": 43, "sbl_utilization": 0.0, "sbl_sell_lots": 0}, {"date": "2026-09-22", "stock_id": "6168", "stock_name": "宏齊", "market_type": "上市", "short_margin_ratio": 24.18, "margin_today_bal": 4455, "short_today_bal": 1077, "short_change": -259, "margin_change": -1365, "sbl_utilization": 0.0, "sbl_sell_lots": 0}, {"date": "2026-09-22", "stock_id": "3045", "stock_name": "台灣大", "market_type": "上市", "short_margin_ratio": 22.37, "margin_today_bal": 1082, "short_today_bal": 242, "short_change": -137, "margin_change": 266, "sbl_utilization": 0.0, "sbl_sell_lots": 0}, {"date": "2026-09-22", "stock_id": "5314", "stock_name": "世紀*", "market_type": "上櫃", "short_margin_ratio": 22.24, "margin_today_bal": 14450, "short_today_bal": 3214, "short_change": -1038, "margin_change": -1220, "sbl_utilization": 0.0, "sbl_sell_lots": 0}, {"date": "2026-09-22", "stock_id": "6218", "stock_name": "豪勉", "market_type": "上櫃", "short_margin_ratio": 21.51, "margin_today_bal": 2831, "short_today_bal": 609, "short_change": 202, "margin_change": -97, "sbl_utilization": 0.0, "sbl_sell_lots": 0}, {"date": "2026-09-22", "stock_id": "00663L", "stock_name": "國泰臺灣加權正2", "market_type": "上市", "short_margin_ratio": 20.9, "margin_today_bal": 6919, "short_today_bal": 1446, "short_change": -64, "margin_change": -1387, "sbl_utilization": 0.0, "sbl_sell_lots": 0}], "distribution": [], "cb_safe": [{"date": "2026-09-22", "cb_id": "77431", "cb_name": "金利食安一", "underlying_id": "7743", "underlying_name": "金利食安", "close_price": 107.8, "conversion_price": 22.5, "underlying_close_price": 25.0, "conversion_value": 111.11, "premium_rate": -2.98, "volume_lots": 121, "outstanding_lots": 2000}, {"date": "2026-09-22", "cb_id": "30454", "cb_name": "台灣大四", "underlying_id": "3045", "underlying_name": "台灣大", "close_price": 108.4, "conversion_price": 113.5, "underlying_close_price": 123.0, "conversion_value": 108.37, "premium_rate": 0.03, "volume_lots": 121, "outstanding_lots": 69800}, {"date": "2026-09-22", "cb_id": "52912", "cb_name": "邑昇二", "underlying_id": "5291", "underlying_name": "邑昇", "close_price": 110.0, "conversion_price": 53.0, "underlying_close_price": 58.2, "conversion_value": 109.81, "premium_rate": 0.17, "volume_lots": 3, "outstanding_lots": 2000}, {"date": "2026-09-22", "cb_id": "65852", "cb_name": "鼎基二", "underlying_id": "6585", "underlying_name": "鼎基", "close_price": 100.3, "conversion_price": 106.1, "underlying_close_price": 105.5, "conversion_value": 99.43, "premium_rate": 0.87, "volume_lots": 1, "outstanding_lots": 744}, {"date": "2026-09-22", "cb_id": "65851", "cb_name": "鼎基一", "underlying_id": "6585", "underlying_name": "鼎基", "close_price": 101.5, "conversion_price": 106.3, "underlying_close_price": 105.5, "conversion_value": 99.25, "premium_rate": 2.27, "volume_lots": 48, "outstanding_lots": 2419}, {"date": "2026-09-22", "cb_id": "61994", "cb_name": "天品四", "underlying_id": "6199", "underlying_name": "天品", "close_price": 106.0, "conversion_price": 114.8, "underlying_close_price": 116.5, "conversion_value": 101.48, "premium_rate": 4.45, "volume_lots": 170, "outstanding_lots": 3500}, {"date": "2026-09-22", "cb_id": "45416", "cb_name": "晟田六", "underlying_id": "4541", "underlying_name": "晟田", "close_price": 101.3, "conversion_price": 62.8, "underlying_close_price": 60.1, "conversion_value": 95.7, "premium_rate": 5.85, "volume_lots": 679, "outstanding_lots": 2000}, {"date": "2026-09-22", "cb_id": "84312", "cb_name": "匯鑽科二", "underlying_id": "8431", "underlying_name": "匯鑽科", "close_price": 102.5, "conversion_price": 68.0, "underlying_close_price": 64.0, "conversion_value": 94.12, "premium_rate": 8.9, "volume_lots": 4, "outstanding_lots": 3000}, {"date": "2026-09-22", "cb_id": "66292", "cb_name": "泰金二KY", "underlying_id": "6629", "underlying_name": "泰金-KY", "close_price": 100.0, "conversion_price": 115.5, "underlying_close_price": 106.0, "conversion_value": 91.77, "premium_rate": 8.97, "volume_lots": 30, "outstanding_lots": 2923}, {"date": "2026-09-22", "cb_id": "35122", "cb_name": "皇龍二", "underlying_id": "3512", "underlying_name": "皇龍", "close_price": 103.4, "conversion_price": 20.5, "underlying_close_price": 19.3, "conversion_value": 94.15, "premium_rate": 9.82, "volume_lots": 2, "outstanding_lots": 6000}], "futures_whales": [{"date": "2026-09-22", "contract_code": "CC", "contract_name": "聯電期貨", "buy_top10_spec": 5231, "sell_top10_spec": 75600, "net_top10_spec": -70369, "market_oi": 96812}, {"date": "2026-09-22", "contract_code": "QF", "contract_name": "小型台積電期貨", "buy_top10_spec": 3086, "sell_top10_spec": 67490, "net_top10_spec": -64404, "market_oi": 80275}, {"date": "2026-09-22", "contract_code": "CH", "contract_name": "友達期貨", "buy_top10_spec": 11271, "sell_top10_spec": 34226, "net_top10_spec": -22955, "market_oi": 43715}, {"date": "2026-09-22", "contract_code": "QE", "contract_name": "小型國巨期貨", "buy_top10_spec": 2656, "sell_top10_spec": 18566, "net_top10_spec": -15910, "market_oi": 19903}, {"date": "2026-09-22", "contract_code": "DQ", "contract_name": "群創期貨", "buy_top10_spec": 10734, "sell_top10_spec": 21760, "net_top10_spec": -11026, "market_oi": 27777}, {"date": "2026-09-22", "contract_code": "RV", "contract_name": "小型台達電期貨", "buy_top10_spec": 2912, "sell_top10_spec": 13840, "net_top10_spec": -10928, "market_oi": 15858}, {"date": "2026-09-22", "contract_code": "QN", "contract_name": "小型群聯期貨", "buy_top10_spec": 754, "sell_top10_spec": 11499, "net_top10_spec": -10745, "market_oi": 12885}, {"date": "2026-09-22", "contract_code": "PU", "contract_name": "小型聯發科期貨", "buy_top10_spec": 765, "sell_top10_spec": 11203, "net_top10_spec": -10438, "market_oi": 13306}, {"date": "2026-09-22", "contract_code": "FZ", "contract_name": "華邦電期貨", "buy_top10_spec": 2330, "sell_top10_spec": 12365, "net_top10_spec": -10035, "market_oi": 15565}, {"date": "2026-09-22", "contract_code": "QZ", "contract_name": "力積電期貨", "buy_top10_spec": 4887, "sell_top10_spec": 13852, "net_top10_spec": -8965, "market_oi": 17842}, {"date": "2026-09-22", "contract_code": "RZ", "contract_name": "元大美債20年ETF期貨", "buy_top10_spec": 5060, "sell_top10_spec": 14013, "net_top10_spec": -8953, "market_oi": 14536}, {"date": "2026-09-22", "contract_code": "NS", "contract_name": "頎邦期貨", "buy_top10_spec": 569, "sell_top10_spec": 9106, "net_top10_spec": -8537, "market_oi": 12438}, {"date": "2026-09-22", "contract_code": "PL", "contract_name": "合晶期貨", "buy_top10_spec": 1207, "sell_top10_spec": 9608, "net_top10_spec": -8401, "market_oi": 10961}, {"date": "2026-09-22", "contract_code": "SR", "contract_name": "小型元大台灣50ETF期貨", "buy_top10_spec": 300, "sell_top10_spec": 7956, "net_top10_spec": -7656, "market_oi": 13934}, {"date": "2026-09-22", "contract_code": "DH", "contract_name": "鴻海期貨", "buy_top10_spec": 14546, "sell_top10_spec": 22018, "net_top10_spec": -7472, "market_oi": 24004}, {"date": "2026-09-22", "contract_code": "CD", "contract_name": "台積電期貨", "buy_top10_spec": 10347, "sell_top10_spec": 17372, "net_top10_spec": -7025, "market_oi": 31223}, {"date": "2026-09-22", "contract_code": "CY", "contract_name": "南亞科期貨", "buy_top10_spec": 504, "sell_top10_spec": 7409, "net_top10_spec": -6905, "market_oi": 9134}, {"date": "2026-09-22", "contract_code": "LX", "contract_name": "國巨期貨", "buy_top10_spec": 3006, "sell_top10_spec": 9259, "net_top10_spec": -6253, "market_oi": 10573}, {"date": "2026-09-22", "contract_code": "DX", "contract_name": "緯創期貨", "buy_top10_spec": 1835, "sell_top10_spec": 8069, "net_top10_spec": -6234, "market_oi": 9813}, {"date": "2026-09-22", "contract_code": "OL", "contract_name": "小型大立光期貨", "buy_top10_spec": 1141, "sell_top10_spec": 7362, "net_top10_spec": -6221, "market_oi": 9574}, {"date": "2026-09-22", "contract_code": "CA", "contract_name": "南亞期貨", "buy_top10_spec": 3330, "sell_top10_spec": 9127, "net_top10_spec": -5797, "market_oi": 10259}, {"date": "2026-09-22", "contract_code": "QS", "contract_name": "小型南電期貨", "buy_top10_spec": 537, "sell_top10_spec": 6224, "net_top10_spec": -5687, "market_oi": 6882}, {"date": "2026-09-22", "contract_code": "PB", "contract_name": "小型環球晶期貨", "buy_top10_spec": 1218, "sell_top10_spec": 6833, "net_top10_spec": -5615, "market_oi": 9971}, {"date": "2026-09-22", "contract_code": "NA", "contract_name": "穩懋期貨", "buy_top10_spec": 0, "sell_top10_spec": 5496, "net_top10_spec": -5496, "market_oi": 6973}, {"date": "2026-09-22", "contract_code": "HA", "contract_name": "瑞軒期貨", "buy_top10_spec": 257, "sell_top10_spec": 5728, "net_top10_spec": -5471, "market_oi": 5891}]}};
+
+// Draw Gauge Meter
+function drawGauge(score) {
+    const canvas = document.getElementById('gaugeCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+    const cx = width / 2;
+    const cy = height - 20;
+    const radius = 130;
+
+    ctx.clearRect(0, 0, width, height);
+
+    // Track arc
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, Math.PI, 2 * Math.PI, false);
+    ctx.lineWidth = 18;
+    ctx.strokeStyle = '#1e293b';
+    ctx.stroke();
+
+    // Gradient Arc
+    const gradient = ctx.createLinearGradient(cx - radius, cy, cx + radius, cy);
+    gradient.addColorStop(0.0, '#ef4444'); // Red (0)
+    gradient.addColorStop(0.35, '#f97316'); // Orange (35)
+    gradient.addColorStop(0.5, '#f59e0b'); // Amber (50)
+    gradient.addColorStop(0.7, '#3b82f6'); // Blue (70)
+    gradient.addColorStop(1.0, '#10b981'); // Green (100)
+
+    const angle = Math.PI + (score / 100) * Math.PI;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, Math.PI, angle, false);
+    ctx.lineWidth = 18;
+    ctx.strokeStyle = gradient;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // Draw pointer
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+    ctx.beginPath();
+    ctx.moveTo(-4, 0);
+    ctx.lineTo(0, -radius + 8);
+    ctx.lineTo(4, 0);
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+    ctx.restore();
+
+    // Center pivot
+    ctx.beginPath();
+    ctx.arc(cx, cy, 7, 0, 2 * Math.PI);
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+}
+
+// Draw Trend Chart
+function drawTrend(history) {
+    const canvas = document.getElementById('trendCanvas');
+    if (!canvas || !history || history.length === 0) return;
+
+    // Dynamically adjust pixel buffer width based on parent container width for crisp RWD rendering
+    const parentWidth = canvas.parentElement ? canvas.parentElement.clientWidth : 800;
+    const cardPad = window.innerWidth <= 768 ? 24 : 40;
+    const targetWidth = Math.max(parentWidth - cardPad, 280);
+    canvas.width = targetWidth;
+    canvas.height = 160;
+
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+    const isMobile = w < 520;
+    const padL = isMobile ? 32 : 44, padR = 16, padT = 20, padB = 30;
+
+    ctx.clearRect(0, 0, w, h);
+
+    const graphW = w - padL - padR;
+    const graphH = h - padT - padB;
+
+    // Threshold lines (65 & 45)
+    const y65 = padT + graphH * (1 - 65 / 100);
+    const y45 = padT + graphH * (1 - 45 / 100);
+
+    ctx.strokeStyle = 'rgba(59, 130, 246, 0.4)';
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(padL, y65); ctx.lineTo(w - padR, y65);
+    ctx.stroke();
+
+    ctx.strokeStyle = 'rgba(239, 68, 68, 0.4)';
+    ctx.beginPath();
+    ctx.moveTo(padL, y45); ctx.lineTo(w - padR, y45);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Y-axis threshold labels
+    ctx.fillStyle = '#60a5fa';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('65', padL - 4, y65 + 3);
+    ctx.fillStyle = '#f87171';
+    ctx.fillText('45', padL - 4, y45 + 3);
+
+    // Plot line
+    const step = graphW / (history.length - 1);
+    ctx.beginPath();
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = '#38bdf8';
+
+    history.forEach((pt, i) => {
+        const x = padL + i * step;
+        const y = padT + graphH * (1 - pt.score / 100);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // Area fill
+    ctx.lineTo(padL + (history.length - 1) * step, padT + graphH);
+    ctx.lineTo(padL, padT + graphH);
+    ctx.closePath();
+    const areaGrad = ctx.createLinearGradient(0, padT, 0, padT + graphH);
+    areaGrad.addColorStop(0, 'rgba(56, 189, 248, 0.25)');
+    areaGrad.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
+    ctx.fillStyle = areaGrad;
+    ctx.fill();
+
+    // Points and labels
+    const stepInterval = isMobile ? 6 : (w < 800 ? 4 : 3);
+    history.forEach((pt, i) => {
+        const x = padL + i * step;
+        const y = padT + graphH * (1 - pt.score / 100);
+
+        ctx.beginPath();
+        ctx.arc(x, y, isMobile ? 2.5 : 3.5, 0, 2 * Math.PI);
+        ctx.fillStyle = pt.score >= 65 ? '#10b981' : (pt.score <= 45 ? '#ef4444' : '#f59e0b');
+        ctx.fill();
+
+        // X-axis dates
+        if (i % stepInterval === 0 || i === history.length - 1) {
+            ctx.fillStyle = '#64748b';
+            ctx.font = isMobile ? '9px sans-serif' : '10px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(pt.date.slice(5), x, h - 10);
+        }
+    });
+}
+
+// Tab Tables Configuration
+let currentTab = 'squeeze';
+let currentData = [];
+
+function switchTab(tabKey) {
+    currentTab = tabKey;
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    renderTable();
+}
+
+function renderTable() {
+    const thead = document.getElementById('tableHead');
+    const tbody = document.getElementById('tableBody');
+    const data = DASHBOARD_DATA.strategies[currentTab] || [];
+    currentData = data;
+
+    let headers = [];
+    if (currentTab === 'squeeze') {
+        headers = ['排名', '代號', '名稱', '市場', '券資比', '融券餘額(張)', '融券增減', '融資餘額(張)', '融資增減', '借券使用率', '策略評等'];
+    } else if (currentTab === 'distribution') {
+        headers = ['排名', '代號', '名稱', '市場', '融資增額(張)', '融資餘額(張)', '借券賣出(張)', '借券賣存量(張)', '警示狀態'];
+    } else if (currentTab === 'cb_safe') {
+        headers = ['排名', '轉債代號', '可轉債簡稱', '標的代號', '標的名稱', 'CB收盤價', '轉換價值', '折溢價率', '流通張數', '防禦評價'];
+    } else if (currentTab === 'futures_whales') {
+        headers = ['排名', '期貨代碼', '契約名稱', '前十大特法淨部位', '特法買方口數', '特法賣方口數', '市場未平倉(OI)', '主力多空向'];
+    }
+
+    thead.innerHTML = '<tr>' + headers.map(h => `<th onclick="sortTable('${h}')">${h} ⇕</th>`).join('') + '</tr>';
+
+    const search = document.getElementById('searchInput').value.trim().toLowerCase();
+    const filtered = data.filter(r => {
+        if (!search) return true;
+        const text = Object.values(r).join(' ').toLowerCase();
+        return text.includes(search);
+    });
+
+    document.getElementById('visibleCount').innerText = filtered.length;
+
+    tbody.innerHTML = filtered.map((r, idx) => {
+        const mktBadge = r.market_type === '上市' ? '<span class="mkt-twse">上市</span>' : (r.market_type === '上櫃' ? '<span class="mkt-tpex">上櫃</span>' : '');
+        if (currentTab === 'squeeze') {
+            return `<tr>
+                <td>${idx + 1}</td>
+                <td><strong>${r.stock_id}</strong></td>
+                <td>${r.stock_name}</td>
+                <td>${mktBadge}</td>
+                <td class="val-up">${r.short_margin_ratio}%</td>
+                <td>${Number(r.short_today_bal).toLocaleString()}</td>
+                <td class="${r.short_change >= 0 ? 'val-up' : 'val-down'}">${r.short_change > 0 ? '+' : ''}${r.short_change}</td>
+                <td>${Number(r.margin_today_bal).toLocaleString()}</td>
+                <td class="${r.margin_change >= 0 ? 'val-up' : 'val-down'}">${r.margin_change > 0 ? '+' : ''}${r.margin_change}</td>
+                <td>${r.sbl_utilization || 0}%</td>
+                <td><span class="badge-safe">🚀 極高軋空力道</span></td>
+            </tr>`;
+        } else if (currentTab === 'distribution') {
+            return `<tr>
+                <td>${idx + 1}</td>
+                <td><strong>${r.stock_id}</strong></td>
+                <td>${r.stock_name}</td>
+                <td>${mktBadge}</td>
+                <td class="val-up">+${Number(r.margin_change).toLocaleString()}</td>
+                <td>${Number(r.margin_today_bal).toLocaleString()}</td>
+                <td class="val-up">+${Number(r.sbl_sell_lots).toLocaleString()}</td>
+                <td>${Number(r.sbl_bal_lots).toLocaleString()}</td>
+                <td><span class="badge-warning">⚠️ 融資與借賣雙增</span></td>
+            </tr>`;
+        } else if (currentTab === 'cb_safe') {
+            return `<tr>
+                <td>${idx + 1}</td>
+                <td><strong>${r.cb_id}</strong></td>
+                <td>${r.cb_name}</td>
+                <td>${r.underlying_id}</td>
+                <td>${r.underlying_name}</td>
+                <td style="font-weight:700; color:#38bdf8;">${r.close_price} 元</td>
+                <td>${r.conversion_value}</td>
+                <td class="${r.premium_rate <= 5 ? 'val-down' : ''}">${r.premium_rate}%</td>
+                <td>${Number(r.outstanding_lots || 0).toLocaleString()}</td>
+                <td><span class="badge-safe">🛡️ 下檔保底 + 低溢價</span></td>
+            </tr>`;
+        } else if (currentTab === 'futures_whales') {
+            const isLong = r.net_top10_spec >= 0;
+            return `<tr>
+                <td>${idx + 1}</td>
+                <td><strong>${r.contract_code}</strong></td>
+                <td>${r.contract_name}</td>
+                <td class="${isLong ? 'val-up' : 'val-down'}">${r.net_top10_spec > 0 ? '+' : ''}${Number(r.net_top10_spec).toLocaleString()} 口</td>
+                <td>${Number(r.buy_top10_spec).toLocaleString()}</td>
+                <td>${Number(r.sell_top10_spec).toLocaleString()}</td>
+                <td>${Number(r.market_oi).toLocaleString()}</td>
+                <td><span class="${isLong ? 'badge-safe' : 'badge-warning'}">${isLong ? '🐋 主力偏多' : '🔻 主力偏空'}</span></td>
+            </tr>`;
+        }
+    }).join('');
+}
+
+function filterTable() {
+    renderTable();
+}
+
+// Initialize
+window.onload = function() {
+    drawGauge(76.2);
+    drawTrend(DASHBOARD_DATA.regime.history_trend);
+    renderTable();
+};
+
+// Re-render responsive elements on orientation change or screen resize
+let resizeTimer;
+window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+        drawTrend(DASHBOARD_DATA.regime.history_trend);
+    }, 100);
+});
+</script>
+</body>
+</html>
