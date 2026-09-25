@@ -242,7 +242,12 @@ class OfficialHistoryFetcher:
             res_open = self._get_json(url_open)
             time.sleep(self.polite_delay)
             if isinstance(res_open, list):
+                expected_roc_date = f"{roc_year}{dt.strftime('%m%d')}"
                 for row in res_open:
+                    # 避免在休市日抓到上一交易日的資料並錯誤標記為今日
+                    if str(row.get("Date", "")).strip() != expected_roc_date:
+                        continue
+                        
                     sid = str(row.get("SecuritiesCompanyCode", "")).strip()
                     sname = str(row.get("CompanyName", "")).strip()
                     if sid and sname:
