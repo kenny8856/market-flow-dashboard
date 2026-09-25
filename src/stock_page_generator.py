@@ -289,7 +289,21 @@ class StockPageGenerator:
         ret_color = "text-bull" if ret_5d >= 0 else "text-bear"
         ret_sign = "+" if ret_5d >= 0 else ""
 
-        # HTML 模板組裝
+
+        trust_5d_val = inst_summary.get('trust_5d', 0)
+        foreign_5d_val = inst_summary.get('foreign_5d', 0)
+        margin_5d_val = inst_summary.get('margin_5d', 0)
+        
+        if stock_id in ['TAIEX', 'TPEx']:
+            trust_5d_str = f"{trust_5d_val:+.1f} 億"
+            foreign_5d_str = f"{foreign_5d_val:+.1f} 億"
+            margin_5d_str = f"{margin_5d_val:+.1f} 億" if margin_5d_val != 0 else "+0 億"
+        else:
+            trust_5d_str = f"{int(trust_5d_val):+d} 張"
+            foreign_5d_str = f"{int(foreign_5d_val):+d} 張"
+            margin_5d_str = f"{int(margin_5d_val):+d} 張"
+
+        # HTML
         html = f"""<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -575,7 +589,7 @@ class StockPageGenerator:
         <!-- 頂部導航 -->
         <div class="top-navbar">
             <div style="display:flex; align-items:center; gap:16px;">
-                <a href="index.html" class="btn-back">← 返回市場全域儀表板</a>
+                
                 <div class="header-title-box">
                     <span class="stock-main-title">{stock_id} {stock_name}</span>
                     <span style="font-size:13px; color:var(--text-muted);">{market_type}</span>
@@ -600,15 +614,15 @@ class StockPageGenerator:
             </div>
             <div class="stat-item">
                 <div class="stat-label">⚡ 投信 5日淨買賣</div>
-                <div class="stat-value" style="color:var(--accent-cyan);">{inst_summary.get('trust_5d', 0):+d} 張</div>
+                <div class="stat-value" style="color:var(--accent-cyan);">{trust_5d_str}</div>
             </div>
             <div class="stat-item">
                 <div class="stat-label">🌐 外資 5日淨買賣</div>
-                <div class="stat-value" style="color:var(--accent-blue);">{inst_summary.get('foreign_5d', 0):+d} 張</div>
+                <div class="stat-value" style="color:var(--accent-blue);">{foreign_5d_str}</div>
             </div>
             <div class="stat-item">
                 <div class="stat-label">📊 融資 5日增減</div>
-                <div class="stat-value" style="color:var(--accent-yellow);">{inst_summary.get('margin_5d', 0):+d} 張</div>
+                <div class="stat-value" style="color:var(--accent-yellow);">{margin_5d_str}</div>
             </div>
             <div class="stat-item">
                 <div class="stat-label">🔥 今日權證多空比</div>
@@ -816,7 +830,9 @@ class StockPageGenerator:
             }});
             volumeSeries.setData(volumeData);
 
-            // 3. 初始化副圖 2：外資與投信多空金額 (萬元)
+            // 3. 繪製副圖 2
+            const isIndex = (['TAIEX', 'TPEx'].includes('{stock_id}'));
+            const unitName = isIndex ? '億' : '萬';
             const instContainer = document.getElementById('inst-chart-container');
             const instChart = LightweightCharts.createChart(instContainer, Object.assign({{}}, commonChartOptions, {{
                 width: instContainer.clientWidth,
@@ -827,7 +843,7 @@ class StockPageGenerator:
                 priceFormat: {{
                     type: 'custom',
                     formatter: function(val) {{
-                        return Number(val).toFixed(1) + ' 萬';
+                        return Number(val).toFixed(1) + ' ' + (typeof unitName !== 'undefined' ? unitName : '萬');
                     }}
                 }},
                 title: '外資多空金額'
@@ -840,7 +856,7 @@ class StockPageGenerator:
                 priceFormat: {{
                     type: 'custom',
                     formatter: function(val) {{
-                        return Number(val).toFixed(1) + ' 萬';
+                        return Number(val).toFixed(1) + ' ' + (typeof unitName !== 'undefined' ? unitName : '萬');
                     }}
                 }},
                 title: '投信多空淨額'

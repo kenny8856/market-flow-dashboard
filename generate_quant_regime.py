@@ -330,25 +330,12 @@ def generate_html(output_path="quant_regime.html"):
         from src.stock_page_generator import StockPageGenerator
         stock_gen = StockPageGenerator()
         
-        stock_gen.generate_page({
-            'id': 'TAIEX',
-            'name': '加權指數',
-            'market_type': 'TWSE',
-            'side': 'LONG',
-            'rank': 0,
-            'price': 0,
-            'ret_5d': 0
-        })
+        from scripts.patch_index_stats import get_index_stats
+        taiex_info = get_index_stats('db/twse_market.db', 'TAIEX', '加權指數', 'TWSE')
+        stock_gen.generate_page(taiex_info)
         
-        stock_gen.generate_page({
-            'id': 'TPEx',
-            'name': '櫃買指數',
-            'market_type': 'TPEX',
-            'side': 'LONG',
-            'rank': 0,
-            'price': 0,
-            'ret_5d': 0
-        })
+        tpex_info = get_index_stats('db/tpex_market.db', 'TPEx', '櫃買指數', 'TPEX')
+        stock_gen.generate_page(tpex_info)
         
         print("Generated TAIEX and TPEx pages with POC.")
     except Exception as e:

@@ -283,7 +283,7 @@
         <!-- 頂部導航 -->
         <div class="top-navbar">
             <div style="display:flex; align-items:center; gap:16px;">
-                <a href="index.html" class="btn-back">← 返回市場全域儀表板</a>
+                
                 <div class="header-title-box">
                     <span class="stock-main-title">2347 聯強</span>
                     <span style="font-size:13px; color:var(--text-muted);">TWSE</span>
@@ -585,7 +585,9 @@
             });
             volumeSeries.setData(volumeData);
 
-            // 3. 初始化副圖 2：外資與投信多空金額 (萬元)
+            // 3. 繪製副圖 2
+            const isIndex = (['TAIEX', 'TPEx'].includes('2347'));
+            const unitName = isIndex ? '億' : '萬';
             const instContainer = document.getElementById('inst-chart-container');
             const instChart = LightweightCharts.createChart(instContainer, Object.assign({}, commonChartOptions, {
                 width: instContainer.clientWidth,
@@ -596,7 +598,7 @@
                 priceFormat: {
                     type: 'custom',
                     formatter: function(val) {
-                        return Number(val).toFixed(1) + ' 萬';
+                        return Number(val).toFixed(1) + ' ' + (typeof unitName !== 'undefined' ? unitName : '萬');
                     }
                 },
                 title: '外資多空金額'
@@ -609,7 +611,7 @@
                 priceFormat: {
                     type: 'custom',
                     formatter: function(val) {
-                        return Number(val).toFixed(1) + ' 萬';
+                        return Number(val).toFixed(1) + ' ' + (typeof unitName !== 'undefined' ? unitName : '萬');
                     }
                 },
                 title: '投信多空淨額'

@@ -283,7 +283,7 @@
         <!-- 頂部導航 -->
         <div class="top-navbar">
             <div style="display:flex; align-items:center; gap:16px;">
-                <a href="index.html" class="btn-back">← 返回市場全域儀表板</a>
+                
                 <div class="header-title-box">
                     <span class="stock-main-title">TAIEX 加權指數</span>
                     <span style="font-size:13px; color:var(--text-muted);">TWSE</span>
@@ -291,8 +291,8 @@
                 </div>
             </div>
             <div class="stock-price-box">
-                <span class="stock-price text-bull">0.00</span>
-                <span class="stock-ret text-bull">5日: +0.00%</span>
+                <span class="stock-price text-bull">48024.60</span>
+                <span class="stock-ret text-bull">5日: +3.75%</span>
             </div>
         </div>
 
@@ -308,19 +308,19 @@
             </div>
             <div class="stat-item">
                 <div class="stat-label">⚡ 投信 5日淨買賣</div>
-                <div class="stat-value" style="color:var(--accent-cyan);">+0 張</div>
+                <div class="stat-value" style="color:var(--accent-cyan);">-53.8 億</div>
             </div>
             <div class="stat-item">
                 <div class="stat-label">🌐 外資 5日淨買賣</div>
-                <div class="stat-value" style="color:var(--accent-blue);">+0 張</div>
+                <div class="stat-value" style="color:var(--accent-blue);">+1585.7 億</div>
             </div>
             <div class="stat-item">
                 <div class="stat-label">📊 融資 5日增減</div>
-                <div class="stat-value" style="color:var(--accent-yellow);">+0 張</div>
+                <div class="stat-value" style="color:var(--accent-yellow);">+0 億</div>
             </div>
             <div class="stat-item">
                 <div class="stat-label">🔥 今日權證多空比</div>
-                <div class="stat-value" style="font-size:15px;">認購 0% : 認售 0%</div>
+                <div class="stat-value" style="font-size:15px;">認購 74.2% : 認售 25.8%</div>
             </div>
         </div>
 
@@ -531,7 +531,9 @@
             });
             volumeSeries.setData(volumeData);
 
-            // 3. 初始化副圖 2：外資與投信多空金額 (萬元)
+            // 3. 繪製副圖 2
+            const isIndex = (['TAIEX', 'TPEx'].includes('TAIEX'));
+            const unitName = isIndex ? '億' : '萬';
             const instContainer = document.getElementById('inst-chart-container');
             const instChart = LightweightCharts.createChart(instContainer, Object.assign({}, commonChartOptions, {
                 width: instContainer.clientWidth,
@@ -542,7 +544,7 @@
                 priceFormat: {
                     type: 'custom',
                     formatter: function(val) {
-                        return Number(val).toFixed(1) + ' 萬';
+                        return Number(val).toFixed(1) + ' ' + (typeof unitName !== 'undefined' ? unitName : '萬');
                     }
                 },
                 title: '外資多空金額'
@@ -555,7 +557,7 @@
                 priceFormat: {
                     type: 'custom',
                     formatter: function(val) {
-                        return Number(val).toFixed(1) + ' 萬';
+                        return Number(val).toFixed(1) + ' ' + (typeof unitName !== 'undefined' ? unitName : '萬');
                     }
                 },
                 title: '投信多空淨額'
