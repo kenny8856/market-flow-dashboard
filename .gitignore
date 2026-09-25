@@ -4,6 +4,9 @@ config/
 *.key
 *.pem
 
+# Markdown documentation files
+*.md
+
 # Python scripts & backend source code
 *.py
 *.py[cod]
