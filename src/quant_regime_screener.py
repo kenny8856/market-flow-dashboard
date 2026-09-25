@@ -24,7 +24,7 @@ class QuantRegimeScreener:
         self.sbl_db = os.path.join(db_dir, "stock_sbl.db")
         self.taifex_db = os.path.join(db_dir, "taifex_large_trader.db")
         self.cb_db = os.path.join(db_dir, "cb_market.db")
-        self.xiaoge_screener = XiaogeWarrantScreener(db_path=os.path.join(db_dir, "market_flow.db"))
+        self.xiaoge_screener = XiaogeWarrantScreener()
 
     def run_analysis(self, target_date=None):
         """
