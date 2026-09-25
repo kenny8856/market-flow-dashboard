@@ -1,0 +1,47 @@
+# Credentials & Secrets
+config/
+*.env
+*.key
+*.pem
+
+# Python scripts & backend source code
+*.py
+*.py[cod]
+__pycache__/
+.pytest_cache/
+src/
+scripts/
+
+# Batches & command line tools
+*.bat
+*.cmd
+*.ps1
+*.sh
+
+# Databases & data
+db/
+data/
+*.db
+*.sqlite
+*.sqlite3
+*.csv
+*.json
+*.txt
+*.log
+
+# Scratch & debug files
+scratch/
+*.bin
+test_raw.bin
+*.bak
+diff.txt
+main_chart.js
+temp_script.js
+
+# Virtual environments & IDE
+venv/
+.venv/
+env/
+.agents/
+.vscode/
+.idea/
