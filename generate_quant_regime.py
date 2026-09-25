@@ -2238,13 +2238,13 @@ TX 特法結構: 前五大 {m1['tx_details']['top5_spec_all']:+,}口 (近月 {m1
 
         <div id="tab-taiex" class="tab-content">
             <div class="iframe-container">
-                <iframe src="stock_TAIEX.html" style="width:100%; height:100%; border:none;"></iframe>
+                <iframe src="stock_TAIEX.html?v=1790331785" style="width:100%; height:100%; border:none;"></iframe>
             </div>
         </div>
 
         <div id="tab-tpex" class="tab-content">
             <div class="iframe-container">
-                <iframe src="stock_TPEx.html" style="width:100%; height:100%; border:none;"></iframe>
+                <iframe src="stock_TPEx.html?v=1790331785" style="width:100%; height:100%; border:none;"></iframe>
             </div>
         </div>
 
