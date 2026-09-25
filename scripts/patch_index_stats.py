@@ -1,6 +1,7 @@
 import sqlite3
 import pandas as pd
 import numpy as np
+import os
 
 def calculate_vp(df_quotes, days=90):
     if len(df_quotes) < 5:
@@ -91,6 +92,22 @@ def get_index_stats(db_path, index_id, index_name, market_type):
                 
         conn.close()
         
+        # Now fetch margin_5d from margin_trading.db
+        margin_5d = 0.0
+        try:
+            margin_db_path = os.path.join(os.path.dirname(db_path), 'margin_trading.db')
+            conn_m = sqlite3.connect(margin_db_path)
+            if index_id == 'TAIEX':
+                col = 'twse_margin_chg_yi'
+            else:
+                col = 'tpex_margin_chg_yi'
+            df_m = pd.read_sql(f"SELECT {col} FROM market_margin_summary ORDER BY date DESC LIMIT 5", conn_m)
+            if len(df_m) > 0:
+                margin_5d = round(df_m[col].sum(), 1)
+            conn_m.close()
+        except Exception as e:
+            print(f"Error fetching margin for {index_id}: {e}")
+        
         return {
             'id': index_id,
             'name': index_name,
@@ -103,7 +120,7 @@ def get_index_stats(db_path, index_id, index_name, market_type):
             'inst_5d': {
                 'foreign_5d': f_5d,
                 'trust_5d': t_5d,
-                'margin_5d': 0,
+                'margin_5d': margin_5d,
                 'sbl_5d': 0
             },
             'warrant_summary': {
