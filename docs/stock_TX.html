@@ -196,11 +196,23 @@
             </div>
             <div class="stat-sub">前十大特定機構籌碼</div>
         </div>
-        <!-- 8. Volume Profile POC -->
-        <div class="stat-card">
-            <div class="stat-label">90日 POC 籌碼密集區</div>
-            <div class="stat-value" style="color: #fbbf24; font-size: 16px;">45,999.8</div>
-            <div class="stat-sub">VA: 43,624 ~ 47,045</div>
+        <!-- 8. 短 60日 POC -->
+        <div class="stat-card" style="border-left: 3px solid #38bdf8;">
+            <div class="stat-label">短 60日 POC 密集區</div>
+            <div class="stat-value" style="color: #38bdf8; font-size: 16px;">45,999.8</div>
+            <div class="stat-sub">VA: 43,814 ~ 47,045</div>
+        </div>
+        <!-- 9. 中 120日 POC -->
+        <div class="stat-card" style="border-left: 3px solid #fbbf24;">
+            <div class="stat-label">中 120日 POC 密集區</div>
+            <div class="stat-value" style="color: #fbbf24; font-size: 16px;">45,907.7</div>
+            <div class="stat-sub">VA: 41,910 ~ 47,667</div>
+        </div>
+        <!-- 10. 長 240日 POC -->
+        <div class="stat-card" style="border-left: 3px solid #a855f7;">
+            <div class="stat-label">長 240日 POC 密集區</div>
+            <div class="stat-value" style="color: #a855f7; font-size: 16px;">27,880.4</div>
+            <div class="stat-sub">VA: 25,797 ~ 43,390</div>
         </div>
     </div>
 
@@ -214,9 +226,11 @@
                     <span id="kline-tooltip" style="font-family: monospace; font-size: 12px; color: var(--text-secondary); margin-left: 12px;"></span>
                 </div>
                 <div class="chart-legend">
-                    <div class="legend-item"><span class="legend-dot" style="background:#f59e0b;"></span> 選擇權 CALL 最大壓力 (51,900)</div>
-                    <div class="legend-item"><span class="legend-dot" style="background:#38bdf8;"></span> 選擇權 PUT 最大支撐 (47,800)</div>
-                    <div class="legend-item"><span class="legend-dot" style="background:#fbbf24;"></span> POC 密集價 (46,000)</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#f59e0b;"></span> CALL 壓力 (51,900)</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#38bdf8;"></span> PUT 支撐 (47,800)</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#38bdf8;"></span> 短60D (46,000)</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#fbbf24;"></span> 中120D (45,908)</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#a855f7;"></span> 長240D (27,880)</div>
                 </div>
             </div>
             <div id="main-chart"></div>
@@ -357,15 +371,39 @@
             });
         }
 
-        const pocVal = 45999.76;
-        if (pocVal > 0) {
+        const poc60 = 45999.76;
+        if (poc60 > 0) {
             candleSeries.createPriceLine({
-                price: pocVal,
+                price: poc60,
+                color: '#38bdf8',
+                lineWidth: 1,
+                lineStyle: LightweightCharts.LineStyle.Dashed,
+                axisLabelVisible: true,
+                title: '短60D POC',
+            });
+        }
+
+        const poc120 = 45907.71;
+        if (poc120 > 0) {
+            candleSeries.createPriceLine({
+                price: poc120,
                 color: '#fbbf24',
                 lineWidth: 2,
                 lineStyle: LightweightCharts.LineStyle.Solid,
                 axisLabelVisible: true,
-                title: 'POC',
+                title: '中120D POC',
+            });
+        }
+
+        const poc240 = 27880.41;
+        if (poc240 > 0) {
+            candleSeries.createPriceLine({
+                price: poc240,
+                color: '#a855f7',
+                lineWidth: 1,
+                lineStyle: LightweightCharts.LineStyle.Dashed,
+                axisLabelVisible: true,
+                title: '長240D POC',
             });
         }
 
