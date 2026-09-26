@@ -403,12 +403,12 @@
         <div class="xiaoge-warrant-box" style="border-left: 4px solid #ef4444; margin-top:12px;">
             <div style="font-weight:700; color:#ef4444; font-size:14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
                 <span>🟢 做多優先：認購權證 (CALL) Top 3</span>
-                <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">天數 &gt; 90天 ｜ 差槓比 &lt; 0.5% ｜ 價平~價外15%</span>
+                <span style="font-size:11px; color:var(--text-secondary); font-weight:normal;">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分)</span>
             </div>
             <div class="xiaoge-table-wrapper" style="overflow-x: auto; max-width: 100%; width: 100%;"><table class="xiaoge-table">
                 <thead>
                     <tr>
-                        <th>評級</th>
+                        <th>評級 / 分數</th>
                         <th>權證代碼 / 名稱</th>
                         <th>委買 / 委賣</th>
                         <th>履約價 (價外%)</th>
@@ -423,57 +423,60 @@
                 <tbody>
                     
             <tr>
-                <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #1</span></td>
+                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">79.0分</div><span class="badge-xiaoge-relax">🛡️ 低時間損耗</span></td>
                 <td><strong>711610</strong> 家登凱基61購03</td>
                 <td>1.94 / 1.95</td>
                 <td>550.00 (-1.4%)</td>
                 <td style="color:var(--bull-red); font-weight:700;">123 天</td>
-                <td>3.24x</td>
-                <td>0.52%</td>
-                <td><span class="badge-diff-lever">0.159%</span></td>
+                <td><strong style="color:var(--text-primary);">3.24x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div></td>
+                <td>0.52%<div style="font-size:10px; color:var(--text-muted);">Theta損: 0.64%</div></td>
+                <td><span class="badge-diff-lever-relax">0.159%</span></td>
                 <td>0.2%</td>
-                <td><strong style="color:var(--accent-blue);">商920</strong></td>
+                <td><strong style="color:var(--accent-blue);">凱基</strong></td>
             </tr>
             
             <tr>
-                <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #2</span></td>
+                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">79.0分</div><span class="badge-xiaoge-relax">🛡️ 低時間損耗</span></td>
                 <td><strong>714439</strong> 家登國泰64購01</td>
                 <td>1.30 / 1.31</td>
                 <td>620.00 (-12.6%)</td>
                 <td style="color:var(--bull-red); font-weight:700;">201 天</td>
-                <td>3.15x</td>
-                <td>0.76%</td>
-                <td><span class="badge-diff-lever">0.241%</span></td>
+                <td><strong style="color:var(--text-primary);">3.15x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div></td>
+                <td>0.76%<div style="font-size:10px; color:var(--text-muted);">Theta損: 0.52%</div></td>
+                <td><span class="badge-diff-lever-relax">0.241%</span></td>
                 <td>0.0%</td>
-                <td><strong style="color:var(--accent-blue);">商888</strong></td>
+                <td><strong style="color:var(--accent-blue);">國泰</strong></td>
             </tr>
             
             <tr>
-                <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #3</span></td>
+                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">79.0分</div><span class="badge-xiaoge-relax">🛡️ 低時間損耗</span></td>
                 <td><strong>711757</strong> 家登凱基61購04</td>
                 <td>1.15 / 1.16</td>
                 <td>610.00 (-11.2%)</td>
                 <td style="color:var(--bull-red); font-weight:700;">125 天</td>
-                <td>3.49x</td>
-                <td>0.87%</td>
-                <td><span class="badge-diff-lever">0.249%</span></td>
+                <td><strong style="color:var(--text-primary);">3.49x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div></td>
+                <td>0.87%<div style="font-size:10px; color:var(--text-muted);">Theta損: 0.82%</div></td>
+                <td><span class="badge-diff-lever-relax">0.249%</span></td>
                 <td>0.2%</td>
-                <td><strong style="color:var(--accent-blue);">商920</strong></td>
+                <td><strong style="color:var(--accent-blue);">凱基</strong></td>
             </tr>
             
                 </tbody>
             </table></div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:10px; line-height:1.5;">
+                ⚠️ <strong>實戰黃金法則</strong>：優先挑選 <strong>差槓比 &lt; 0.3% (翠綠色)</strong> + <strong>剩餘天數 &gt; 90天</strong> + <strong>價外 3%~15%</strong> 之標的。差槓比代表「現股需上漲多少%才能弭平權證一檔買賣價差」，數值越低勝率越高！
+            </div>
         </div>
         <div style='height:14px;'></div>
         <div class="xiaoge-warrant-box" style="border-left: 4px solid #10b981; margin-top:12px;">
             <div style="font-weight:700; color:#10b981; font-size:14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
                 <span>🔴 避險防守：認售權證 (PUT) Top 3</span>
-                <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">天數 &gt; 90天 ｜ 差槓比 &lt; 0.5% ｜ 價平~價外15%</span>
+                <span style="font-size:11px; color:var(--text-secondary); font-weight:normal;">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分)</span>
             </div>
             <div class="xiaoge-table-wrapper" style="overflow-x: auto; max-width: 100%; width: 100%;"><table class="xiaoge-table">
                 <thead>
                     <tr>
-                        <th>評級</th>
+                        <th>評級 / 分數</th>
                         <th>權證代碼 / 名稱</th>
                         <th>委買 / 委賣</th>
                         <th>履約價 (價外%)</th>
@@ -488,46 +491,49 @@
                 <tbody>
                     
             <tr>
-                <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #1</span></td>
+                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">79.0分</div><span class="badge-xiaoge-relax">🛡️ 低時間損耗</span></td>
                 <td><strong>712795</strong> 家登中信63購01</td>
                 <td>0.95 / 0.96</td>
                 <td>600.00 (-9.7%)</td>
                 <td style="color:var(--bull-red); font-weight:700;">174 天</td>
-                <td>3.03x</td>
-                <td>1.04%</td>
-                <td><span class="badge-diff-lever">0.344%</span></td>
+                <td><strong style="color:var(--text-primary);">3.03x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div></td>
+                <td>1.04%<div style="font-size:10px; color:var(--text-muted);">Theta損: 0.56%</div></td>
+                <td><span class="badge-diff-lever-relax">0.344%</span></td>
                 <td>0.6%</td>
                 <td><strong style="color:var(--accent-blue);">商616</strong></td>
             </tr>
             
             <tr>
-                <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #2</span></td>
+                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">75.0分</div><span class="badge-xiaoge-relax">🎯 價平穩健</span></td>
                 <td><strong>708083</strong> 家登富邦5C購02</td>
                 <td>0.89 / 0.90</td>
                 <td>536.29 (+1.1%)</td>
                 <td style="color:var(--bull-red); font-weight:700;">96 天</td>
-                <td>3.57x</td>
-                <td>1.11%</td>
-                <td><span class="badge-diff-lever">0.311%</span></td>
+                <td><strong style="color:var(--text-primary);">3.57x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div></td>
+                <td>1.11%<div style="font-size:10px; color:var(--text-muted);">Theta損: 0.76%</div></td>
+                <td><span class="badge-diff-lever-relax">0.311%</span></td>
                 <td>31.7%</td>
-                <td><strong style="color:var(--accent-blue);">商960</strong></td>
+                <td><strong style="color:var(--accent-blue);">富邦</strong></td>
             </tr>
             
             <tr>
-                <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #3</span></td>
+                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">73.0分</div><span class="badge-xiaoge-relax">🛡️ 低時間損耗</span></td>
                 <td><strong>714826</strong> 家登富邦65購02</td>
                 <td>0.94 / 0.95</td>
                 <td>617.88 (-12.3%)</td>
                 <td style="color:var(--bull-red); font-weight:700;">235 天</td>
-                <td>2.55x</td>
-                <td>1.05%</td>
-                <td><span class="badge-diff-lever">0.412%</span></td>
+                <td><strong style="color:var(--text-primary);">2.55x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: 0.00</div></td>
+                <td>1.05%<div style="font-size:10px; color:var(--text-muted);">Theta損: 0.40%</div></td>
+                <td><span class="badge-diff-lever-relax">0.412%</span></td>
                 <td>0.0%</td>
-                <td><strong style="color:var(--accent-blue);">商960</strong></td>
+                <td><strong style="color:var(--accent-blue);">富邦</strong></td>
             </tr>
             
                 </tbody>
             </table></div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:10px; line-height:1.5;">
+                ⚠️ <strong>實戰黃金法則</strong>：優先挑選 <strong>差槓比 &lt; 0.3% (翠綠色)</strong> + <strong>剩餘天數 &gt; 90天</strong> + <strong>價外 3%~15%</strong> 之標的。差槓比代表「現股需上漲多少%才能弭平權證一檔買賣價差」，數值越低勝率越高！
+            </div>
         </div>
         
         </div>

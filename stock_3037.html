@@ -403,12 +403,12 @@
         <div class="xiaoge-warrant-box" style="border-left: 4px solid #ef4444; margin-top:12px;">
             <div style="font-weight:700; color:#ef4444; font-size:14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
                 <span>🟢 做多優先：認購權證 (CALL) Top 3</span>
-                <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">天數 &gt; 90天 ｜ 差槓比 &lt; 0.5% ｜ 價平~價外15%</span>
+                <span style="font-size:11px; color:var(--text-secondary); font-weight:normal;">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分)</span>
             </div>
             <div class="xiaoge-table-wrapper" style="overflow-x: auto; max-width: 100%; width: 100%;"><table class="xiaoge-table">
                 <thead>
                     <tr>
-                        <th>評級</th>
+                        <th>評級 / 分數</th>
                         <th>權證代碼 / 名稱</th>
                         <th>委買 / 委賣</th>
                         <th>履約價 (價外%)</th>
@@ -423,57 +423,60 @@
                 <tbody>
                     
             <tr>
-                <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #1</span></td>
+                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">66.0分</div><span class="badge-xiaoge-relax">🛡️ 低時間損耗</span></td>
                 <td><strong>057524</strong> 欣興統一63購02</td>
                 <td>4.38 / 4.39</td>
                 <td>667.63 (+77.5%)</td>
                 <td style="color:var(--bull-red); font-weight:700;">159 天</td>
-                <td>1.99x</td>
-                <td>0.23%</td>
-                <td><span class="badge-diff-lever">0.116%</span></td>
+                <td><strong style="color:var(--text-primary);">1.99x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div></td>
+                <td>0.23%<div style="font-size:10px; color:var(--text-muted);">Theta損: 0.08%</div></td>
+                <td><span class="badge-diff-lever-relax">0.116%</span></td>
                 <td>40.0%</td>
-                <td><strong style="color:var(--accent-blue);">商585</strong></td>
+                <td><strong style="color:var(--accent-blue);">統一</strong></td>
             </tr>
             
             <tr>
-                <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #2</span></td>
+                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">62.0分</div><span class="badge-xiaoge-relax">標準流通</span></td>
                 <td><strong>051375</strong> 欣興兆豐61購01</td>
                 <td>34.20 / 34.30</td>
                 <td>277.43 (+327.1%)</td>
                 <td style="color:var(--bull-red); font-weight:700;">104 天</td>
-                <td>1.31x</td>
+                <td><strong style="color:var(--text-primary);">1.31x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: 0.04</div></td>
                 <td>0.29%</td>
-                <td><span class="badge-diff-lever">0.221%</span></td>
+                <td><span class="badge-diff-lever-relax">0.221%</span></td>
                 <td>0.4%</td>
-                <td><strong style="color:var(--accent-blue);">商700</strong></td>
+                <td><strong style="color:var(--accent-blue);">兆豐</strong></td>
             </tr>
             
             <tr>
-                <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #3</span></td>
+                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">61.0分</div><span class="badge-xiaoge-relax">標準流通</span></td>
                 <td><strong>046810</strong> 欣興兆豐5C購01</td>
                 <td>42.70 / 42.80</td>
                 <td>227.53 (+420.8%)</td>
                 <td style="color:var(--bull-red); font-weight:700;">69 天</td>
-                <td>1.25x</td>
+                <td><strong style="color:var(--text-primary);">1.25x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: 0.04</div></td>
                 <td>0.23%</td>
-                <td><span class="badge-diff-lever">0.185%</span></td>
+                <td><span class="badge-diff-lever-relax">0.185%</span></td>
                 <td>0.0%</td>
-                <td><strong style="color:var(--accent-blue);">商700</strong></td>
+                <td><strong style="color:var(--accent-blue);">兆豐</strong></td>
             </tr>
             
                 </tbody>
             </table></div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:10px; line-height:1.5;">
+                ⚠️ <strong>實戰黃金法則</strong>：優先挑選 <strong>差槓比 &lt; 0.3% (翠綠色)</strong> + <strong>剩餘天數 &gt; 90天</strong> + <strong>價外 3%~15%</strong> 之標的。差槓比代表「現股需上漲多少%才能弭平權證一檔買賣價差」，數值越低勝率越高！
+            </div>
         </div>
         <div style='height:14px;'></div>
         <div class="xiaoge-warrant-box" style="border-left: 4px solid #10b981; margin-top:12px;">
             <div style="font-weight:700; color:#10b981; font-size:14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
                 <span>🔴 避險防守：認售權證 (PUT) Top 3</span>
-                <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">天數 &gt; 90天 ｜ 差槓比 &lt; 0.5% ｜ 價平~價外15%</span>
+                <span style="font-size:11px; color:var(--text-secondary); font-weight:normal;">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分)</span>
             </div>
             <div class="xiaoge-table-wrapper" style="overflow-x: auto; max-width: 100%; width: 100%;"><table class="xiaoge-table">
                 <thead>
                     <tr>
-                        <th>評級</th>
+                        <th>評級 / 分數</th>
                         <th>權證代碼 / 名稱</th>
                         <th>委買 / 委賣</th>
                         <th>履約價 (價外%)</th>
@@ -488,46 +491,49 @@
                 <tbody>
                     
             <tr>
-                <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #1</span></td>
+                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">41.0分</div><span class="badge-xiaoge-relax">◆ 次選放寬 #1</span></td>
                 <td><strong>055773</strong> 欣興富邦63購01</td>
                 <td>5.25 / 5.35</td>
                 <td>528.92 (+124.0%)</td>
                 <td style="color:var(--bull-red); font-weight:700;">162 天</td>
-                <td>1.77x</td>
+                <td><strong style="color:var(--text-primary);">1.77x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div></td>
                 <td>1.87%</td>
-                <td><span class="badge-diff-lever">1.055%</span></td>
+                <td><span class="badge-diff-lever-relax">1.055%</span></td>
                 <td>29.5%</td>
-                <td><strong style="color:var(--accent-blue);">商960</strong></td>
+                <td><strong style="color:var(--accent-blue);">富邦</strong></td>
             </tr>
             
             <tr>
-                <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #2</span></td>
+                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">36.0分</div><span class="badge-xiaoge-relax">◆ 次選放寬 #2</span></td>
                 <td><strong>052113</strong> 欣興富邦61購01</td>
                 <td>18.80 / 19.80</td>
                 <td>319.35 (+271.1%)</td>
                 <td style="color:var(--bull-red); font-weight:700;">110 天</td>
-                <td>1.32x</td>
+                <td><strong style="color:var(--text-primary);">1.32x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div></td>
                 <td>5.05%</td>
-                <td><span class="badge-diff-lever">3.835%</span></td>
+                <td><span class="badge-diff-lever-relax">3.835%</span></td>
                 <td>0.8%</td>
-                <td><strong style="color:var(--accent-blue);">商960</strong></td>
+                <td><strong style="color:var(--accent-blue);">富邦</strong></td>
             </tr>
             
             <tr>
-                <td><span class="badge-xiaoge-pass">★ 小哥嚴選 #3</span></td>
+                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">36.0分</div><span class="badge-xiaoge-relax">◆ 次選放寬 #3</span></td>
                 <td><strong>054219</strong> 欣興富邦5C購03</td>
                 <td>11.80 / 12.80</td>
                 <td>479.02 (+147.4%)</td>
                 <td style="color:var(--bull-red); font-weight:700;">95 天</td>
-                <td>1.57x</td>
+                <td><strong style="color:var(--text-primary);">1.57x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div></td>
                 <td>7.81%</td>
-                <td><span class="badge-diff-lever">4.963%</span></td>
+                <td><span class="badge-diff-lever-relax">4.963%</span></td>
                 <td>31.2%</td>
-                <td><strong style="color:var(--accent-blue);">商960</strong></td>
+                <td><strong style="color:var(--accent-blue);">富邦</strong></td>
             </tr>
             
                 </tbody>
             </table></div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:10px; line-height:1.5;">
+                ⚠️ <strong>實戰黃金法則</strong>：優先挑選 <strong>差槓比 &lt; 0.3% (翠綠色)</strong> + <strong>剩餘天數 &gt; 90天</strong> + <strong>價外 3%~15%</strong> 之標的。差槓比代表「現股需上漲多少%才能弭平權證一檔買賣價差」，數值越低勝率越高！
+            </div>
         </div>
         
         </div>
