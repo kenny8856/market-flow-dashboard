@@ -575,6 +575,87 @@
             align-items: center;
             gap: 12px;
         }
+        /* Position Tier Badges & Filter Bar */
+        .pos-tier-badge {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .pos-tier-low {
+            background: rgba(16, 185, 129, 0.18);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.45);
+        }
+        .pos-tier-mid {
+            background: rgba(245, 158, 11, 0.18);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.45);
+        }
+        .pos-tier-high {
+            background: rgba(239, 68, 68, 0.18);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.45);
+        }
+
+        .pos-filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            background: rgba(15, 23, 42, 0.7);
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+        .pos-filter-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-right: 4px;
+        }
+        .pos-filter-btn {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+        }
+        .pos-filter-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+        .pos-filter-btn.active {
+            background: var(--accent-blue);
+            color: #ffffff;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+        }
+        .pos-filter-btn.filter-low.active {
+            background: rgba(16, 185, 129, 0.85);
+            border-color: #10b981;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
+        }
+        .pos-filter-btn.filter-mid.active {
+            background: rgba(245, 158, 11, 0.85);
+            border-color: #f59e0b;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.45);
+        }
+        .pos-filter-btn.filter-high.active {
+            background: rgba(239, 68, 68, 0.85);
+            border-color: #ef4444;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.45);
+        }
+
         .rank-tag {
             font-size: 11px;
             font-weight: 800;
@@ -1399,19 +1480,19 @@
 
         <div id="tab-taiex" class="tab-content">
             <div class="iframe-container">
-                <iframe src="stock_TAIEX.html?v=1791299326" style="width:100%; height:100%; border:none;"></iframe>
+                <iframe src="stock_TAIEX.html?v=1791369612" style="width:100%; height:100%; border:none;"></iframe>
             </div>
         </div>
 
         <div id="tab-tpex" class="tab-content">
             <div class="iframe-container">
-                <iframe src="stock_TPEx.html?v=1791299326" style="width:100%; height:100%; border:none;"></iframe>
+                <iframe src="stock_TPEx.html?v=1791369612" style="width:100%; height:100%; border:none;"></iframe>
             </div>
         </div>
 
         <div id="tab-tx" class="tab-content">
             <div class="iframe-container">
-                <iframe src="stock_TX.html?v=1791299326" style="width:100%; height:100%; border:none;"></iframe>
+                <iframe src="stock_TX.html?v=1791369612" style="width:100%; height:100%; border:none;"></iframe>
             </div>
         </div>
 
@@ -2074,13 +2155,22 @@
             </div>
         </div>
         
+        <div class="pos-filter-bar">
+            <span class="pos-filter-label">🏷️ 個股位階快速快篩：</span>
+            <button class="pos-filter-btn active" onclick="filterPosTier('all', this, 'tab-longs')">全部 (34)</button>
+            <button class="pos-filter-btn filter-low" onclick="filterPosTier('low', this, 'tab-longs')">🟢 僅看低位階 (9)</button>
+            <button class="pos-filter-btn filter-mid" onclick="filterPosTier('mid', this, 'tab-longs')">🟡 中位階 (13)</button>
+            <button class="pos-filter-btn filter-high" onclick="filterPosTier('high', this, 'tab-longs')">🔴 高位階 (12)</button>
+        </div>
+
         <div class="cards-list">
             
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="high">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #1</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-high" title="近半年位階 94.8% ｜ 逼近半年高檔過熱區 (季線乖離 +68.2%)">🔴 高位階 (95%)</span>
                     <a href="stock_6213.html" class="stock-title-link" title="點擊進入 6213 聯茂 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">6213</span>
                         <span class="stock-name">聯茂</span>
@@ -2193,21 +2283,21 @@
                 <strong style="color:#ffffff; font-size:13px;">063224</strong>
                 <div style="font-size:11px; color:var(--text-secondary);">聯茂統一64購05</div>
             </td>
-            <td>8.75 / 8.80</td>
+            <td>8.90 / 8.95</td>
             <td>
                 <span>276.78</span>
-                <small class="text-muted">(+184.3%)</small>
+                <small class="text-muted">(+187.6%)</small>
             </td>
-            <td class="text-bull"><strong>185</strong> 天</td>
+            <td class="text-bull"><strong>184</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">1.51x</strong>
+                <strong style="color:var(--text-primary);">1.49x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
             </td>
             <td>
-                <span>0.57%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.02%</div>
+                <span>0.56%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.01%</div>
             </td>
-            <td><span class="">0.379%</span></td>
+            <td><span class="">0.375%</span></td>
             <td class="text-bull">2.6%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">統一</span></td>
         </tr>
@@ -2218,54 +2308,54 @@
                 <span style="background:#334155;color:#cbd5e1;padding:3px 6px;border-radius:4px;font-size:10px;">標準流通</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">062924</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">聯茂統一63購02</div>
+                <strong style="color:#ffffff; font-size:13px;">073094</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">聯茂台新63購02</div>
             </td>
-            <td>12.10 / 12.20</td>
+            <td>6.95 / 7.00</td>
             <td>
-                <span>238.00</span>
-                <small class="text-muted">(+230.7%)</small>
+                <span>426.42</span>
+                <small class="text-muted">(+86.7%)</small>
             </td>
-            <td class="text-bull"><strong>153</strong> 天</td>
+            <td class="text-bull"><strong>173</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">1.81x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
+                <strong style="color:var(--text-primary);">1.73x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
             </td>
             <td>
-                <span>0.83%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.00%</div>
+                <span>0.71%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.11%</div>
             </td>
-            <td><span class="">0.456%</span></td>
-            <td class="text-bull">0.4%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">統一</span></td>
+            <td><span class="">0.409%</span></td>
+            <td class="text-bull">1.1%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">商9B0</span></td>
         </tr>
         
         <tr>
             <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">48.0分</div>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">56.0分</div>
                 <span style="background:#334155;color:#cbd5e1;padding:3px 6px;border-radius:4px;font-size:10px;">標準流通</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">073095</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">聯茂台新64購01</div>
+                <strong style="color:#ffffff; font-size:13px;">063469</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">聯茂統一64購06</div>
             </td>
-            <td>5.95 / 6.00</td>
+            <td>7.15 / 7.20</td>
             <td>
-                <span>366.92</span>
-                <small class="text-muted">(+114.5%)</small>
+                <span>293.04</span>
+                <small class="text-muted">(+171.6%)</small>
             </td>
-            <td class="text-bull"><strong>204</strong> 天</td>
+            <td class="text-bull"><strong>187</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">1.57x</strong>
+                <strong style="color:var(--text-primary);">1.51x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
             </td>
             <td>
-                <span>0.84%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.08%</div>
+                <span>0.69%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.03%</div>
             </td>
-            <td><span class="">0.534%</span></td>
-            <td class="text-bull">0.0%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">商9B0</span></td>
+            <td><span class="">0.457%</span></td>
+            <td class="text-bull">47.1%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">統一</span></td>
         </tr>
         
                 </tbody>
@@ -2307,11 +2397,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="high">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #2</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-high" title="近半年位階 100.0% ｜ 逼近半年高檔過熱區 (季線乖離 +31.6%)">🔴 高位階 (100%)</span>
                     <a href="stock_6257.html" class="stock-title-link" title="點擊進入 6257 矽格 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">6257</span>
                         <span class="stock-name">矽格</span>
@@ -2417,86 +2508,86 @@
                     
         <tr>
             <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">58.0分</div>
-                <span style="background:#334155;color:#cbd5e1;padding:3px 6px;border-radius:4px;font-size:10px;">標準流通</span>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">83.0分</div>
+                <span class="badge-xiaoge-pass">⭐ 首選精選</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">084185</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">矽格凱基66購01</div>
+                <strong style="color:#ffffff; font-size:13px;">087886</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">矽格國泰65購01</div>
             </td>
-            <td>4.82 / 5.00</td>
+            <td>2.39 / 2.40</td>
             <td>
-                <span>310.00</span>
-                <small class="text-bull">(-7.7%)</small>
+                <span>305.00</span>
+                <small class="text-bull">(-8.8%)</small>
             </td>
-            <td class="text-bull"><strong>239</strong> 天</td>
+            <td class="text-bull"><strong>229</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.73x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.05</div>
+                <strong style="color:var(--text-primary);">2.64x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
             </td>
             <td>
-                <span>3.73%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.37%</div>
+                <span>0.42%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.39%</div>
             </td>
-            <td><span class="">1.370%</span></td>
-            <td class="text-bull">0.8%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
+            <td><span class="badge-diff-lever">0.159%</span></td>
+            <td class="text-bull">1.0%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">國泰</span></td>
         </tr>
         
         <tr>
             <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">55.0分</div>
-                <span style="background:#334155;color:#cbd5e1;padding:3px 6px;border-radius:4px;font-size:10px;">標準流通</span>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">83.0分</div>
+                <span class="badge-xiaoge-pass">⭐ 首選精選</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">068082</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">矽格統一64購03</div>
+                <strong style="color:#ffffff; font-size:13px;">030186</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">矽格永豐64購04</div>
             </td>
-            <td>0.96 / 0.99</td>
+            <td>1.70 / 1.71</td>
             <td>
-                <span>270.72</span>
-                <small class="text-muted">(+5.6%)</small>
+                <span>320.62</span>
+                <small class="text-bull">(-13.3%)</small>
             </td>
-            <td class="text-bull"><strong>196</strong> 天</td>
+            <td class="text-bull"><strong>182</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.83x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
+                <strong style="color:var(--text-primary);">3.24x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
             </td>
             <td>
-                <span>2.04%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.33%</div>
+                <span>0.58%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.58%</div>
             </td>
-            <td><span class="">0.721%</span></td>
-            <td class="text-bull">76.9%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">統一</span></td>
+            <td><span class="badge-diff-lever">0.179%</span></td>
+            <td class="text-bull">0.2%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">永豐</span></td>
         </tr>
         
         <tr>
             <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">53.0分</div>
-                <span style="background:#334155;color:#cbd5e1;padding:3px 6px;border-radius:4px;font-size:10px;">標準流通</span>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">068814</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">矽格統一65購04</div>
+                <strong style="color:#ffffff; font-size:13px;">086167</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">矽格國泰64購01</div>
             </td>
-            <td>0.97 / 1.09</td>
+            <td>2.36 / 2.37</td>
             <td>
-                <span>312.51</span>
-                <small class="text-bull">(-8.5%)</small>
+                <span>279.50</span>
+                <small class="text-bull">(-0.5%)</small>
             </td>
-            <td class="text-bull"><strong>231</strong> 天</td>
+            <td class="text-bull"><strong>189</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.44x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
+                <strong style="color:var(--text-primary);">2.85x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
             </td>
             <td>
-                <span>12.37%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.37%</div>
+                <span>0.42%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.41%</div>
             </td>
-            <td><span class="">5.070%</span></td>
-            <td class="text-bull">49.9%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">統一</span></td>
+            <td><span class="badge-diff-lever-relax">0.148%</span></td>
+            <td class="text-bull">1.7%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">國泰</span></td>
         </tr>
         
                 </tbody>
@@ -2538,11 +2629,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="high">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #3</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-high" title="近半年位階 80.7% ｜ 逼近半年高檔過熱區 (季線乖離 +29.2%)">🔴 高位階 (81%)</span>
                     <a href="stock_8021.html" class="stock-title-link" title="點擊進入 8021 尖點 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">8021</span>
                         <span class="stock-name">尖點</span>
@@ -2649,11 +2741,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="high">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #4</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-high" title="近半年位階 93.0% ｜ 逼近半年高檔過熱區 (季線乖離 +24.8%)">🔴 高位階 (93%)</span>
                     <a href="stock_3044.html" class="stock-title-link" title="點擊進入 3044 健鼎 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">3044</span>
                         <span class="stock-name">健鼎</span>
@@ -2763,82 +2856,82 @@
                 <span class="badge-xiaoge-pass">⭐ 首選精選</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">080705</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">健鼎台新65購01</div>
+                <strong style="color:#ffffff; font-size:13px;">080484</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">健鼎凱基63購02</div>
             </td>
-            <td>1.34 / 1.35</td>
+            <td>2.22 / 2.23</td>
             <td>
-                <span>620.00</span>
-                <small class="text-bull">(-6.6%)</small>
+                <span>660.00</span>
+                <small class="text-bull">(-11.8%)</small>
             </td>
-            <td class="text-bull"><strong>223</strong> 天</td>
+            <td class="text-bull"><strong>159</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">4.15x</strong>
+                <strong style="color:var(--text-primary);">3.29x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
             </td>
             <td>
-                <span>0.75%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.23%</div>
+                <span>0.45%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.65%</div>
             </td>
-            <td><span class="badge-diff-lever">0.180%</span></td>
-            <td class="text-bull">0.8%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">商9B0</span></td>
+            <td><span class="badge-diff-lever">0.137%</span></td>
+            <td class="text-bull">1.1%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
         </tr>
         
         <tr>
             <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">83.0分</div>
+                <span class="badge-xiaoge-pass">⭐ 首選精選</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">086674</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">健鼎永豐64購02</div>
+                <strong style="color:#ffffff; font-size:13px;">087434</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">健鼎凱基65購01</div>
             </td>
-            <td>1.60 / 1.61</td>
+            <td>3.64 / 3.66</td>
             <td>
-                <span>623.50</span>
-                <small class="text-bull">(-7.1%)</small>
+                <span>630.00</span>
+                <small class="text-bull">(-7.6%)</small>
             </td>
-            <td class="text-bull"><strong>192</strong> 天</td>
+            <td class="text-bull"><strong>225</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.98x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
+                <strong style="color:var(--text-primary);">3.06x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
+            </td>
+            <td>
+                <span>0.55%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.40%</div>
+            </td>
+            <td><span class="badge-diff-lever">0.180%</span></td>
+            <td class="text-bull">6.4%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">83.0分</div>
+                <span class="badge-xiaoge-pass">⭐ 首選精選</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">082459</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">健鼎凱基63購05</div>
+            </td>
+            <td>3.21 / 3.23</td>
+            <td>
+                <span>600.00</span>
+                <small class="text-bull">(-3.0%)</small>
+            </td>
+            <td class="text-bull"><strong>169</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">3.12x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
             </td>
             <td>
                 <span>0.62%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.47%</div>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.48%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.208%</span></td>
-            <td class="text-bull">0.9%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">永豐</span></td>
-        </tr>
-        
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">073638</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">健鼎永豐64購01</div>
-            </td>
-            <td>1.62 / 1.63</td>
-            <td>
-                <span>669.49</span>
-                <small class="text-bull">(-13.5%)</small>
-            </td>
-            <td class="text-bull"><strong>177</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">2.80x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
-            </td>
-            <td>
-                <span>0.61%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.56%</div>
-            </td>
-            <td><span class="badge-diff-lever-relax">0.218%</span></td>
-            <td class="text-bull">4.6%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">永豐</span></td>
+            <td><span class="badge-diff-lever">0.199%</span></td>
+            <td class="text-bull">9.9%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
         </tr>
         
                 </tbody>
@@ -2880,11 +2973,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="mid">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #5</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 63.4% ｜ 中段箱型整理區 (季線乖離 +24.4%)">🟡 中位階 (63%)</span>
                     <a href="stock_2368.html" class="stock-title-link" title="點擊進入 2368 金像電 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">2368</span>
                         <span class="stock-name">金像電</span>
@@ -2990,30 +3084,30 @@
                     
         <tr>
             <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">83.0分</div>
+                <span class="badge-xiaoge-pass">⭐ 首選精選</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">080525</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">金像電元大64購08</div>
+                <strong style="color:#ffffff; font-size:13px;">083575</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">金像電群益63購05</div>
             </td>
-            <td>1.50 / 1.51</td>
+            <td>1.65 / 1.68</td>
             <td>
-                <span>1330.00</span>
-                <small class="text-bull">(-5.3%)</small>
+                <span>1400.00</span>
+                <small class="text-bull">(-11.1%)</small>
             </td>
-            <td class="text-bull"><strong>189</strong> 天</td>
+            <td class="text-bull"><strong>146</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.12x</strong>
+                <strong style="color:var(--text-primary);">3.09x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.00</div>
             </td>
             <td>
-                <span>0.66%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.42%</div>
+                <span>0.60%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.69%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.311%</span></td>
-            <td class="text-bull">10.5%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">元大</span></td>
+            <td><span class="badge-diff-lever">0.194%</span></td>
+            <td class="text-bull">10.9%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">群益</span></td>
         </tr>
         
         <tr>
@@ -3022,26 +3116,26 @@
                 <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">081835</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">金像電台新62購05</div>
+                <strong style="color:#ffffff; font-size:13px;">087827</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">金像電富邦63購04</div>
             </td>
-            <td>1.81 / 1.83</td>
+            <td>1.15 / 1.16</td>
             <td>
-                <span>1420.00</span>
-                <small class="text-bull">(-11.3%)</small>
+                <span>1400.00</span>
+                <small class="text-bull">(-11.1%)</small>
             </td>
-            <td class="text-bull"><strong>140</strong> 天</td>
+            <td class="text-bull"><strong>166</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">3.43x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
+                <strong style="color:var(--text-primary);">4.22x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.00</div>
             </td>
             <td>
-                <span>1.09%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.73%</div>
+                <span>0.87%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.39%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.318%</span></td>
-            <td class="text-bull">1.4%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">商9B0</span></td>
+            <td><span class="badge-diff-lever-relax">0.206%</span></td>
+            <td class="text-bull">11.8%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">富邦</span></td>
         </tr>
         
         <tr>
@@ -3050,26 +3144,26 @@
                 <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">075719</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">金像電元大63購04</div>
+                <strong style="color:#ffffff; font-size:13px;">079954</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">金像電群益63購02</div>
             </td>
-            <td>1.29 / 1.30</td>
+            <td>1.61 / 1.64</td>
             <td>
-                <span>1395.00</span>
-                <small class="text-bull">(-9.7%)</small>
+                <span>1425.00</span>
+                <small class="text-bull">(-12.6%)</small>
             </td>
-            <td class="text-bull"><strong>160</strong> 天</td>
+            <td class="text-bull"><strong>155</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.31x</strong>
+                <strong style="color:var(--text-primary);">2.84x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.00</div>
             </td>
             <td>
-                <span>0.77%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.55%</div>
+                <span>0.61%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.64%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.334%</span></td>
-            <td class="text-bull">8.0%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">元大</span></td>
+            <td><span class="badge-diff-lever-relax">0.215%</span></td>
+            <td class="text-bull">7.8%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">群益</span></td>
         </tr>
         
                 </tbody>
@@ -3111,11 +3205,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="high">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #6</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-high" title="近半年位階 93.8% ｜ 逼近半年高檔過熱區 (季線乖離 +84.8%)">🔴 高位階 (94%)</span>
                     <a href="stock_1709.html" class="stock-title-link" title="點擊進入 1709 和益 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">1709</span>
                         <span class="stock-name">和益</span>
@@ -3222,11 +3317,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="mid">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #7</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 66.8% ｜ 中段箱型整理區 (季線乖離 +31.1%)">🟡 中位階 (67%)</span>
                     <a href="stock_1459.html" class="stock-title-link" title="點擊進入 1459 聯發 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">1459</span>
                         <span class="stock-name">聯發</span>
@@ -3333,11 +3429,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="mid">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #8</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 68.7% ｜ 中段箱型整理區 (季線乖離 +22.1%)">🟡 中位階 (69%)</span>
                     <a href="stock_6658.html" class="stock-title-link" title="點擊進入 6658 聯策 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">6658</span>
                         <span class="stock-name">聯策</span>
@@ -3450,22 +3547,22 @@
                 <strong style="color:#ffffff; font-size:13px;">078927</strong>
                 <div style="font-size:11px; color:var(--text-secondary);">聯策國票66購01</div>
             </td>
-            <td>1.21 / 1.23</td>
+            <td>1.18 / 1.19</td>
             <td>
                 <span>210.00</span>
-                <small class="text-bull">(-3.3%)</small>
+                <small class="text-bull">(-3.6%)</small>
             </td>
-            <td class="text-bull"><strong>244</strong> 天</td>
+            <td class="text-bull"><strong>243</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">1.97x</strong>
+                <strong style="color:var(--text-primary);">2.01x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
             </td>
             <td>
-                <span>0.82%</span>
+                <span>0.84%</span>
                 <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.31%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.415%</span></td>
-            <td class="text-bull">14.2%</td>
+            <td><span class="badge-diff-lever-relax">0.419%</span></td>
+            <td class="text-bull">24.1%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">國票</span></td>
         </tr>
         
@@ -3478,22 +3575,22 @@
                 <strong style="color:#ffffff; font-size:13px;">084622</strong>
                 <div style="font-size:11px; color:var(--text-secondary);">聯策台新63購01</div>
             </td>
-            <td>0.85 / 0.86</td>
+            <td>0.84 / 0.85</td>
             <td>
                 <span>238.00</span>
-                <small class="text-bull">(-14.7%)</small>
+                <small class="text-bull">(-14.9%)</small>
             </td>
-            <td class="text-bull"><strong>153</strong> 天</td>
+            <td class="text-bull"><strong>152</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.28x</strong>
+                <strong style="color:var(--text-primary);">2.31x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
             </td>
             <td>
-                <span>1.15%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.62%</div>
+                <span>1.18%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.63%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.504%</span></td>
-            <td class="text-bull">1.4%</td>
+            <td><span class="badge-diff-lever-relax">0.511%</span></td>
+            <td class="text-bull">8.5%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">商9B0</span></td>
         </tr>
         
@@ -3506,22 +3603,22 @@
                 <strong style="color:#ffffff; font-size:13px;">084401</strong>
                 <div style="font-size:11px; color:var(--text-secondary);">聯策國票66購02</div>
             </td>
-            <td>0.72 / 0.73</td>
+            <td>0.70 / 0.71</td>
             <td>
                 <span>280.00</span>
-                <small class="text-muted">(-27.5%)</small>
+                <small class="text-muted">(-27.7%)</small>
             </td>
-            <td class="text-bull"><strong>240</strong> 天</td>
+            <td class="text-bull"><strong>239</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">1.93x</strong>
+                <strong style="color:var(--text-primary);">1.96x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
             </td>
             <td>
-                <span>1.37%</span>
+                <span>1.41%</span>
                 <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.43%</div>
             </td>
-            <td><span class="">0.709%</span></td>
-            <td class="text-bull">0.4%</td>
+            <td><span class="">0.720%</span></td>
+            <td class="text-bull">1.7%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">國票</span></td>
         </tr>
         
@@ -3564,11 +3661,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="low">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #9</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 破底翻放量確立</span>
+                    <span class="pos-tier-badge pos-tier-low" title="近半年位階 27.5% ｜ 沉澱於底部打底區 (季線乖離 +5.9%)">🟢 低位階 (28%)</span>
                     <a href="stock_6657.html" class="stock-title-link" title="點擊進入 6657 華安 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">6657</span>
                         <span class="stock-name">華安</span>
@@ -3675,11 +3773,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="low">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #10</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-low" title="近半年位階 32.9% ｜ 沉澱於底部打底區 (季線乖離 +7.1%)">🟢 低位階 (33%)</span>
                     <a href="stock_4551.html" class="stock-title-link" title="點擊進入 4551 智伸科 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">4551</span>
                         <span class="stock-name">智伸科</span>
@@ -3785,86 +3884,86 @@
                     
         <tr>
             <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">65.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">83.0分</div>
+                <span class="badge-xiaoge-pass">⭐ 首選精選</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">089007</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">智伸科國票65購01</div>
+                <strong style="color:#ffffff; font-size:13px;">030696</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">智伸科台新64購01</div>
             </td>
-            <td>1.04 / 1.05</td>
+            <td>1.68 / 1.69</td>
             <td>
-                <span>240.00</span>
-                <small class="text-muted">(-24.4%)</small>
+                <span>200.00</span>
+                <small class="text-bull">(-6.5%)</small>
             </td>
-            <td class="text-bull"><strong>237</strong> 天</td>
+            <td class="text-bull"><strong>182</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.12x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
+                <strong style="color:var(--text-primary);">3.07x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.03</div>
             </td>
             <td>
-                <span>0.95%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.44%</div>
+                <span>0.59%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.49%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.448%</span></td>
-            <td class="text-bull">0.4%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">國票</span></td>
+            <td><span class="badge-diff-lever">0.192%</span></td>
+            <td class="text-bull">0.0%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">商9B0</span></td>
         </tr>
         
         <tr>
             <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">63.0分</div>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">75.0分</div>
                 <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">061427</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">智伸科統一63購01</div>
+                <strong style="color:#ffffff; font-size:13px;">079645</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">智伸科永豐63購02</div>
             </td>
-            <td>1.08 / 1.09</td>
+            <td>1.34 / 1.35</td>
             <td>
-                <span>168.06</span>
-                <small class="text-muted">(+8.0%)</small>
+                <span>180.00</span>
+                <small class="text-bull">(+3.9%)</small>
             </td>
-            <td class="text-bull"><strong>171</strong> 天</td>
+            <td class="text-bull"><strong>154</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.55x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
-            </td>
-            <td>
-                <span>0.92%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.36%</div>
-            </td>
-            <td><span class="badge-diff-lever-relax">0.360%</span></td>
-            <td class="text-bull">42.5%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">統一</span></td>
-        </tr>
-        
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">62.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">083592</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">智伸科群益63購01</div>
-            </td>
-            <td>1.26 / 1.27</td>
-            <td>
-                <span>250.00</span>
-                <small class="text-muted">(-27.4%)</small>
-            </td>
-            <td class="text-bull"><strong>147</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">3.34x</strong>
+                <strong style="color:var(--text-primary);">2.68x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
             </td>
             <td>
-                <span>0.79%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.99%</div>
+                <span>0.75%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.45%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.236%</span></td>
-            <td class="text-bull">17.2%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">群益</span></td>
+            <td><span class="badge-diff-lever-relax">0.278%</span></td>
+            <td class="text-bull">11.9%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">永豐</span></td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">75.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">080079</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">智伸科台新65購01</div>
+            </td>
+            <td>1.29 / 1.30</td>
+            <td>
+                <span>190.00</span>
+                <small class="text-bull">(-1.6%)</small>
+            </td>
+            <td class="text-bull"><strong>216</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">2.64x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
+            </td>
+            <td>
+                <span>0.77%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.36%</div>
+            </td>
+            <td><span class="badge-diff-lever-relax">0.292%</span></td>
+            <td class="text-bull">20.2%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">商9B0</span></td>
         </tr>
         
                 </tbody>
@@ -3906,11 +4005,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="low">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #11</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 破底翻放量確立</span>
+                    <span class="pos-tier-badge pos-tier-low" title="近半年位階 30.0% ｜ 沉澱於底部打底區 (季線乖離 -2.3%)">🟢 低位階 (30%)</span>
                     <a href="stock_6794.html" class="stock-title-link" title="點擊進入 6794 向榮生技 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">6794</span>
                         <span class="stock-name">向榮生技</span>
@@ -4017,11 +4117,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="high">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #12</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 破底翻放量確立</span>
+                    <span class="pos-tier-badge pos-tier-high" title="近半年位階 92.0% ｜ 逼近半年高檔過熱區 (季線乖離 +4.0%)">🔴 高位階 (92%)</span>
                     <a href="stock_1470.html" class="stock-title-link" title="點擊進入 1470 大統新創 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">1470</span>
                         <span class="stock-name">大統新創</span>
@@ -4128,11 +4229,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="low">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #13</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 破底翻放量確立</span>
+                    <span class="pos-tier-badge pos-tier-low" title="近半年位階 3.8% ｜ 沉澱於底部打底區 (季線乖離 -49.3%)">🟢 低位階 (4%)</span>
                     <a href="stock_6669.html" class="stock-title-link" title="點擊進入 6669 緯穎 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">6669</span>
                         <span class="stock-name">緯穎</span>
@@ -4238,86 +4340,86 @@
                     
         <tr>
             <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">83.0分</div>
-                <span class="badge-xiaoge-pass">⭐ 首選精選</span>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">075364</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">緯穎凱基63購01</div>
+            </td>
+            <td>2.40 / 2.42</td>
+            <td>
+                <span>2313.27</span>
+                <small class="text-bull">(-3.2%)</small>
+            </td>
+            <td class="text-bull"><strong>159</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">3.18x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.00</div>
+            </td>
+            <td>
+                <span>0.83%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.52%</div>
+            </td>
+            <td><span class="badge-diff-lever-relax">0.261%</span></td>
+            <td class="text-bull">18.2%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">069815</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">緯穎富邦64購03</div>
+            </td>
+            <td>1.12 / 1.13</td>
+            <td>
+                <span>2534.15</span>
+                <small class="text-bull">(-11.6%)</small>
+            </td>
+            <td class="text-bull"><strong>177</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">3.09x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.00</div>
+            </td>
+            <td>
+                <span>0.88%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.55%</div>
+            </td>
+            <td><span class="badge-diff-lever-relax">0.285%</span></td>
+            <td class="text-bull">0.0%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">富邦</span></td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
             </td>
             <td>
                 <strong style="color:#ffffff; font-size:13px;">082284</strong>
                 <div style="font-size:11px; color:var(--text-secondary);">緯穎凱基63購12</div>
             </td>
-            <td>3.49 / 3.50</td>
+            <td>3.22 / 3.25</td>
             <td>
                 <span>2514.42</span>
-                <small class="text-bull">(-8.9%)</small>
+                <small class="text-bull">(-10.9%)</small>
             </td>
-            <td class="text-bull"><strong>169</strong> 天</td>
+            <td class="text-bull"><strong>168</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">3.15x</strong>
+                <strong style="color:var(--text-primary);">3.20x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
             </td>
             <td>
-                <span>0.29%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.56%</div>
+                <span>0.92%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.59%</div>
             </td>
-            <td><span class="badge-diff-lever">0.092%</span></td>
-            <td class="text-bull">55.5%</td>
+            <td><span class="badge-diff-lever-relax">0.287%</span></td>
+            <td class="text-bull">58.5%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
-        </tr>
-        
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">030102</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">緯穎凱基64購13</div>
-            </td>
-            <td>2.73 / 2.75</td>
-            <td>
-                <span>2550.00</span>
-                <small class="text-bull">(-10.2%)</small>
-            </td>
-            <td class="text-bull"><strong>183</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">3.40x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.00</div>
-            </td>
-            <td>
-                <span>0.73%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.55%</div>
-            </td>
-            <td><span class="badge-diff-lever-relax">0.215%</span></td>
-            <td class="text-bull">0.0%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
-        </tr>
-        
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">077053</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">緯穎統一66購01</div>
-            </td>
-            <td>1.83 / 1.84</td>
-            <td>
-                <span>2673.67</span>
-                <small class="text-bull">(-14.3%)</small>
-            </td>
-            <td class="text-bull"><strong>265</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">2.20x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.00</div>
-            </td>
-            <td>
-                <span>0.54%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.34%</div>
-            </td>
-            <td><span class="badge-diff-lever-relax">0.245%</span></td>
-            <td class="text-bull">3.9%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">統一</span></td>
         </tr>
         
                 </tbody>
@@ -4359,11 +4461,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="low">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #14</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 破底翻放量確立</span>
+                    <span class="pos-tier-badge pos-tier-low" title="近半年位階 13.9% ｜ 沉澱於底部打底區 (季線乖離 -4.1%)">🟢 低位階 (14%)</span>
                     <a href="stock_3557.html" class="stock-title-link" title="點擊進入 3557 嘉威 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">3557</span>
                         <span class="stock-name">嘉威</span>
@@ -4470,11 +4573,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="low">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #15</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 破底翻放量確立</span>
+                    <span class="pos-tier-badge pos-tier-low" title="近半年位階 16.7% ｜ 沉澱於底部打底區 (季線乖離 -1.6%)">🟢 低位階 (17%)</span>
                     <a href="stock_4572.html" class="stock-title-link" title="點擊進入 4572 駐龍 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">4572</span>
                         <span class="stock-name">駐龍</span>
@@ -4581,11 +4685,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="low">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #16</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-low" title="近半年位階 27.7% ｜ 沉澱於底部打底區 (季線乖離 +9.3%)">🟢 低位階 (28%)</span>
                     <a href="stock_3025.html" class="stock-title-link" title="點擊進入 3025 星通 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">3025</span>
                         <span class="stock-name">星通</span>
@@ -4692,11 +4797,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="low">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #17</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-low" title="近半年位階 34.8% ｜ 沉澱於底部打底區 (季線乖離 +11.0%)">🟢 低位階 (35%)</span>
                     <a href="stock_2367.html" class="stock-title-link" title="點擊進入 2367 燿華 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">2367</span>
                         <span class="stock-name">燿華</span>
@@ -4802,6 +4908,34 @@
                     
         <tr>
             <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">83.0分</div>
+                <span class="badge-xiaoge-pass">⭐ 首選精選</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">080654</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">燿華凱基63購01</div>
+            </td>
+            <td>1.68 / 1.69</td>
+            <td>
+                <span>50.00</span>
+                <small class="text-bull">(-5.6%)</small>
+            </td>
+            <td class="text-bull"><strong>160</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">3.11x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.11</div>
+            </td>
+            <td>
+                <span>0.59%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.55%</div>
+            </td>
+            <td><span class="badge-diff-lever">0.190%</span></td>
+            <td class="text-bull">17.8%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
+        </tr>
+        
+        <tr>
+            <td>
                 <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">75.0分</div>
                 <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
             </td>
@@ -4809,79 +4943,51 @@
                 <strong style="color:#ffffff; font-size:13px;">078833</strong>
                 <div style="font-size:11px; color:var(--text-secondary);">燿華永豐63購01</div>
             </td>
-            <td>1.81 / 1.82</td>
+            <td>1.75 / 1.76</td>
             <td>
                 <span>47.18</span>
-                <small class="text-bull">(+1.0%)</small>
+                <small class="text-bull">(+0.0%)</small>
             </td>
-            <td class="text-bull"><strong>150</strong> 天</td>
+            <td class="text-bull"><strong>149</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.73x</strong>
+                <strong style="color:var(--text-primary);">2.75x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.10</div>
             </td>
             <td>
-                <span>0.55%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.49%</div>
+                <span>0.56%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.51%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.202%</span></td>
-            <td class="text-bull">21.6%</td>
+            <td><span class="badge-diff-lever-relax">0.204%</span></td>
+            <td class="text-bull">28.1%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">永豐</span></td>
         </tr>
         
         <tr>
             <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">53.0分</div>
-                <span style="background:#334155;color:#cbd5e1;padding:3px 6px;border-radius:4px;font-size:10px;">標準流通</span>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">65.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">083764</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">燿華群益63購01</div>
+                <strong style="color:#ffffff; font-size:13px;">081034</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">燿華富邦64購03</div>
             </td>
-            <td>1.55 / 1.65</td>
+            <td>0.68 / 0.69</td>
             <td>
-                <span>55.88</span>
-                <small class="text-bull">(-14.7%)</small>
+                <span>52.88</span>
+                <small class="text-bull">(-10.7%)</small>
             </td>
-            <td class="text-bull"><strong>147</strong> 天</td>
+            <td class="text-bull"><strong>194</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">3.36x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.12</div>
+                <strong style="color:var(--text-primary);">2.88x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.04</div>
             </td>
             <td>
-                <span>6.06%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.77%</div>
+                <span>1.45%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.50%</div>
             </td>
-            <td><span class="">1.805%</span></td>
+            <td><span class="badge-diff-lever-relax">0.504%</span></td>
             <td class="text-bull">2.9%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">群益</span></td>
-        </tr>
-        
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">53.0分</div>
-                <span style="background:#334155;color:#cbd5e1;padding:3px 6px;border-radius:4px;font-size:10px;">標準流通</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">080654</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">燿華凱基63購01</div>
-            </td>
-            <td>1.76 / 2.50</td>
-            <td>
-                <span>50.00</span>
-                <small class="text-bull">(-4.7%)</small>
-            </td>
-            <td class="text-bull"><strong>161</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">2.17x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.11</div>
-            </td>
-            <td>
-                <span>29.60%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.53%</div>
-            </td>
-            <td><span class="">13.665%</span></td>
-            <td class="text-bull">4.4%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">富邦</span></td>
         </tr>
         
                 </tbody>
@@ -4923,11 +5029,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="low">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #18</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-low" title="近半年位階 29.6% ｜ 沉澱於底部打底區 (季線乖離 +8.1%)">🟢 低位階 (30%)</span>
                     <a href="stock_3030.html" class="stock-title-link" title="點擊進入 3030 德律 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">3030</span>
                         <span class="stock-name">德律</span>
@@ -5037,53 +5144,25 @@
                 <span class="badge-xiaoge-pass">⭐ 首選精選</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">030072</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">德律凱基64購01</div>
-            </td>
-            <td>2.64 / 2.65</td>
-            <td>
-                <span>350.00</span>
-                <small class="text-bull">(-12.0%)</small>
-            </td>
-            <td class="text-bull"><strong>183</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">3.45x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.03</div>
-            </td>
-            <td>
-                <span>0.38%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.58%</div>
-            </td>
-            <td><span class="badge-diff-lever">0.110%</span></td>
-            <td class="text-bull">0.0%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
-        </tr>
-        
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">83.0分</div>
-                <span class="badge-xiaoge-pass">⭐ 首選精選</span>
-            </td>
-            <td>
                 <strong style="color:#ffffff; font-size:13px;">085030</strong>
                 <div style="font-size:11px; color:var(--text-secondary);">德律台新63購01</div>
             </td>
-            <td>1.87 / 1.88</td>
+            <td>1.98 / 1.99</td>
             <td>
                 <span>340.00</span>
-                <small class="text-bull">(-9.4%)</small>
+                <small class="text-bull">(-7.8%)</small>
             </td>
-            <td class="text-bull"><strong>153</strong> 天</td>
+            <td class="text-bull"><strong>152</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">3.38x</strong>
+                <strong style="color:var(--text-primary);">3.35x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
             </td>
             <td>
-                <span>0.53%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.64%</div>
+                <span>0.50%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.62%</div>
             </td>
-            <td><span class="badge-diff-lever">0.157%</span></td>
-            <td class="text-bull">0.4%</td>
+            <td><span class="badge-diff-lever">0.149%</span></td>
+            <td class="text-bull">0.0%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">商9B0</span></td>
         </tr>
         
@@ -5096,22 +5175,50 @@
                 <strong style="color:#ffffff; font-size:13px;">030177</strong>
                 <div style="font-size:11px; color:var(--text-secondary);">德律永豐64購03</div>
             </td>
-            <td>1.67 / 1.68</td>
+            <td>1.78 / 1.79</td>
             <td>
                 <span>346.80</span>
-                <small class="text-bull">(-11.2%)</small>
+                <small class="text-bull">(-9.6%)</small>
             </td>
-            <td class="text-bull"><strong>183</strong> 天</td>
+            <td class="text-bull"><strong>182</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">3.60x</strong>
+                <strong style="color:var(--text-primary);">3.55x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
             </td>
             <td>
-                <span>0.60%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.57%</div>
+                <span>0.56%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.55%</div>
             </td>
-            <td><span class="badge-diff-lever">0.167%</span></td>
+            <td><span class="badge-diff-lever">0.158%</span></td>
             <td class="text-bull">0.0%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">永豐</span></td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">082018</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">德律永豐63購02</div>
+            </td>
+            <td>1.82 / 1.83</td>
+            <td>
+                <span>318.45</span>
+                <small class="text-bull">(-1.6%)</small>
+            </td>
+            <td class="text-bull"><strong>168</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">3.04x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
+            </td>
+            <td>
+                <span>0.55%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.47%</div>
+            </td>
+            <td><span class="badge-diff-lever-relax">0.181%</span></td>
+            <td class="text-bull">4.8%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">永豐</span></td>
         </tr>
         
@@ -5154,11 +5261,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="mid">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #19</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 39.0% ｜ 中段箱型整理區 (季線乖離 +11.0%)">🟡 中位階 (39%)</span>
                     <a href="stock_3715.html" class="stock-title-link" title="點擊進入 3715 定穎投控 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">3715</span>
                         <span class="stock-name">定穎投控</span>
@@ -5268,82 +5376,82 @@
                 <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">089257</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">定穎控台新65購02</div>
+                <strong style="color:#ffffff; font-size:13px;">080129</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">定穎控永豐63購04</div>
             </td>
-            <td>7.65 / 7.75</td>
+            <td>1.02 / 1.03</td>
             <td>
-                <span>145.00</span>
-                <small class="text-bull">(-8.3%)</small>
+                <span>158.00</span>
+                <small class="text-bull">(-12.0%)</small>
             </td>
-            <td class="text-bull"><strong>209</strong> 天</td>
+            <td class="text-bull"><strong>156</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.50x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.15</div>
+                <strong style="color:var(--text-primary);">2.92x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
             </td>
             <td>
-                <span>0.64%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.42%</div>
+                <span>0.97%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.63%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.256%</span></td>
-            <td class="text-bull">0.0%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">商9B0</span></td>
+            <td><span class="badge-diff-lever-relax">0.332%</span></td>
+            <td class="text-bull">13.6%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">永豐</span></td>
         </tr>
         
         <tr>
             <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">75.0分</div>
                 <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">084967</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">定穎控凱基65購01</div>
+                <strong style="color:#ffffff; font-size:13px;">078149</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">定穎控富邦63購04</div>
             </td>
-            <td>1.90 / 1.92</td>
+            <td>1.09 / 1.10</td>
             <td>
-                <span>140.00</span>
-                <small class="text-bull">(-5.0%)</small>
-            </td>
-            <td class="text-bull"><strong>213</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">3.90x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.04</div>
-            </td>
-            <td>
-                <span>1.05%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.26%</div>
-            </td>
-            <td><span class="badge-diff-lever-relax">0.270%</span></td>
-            <td class="text-bull">10.1%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
-        </tr>
-        
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">088715</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">定穎控台新63購03</div>
-            </td>
-            <td>2.43 / 2.53</td>
-            <td>
-                <span>150.00</span>
-                <small class="text-bull">(-11.3%)</small>
+                <span>135.88</span>
+                <small class="text-bull">(+2.3%)</small>
             </td>
             <td class="text-bull"><strong>174</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.88x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.05</div>
+                <strong style="color:var(--text-primary);">2.64x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
             </td>
             <td>
-                <span>0.81%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.56%</div>
+                <span>0.91%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.41%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.282%</span></td>
-            <td class="text-bull">0.0%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">商9B0</span></td>
+            <td><span class="badge-diff-lever-relax">0.345%</span></td>
+            <td class="text-bull">9.2%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">富邦</span></td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">73.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">078115</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">定穎控國票65購03</div>
+            </td>
+            <td>1.26 / 1.27</td>
+            <td>
+                <span>150.00</span>
+                <small class="text-bull">(-7.3%)</small>
+            </td>
+            <td class="text-bull"><strong>208</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">2.17x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
+            </td>
+            <td>
+                <span>0.79%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.40%</div>
+            </td>
+            <td><span class="badge-diff-lever-relax">0.363%</span></td>
+            <td class="text-bull">10.9%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">國票</span></td>
         </tr>
         
                 </tbody>
@@ -5385,11 +5493,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="mid">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #20</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 61.1% ｜ 中段箱型整理區 (季線乖離 +33.8%)">🟡 中位階 (61%)</span>
                     <a href="stock_1721.html" class="stock-title-link" title="點擊進入 1721 國慶科技 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">1721</span>
                         <span class="stock-name">國慶科技</span>
@@ -5496,11 +5605,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="mid">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #21</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 39.3% ｜ 中段箱型整理區 (季線乖離 +10.5%)">🟡 中位階 (39%)</span>
                     <a href="stock_3054.html" class="stock-title-link" title="點擊進入 3054 立萬利 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">3054</span>
                         <span class="stock-name">立萬利</span>
@@ -5607,11 +5717,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="mid">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #22</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 40.5% ｜ 中段箱型整理區 (季線乖離 +13.0%)">🟡 中位階 (40%)</span>
                     <a href="stock_4755.html" class="stock-title-link" title="點擊進入 4755 三福化 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">4755</span>
                         <span class="stock-name">三福化</span>
@@ -5690,22 +5801,97 @@
             </div>
             
             
-        <div class="xiaoge-warrant-box">
-            <div class="xiaoge-header">
-                <div class="xiaoge-title">
-                    <span>🎯 etfinfo_Go 多因子量化權證推薦 (認購 CALL)</span>
-                </div>
-                <div class="xiaoge-subtitle">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分)</div>
+    <div class="xiaoge-warrant-box">
+        <div class="xiaoge-header">
+            <div class="xiaoge-title">
+                <span>🎯 etfinfo_Go 多因子量化權證推薦 (認購 CALL)</span>
             </div>
-            <div class="xiaoge-empty-strict">
-                <div class="empty-strict-title">💡 系統判定本檔股票「無值得推薦之優質權證」</div>
-                <div class="empty-strict-desc">
-                    全市場流通權證皆因 <strong>即將到期(剩餘天數&lt;30天)、深度價外、仙股無流動性、或差槓比過高(&gt;1.5%)</strong> 遭系統淘汰。<br>
-                    🛡️ <strong>實戰紀律</strong>：寧可直接操作現股，絕不妥協買進劣質權證承擔不合理之時間價值流失與摩擦成本！
-                </div>
-            </div>
+            <div class="xiaoge-subtitle">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分) + 流動性與風控修正</div>
+        </div>
+        <div class="xiaoge-table-wrapper">
+            <table class="xiaoge-table">
+                <thead>
+                    <tr>
+                        <th>綜合評分</th>
+                        <th>權證名稱</th>
+                        <th>買/賣價</th>
+                        <th>履約價(價內外)</th>
+                        <th>剩餘天數</th>
+                        <th>實質槓桿(Delta)</th>
+                        <th>價差比(日損)</th>
+                        <th>差槓比</th>
+                        <th>流通比</th>
+                        <th>券商</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">65.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">088218</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">三福化永豐64購01</div>
+            </td>
+            <td>1.23 / 1.24</td>
+            <td>
+                <span>150.00</span>
+                <small class="text-bull">(-15.0%)</small>
+            </td>
+            <td class="text-bull"><strong>198</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">2.52x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.03</div>
+            </td>
+            <td>
+                <span>1.61%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.50%</div>
+            </td>
+            <td><span class="badge-diff-lever-relax">0.638%</span></td>
+            <td class="text-bull">3.4%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">永豐</span></td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">45.0分</div>
+                <span style="background:#334155;color:#cbd5e1;padding:3px 6px;border-radius:4px;font-size:10px;">標準流通</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">083365</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">三福化統一68購01</div>
+            </td>
+            <td>0.66 / 0.67</td>
+            <td>
+                <span>168.88</span>
+                <small class="text-muted">(-24.5%)</small>
+            </td>
+            <td class="text-bull"><strong>328</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">1.78x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
+            </td>
+            <td>
+                <span>1.49%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.29%</div>
+            </td>
+            <td><span class="">0.838%</span></td>
+            <td class="text-bull">2.8%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">統一</span></td>
+        </tr>
+        
+                </tbody>
+            </table>
         </div>
         
+    <div class="xiaoge-table-footer">
+        ⚠️ <strong>實戰黃金法則</strong>：優先挑選 <strong>差槓比 &lt; 0.3% (翠綠色)</strong> + <strong>剩餘天數 &gt; 90天</strong> + <strong>價外 3%~15%</strong> 之標的。差槓比代表「現股需上漲多少%才能弭平權證一檔買賣價差」，數值越低勝率越高！
+    </div>
+    
+    </div>
+    
             
             <div class="execution-box box-long">
                 <div class="exec-title">
@@ -5735,11 +5921,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="mid">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #23</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 35.1% ｜ 中段箱型整理區 (季線乖離 +7.1%)">🟡 中位階 (35%)</span>
                     <a href="stock_4164.html" class="stock-title-link" title="點擊進入 4164 承業醫 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">4164</span>
                         <span class="stock-name">承業醫</span>
@@ -5846,11 +6033,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="high">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #24</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-high" title="近半年位階 84.7% ｜ 逼近半年高檔過熱區 (季線乖離 +35.9%)">🔴 高位階 (85%)</span>
                     <a href="stock_3031.html" class="stock-title-link" title="點擊進入 3031 佰鴻 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">3031</span>
                         <span class="stock-name">佰鴻</span>
@@ -5957,11 +6145,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="high">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #25</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-high" title="近半年位階 100.0% ｜ 逼近半年高檔過熱區 (季線乖離 +61.4%)">🔴 高位階 (100%)</span>
                     <a href="stock_2466.html" class="stock-title-link" title="點擊進入 2466 冠西電 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">2466</span>
                         <span class="stock-name">冠西電</span>
@@ -6068,11 +6257,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="mid">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #26</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 63.9% ｜ 中段箱型整理區 (季線乖離 +11.8%)">🟡 中位階 (64%)</span>
                     <a href="stock_1773.html" class="stock-title-link" title="點擊進入 1773 勝一 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">1773</span>
                         <span class="stock-name">勝一</span>
@@ -6178,6 +6368,62 @@
                     
         <tr>
             <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">083958</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">勝一永豐64購01</div>
+            </td>
+            <td>0.90 / 0.91</td>
+            <td>
+                <span>204.00</span>
+                <small class="text-bull">(-13.2%)</small>
+            </td>
+            <td class="text-bull"><strong>177</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">3.53x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
+            </td>
+            <td>
+                <span>1.10%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.61%</div>
+            </td>
+            <td><span class="badge-diff-lever-relax">0.312%</span></td>
+            <td class="text-bull">3.7%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">永豐</span></td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">089869</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">勝一元大64購02</div>
+            </td>
+            <td>0.95 / 0.96</td>
+            <td>
+                <span>194.35</span>
+                <small class="text-bull">(-8.9%)</small>
+            </td>
+            <td class="text-bull"><strong>182</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">3.15x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
+            </td>
+            <td>
+                <span>1.04%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.53%</div>
+            </td>
+            <td><span class="badge-diff-lever-relax">0.330%</span></td>
+            <td class="text-bull">1.2%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">元大</span></td>
+        </tr>
+        
+        <tr>
+            <td>
                 <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">74.0分</div>
                 <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
             </td>
@@ -6185,79 +6431,23 @@
                 <strong style="color:#ffffff; font-size:13px;">089940</strong>
                 <div style="font-size:11px; color:var(--text-secondary);">勝一國泰67購01</div>
             </td>
-            <td>1.73 / 1.74</td>
+            <td>1.60 / 1.61</td>
             <td>
                 <span>188.00</span>
-                <small class="text-bull">(-3.2%)</small>
+                <small class="text-bull">(-5.8%)</small>
             </td>
-            <td class="text-bull"><strong>272</strong> 天</td>
+            <td class="text-bull"><strong>271</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.55x</strong>
+                <strong style="color:var(--text-primary);">2.60x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
             </td>
             <td>
-                <span>0.57%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.29%</div>
+                <span>0.62%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.31%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.224%</span></td>
-            <td class="text-bull">0.7%</td>
+            <td><span class="badge-diff-lever-relax">0.238%</span></td>
+            <td class="text-bull">0.9%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">國泰</span></td>
-        </tr>
-        
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">71.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">089313</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">勝一凱基65購01</div>
-            </td>
-            <td>1.10 / 1.11</td>
-            <td>
-                <span>240.00</span>
-                <small class="text-muted">(-24.2%)</small>
-            </td>
-            <td class="text-bull"><strong>209</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">3.74x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
-            </td>
-            <td>
-                <span>0.90%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.69%</div>
-            </td>
-            <td><span class="badge-diff-lever-relax">0.241%</span></td>
-            <td class="text-bull">2.1%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
-        </tr>
-        
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">65.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">089869</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">勝一元大64購02</div>
-            </td>
-            <td>1.04 / 1.06</td>
-            <td>
-                <span>194.35</span>
-                <small class="text-bull">(-6.3%)</small>
-            </td>
-            <td class="text-bull"><strong>183</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">3.05x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
-            </td>
-            <td>
-                <span>1.89%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.49%</div>
-            </td>
-            <td><span class="badge-diff-lever-relax">0.619%</span></td>
-            <td class="text-bull">0.7%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">元大</span></td>
         </tr>
         
                 </tbody>
@@ -6299,11 +6489,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="mid">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #27</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 61.5% ｜ 中段箱型整理區 (季線乖離 +4.8%)">🟡 中位階 (62%)</span>
                     <a href="stock_6952.html" class="stock-title-link" title="點擊進入 6952 大武山 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">6952</span>
                         <span class="stock-name">大武山</span>
@@ -6410,11 +6601,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="mid">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #28</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 68.6% ｜ 中段箱型整理區 (季線乖離 +5.2%)">🟡 中位階 (69%)</span>
                     <a href="stock_2397.html" class="stock-title-link" title="點擊進入 2397 友通 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">2397</span>
                         <span class="stock-name">友通</span>
@@ -6521,11 +6713,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="mid">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #29</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 37.4% ｜ 中段箱型整理區 (季線乖離 +10.2%)">🟡 中位階 (37%)</span>
                     <a href="stock_3013.html" class="stock-title-link" title="點擊進入 3013 晟銘電 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">3013</span>
                         <span class="stock-name">晟銘電</span>
@@ -6638,51 +6831,51 @@
                 <strong style="color:#ffffff; font-size:13px;">085861</strong>
                 <div style="font-size:11px; color:var(--text-secondary);">晟銘電台新63購01</div>
             </td>
-            <td>2.44 / 2.45</td>
+            <td>2.51 / 2.52</td>
             <td>
                 <span>100.00</span>
-                <small class="text-bull">(-5.0%)</small>
+                <small class="text-bull">(-3.7%)</small>
             </td>
-            <td class="text-bull"><strong>155</strong> 天</td>
+            <td class="text-bull"><strong>154</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">3.24x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.08</div>
+                <strong style="color:var(--text-primary);">3.25x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.09</div>
             </td>
             <td>
-                <span>0.41%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.56%</div>
+                <span>0.40%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.55%</div>
             </td>
-            <td><span class="badge-diff-lever">0.126%</span></td>
-            <td class="text-bull">0.9%</td>
+            <td><span class="badge-diff-lever">0.123%</span></td>
+            <td class="text-bull">2.8%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">商9B0</span></td>
         </tr>
         
         <tr>
             <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">83.0分</div>
-                <span class="badge-xiaoge-pass">⭐ 首選精選</span>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">085568</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">晟銘電國票64購01</div>
+                <strong style="color:#ffffff; font-size:13px;">086341</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">晟銘電富邦64購01</div>
             </td>
-            <td>1.77 / 1.78</td>
+            <td>0.91 / 0.92</td>
             <td>
-                <span>100.00</span>
-                <small class="text-bull">(-5.0%)</small>
+                <span>111.11</span>
+                <small class="text-bull">(-13.3%)</small>
             </td>
-            <td class="text-bull"><strong>185</strong> 天</td>
+            <td class="text-bull"><strong>189</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">3.03x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.06</div>
+                <strong style="color:var(--text-primary);">3.15x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.03</div>
             </td>
             <td>
-                <span>0.56%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.46%</div>
+                <span>1.09%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.56%</div>
             </td>
-            <td><span class="badge-diff-lever">0.185%</span></td>
-            <td class="text-bull">8.5%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">國票</span></td>
+            <td><span class="badge-diff-lever-relax">0.346%</span></td>
+            <td class="text-bull">5.1%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">富邦</span></td>
         </tr>
         
         <tr>
@@ -6694,22 +6887,22 @@
                 <strong style="color:#ffffff; font-size:13px;">085540</strong>
                 <div style="font-size:11px; color:var(--text-secondary);">晟銘電凱基63購01</div>
             </td>
-            <td>1.42 / 1.43</td>
+            <td>1.46 / 1.47</td>
             <td>
                 <span>115.00</span>
-                <small class="text-muted">(-17.4%)</small>
+                <small class="text-muted">(-16.3%)</small>
             </td>
-            <td class="text-bull"><strong>154</strong> 天</td>
+            <td class="text-bull"><strong>153</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">3.73x</strong>
+                <strong style="color:var(--text-primary);">3.75x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.06</div>
             </td>
             <td>
-                <span>0.70%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.80%</div>
+                <span>0.68%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.79%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.188%</span></td>
-            <td class="text-bull">0.8%</td>
+            <td><span class="badge-diff-lever-relax">0.181%</span></td>
+            <td class="text-bull">0.3%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
         </tr>
         
@@ -6752,11 +6945,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="mid">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #30</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 52.9% ｜ 中段箱型整理區 (季線乖離 +18.7%)">🟡 中位階 (53%)</span>
                     <a href="stock_4906.html" class="stock-title-link" title="點擊進入 4906 正文 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">4906</span>
                         <span class="stock-name">正文</span>
@@ -6869,50 +7063,50 @@
                 <strong style="color:#ffffff; font-size:13px;">084752</strong>
                 <div style="font-size:11px; color:var(--text-secondary);">正文凱基63購01</div>
             </td>
-            <td>3.54 / 3.55</td>
+            <td>3.24 / 3.26</td>
             <td>
                 <span>48.00</span>
-                <small class="text-bull">(-10.4%)</small>
+                <small class="text-bull">(-12.1%)</small>
             </td>
-            <td class="text-bull"><strong>153</strong> 天</td>
+            <td class="text-bull"><strong>152</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">3.39x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.28</div>
+                <strong style="color:var(--text-primary);">3.49x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.27</div>
             </td>
             <td>
-                <span>0.28%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.66%</div>
+                <span>0.61%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.70%</div>
             </td>
-            <td><span class="badge-diff-lever">0.083%</span></td>
-            <td class="text-bull">9.8%</td>
+            <td><span class="badge-diff-lever">0.175%</span></td>
+            <td class="text-bull">13.8%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
         </tr>
         
         <tr>
             <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">82.0分</div>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">83.0分</div>
                 <span class="badge-xiaoge-pass">⭐ 首選精選</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">089084</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">正文凱基63購02</div>
+                <strong style="color:#ffffff; font-size:13px;">030509</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">正文凱基64購01</div>
             </td>
-            <td>2.54 / 2.55</td>
+            <td>2.02 / 2.03</td>
             <td>
-                <span>56.00</span>
-                <small class="text-muted">(-23.2%)</small>
+                <span>44.00</span>
+                <small class="text-bull">(-4.1%)</small>
             </td>
-            <td class="text-bull"><strong>174</strong> 天</td>
+            <td class="text-bull"><strong>182</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">3.46x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.20</div>
+                <strong style="color:var(--text-primary);">2.99x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.14</div>
             </td>
             <td>
-                <span>0.39%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.77%</div>
+                <span>0.49%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.46%</div>
             </td>
-            <td><span class="badge-diff-lever">0.113%</span></td>
-            <td class="text-bull">0.3%</td>
+            <td><span class="badge-diff-lever">0.164%</span></td>
+            <td class="text-bull">0.0%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
         </tr>
         
@@ -6922,26 +7116,26 @@
                 <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">030509</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">正文凱基64購01</div>
+                <strong style="color:#ffffff; font-size:13px;">080840</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">正文永豐63購01</div>
             </td>
-            <td>2.15 / 2.16</td>
+            <td>1.58 / 1.59</td>
             <td>
-                <span>44.00</span>
-                <small class="text-bull">(-2.3%)</small>
+                <span>43.92</span>
+                <small class="text-bull">(-3.9%)</small>
             </td>
-            <td class="text-bull"><strong>183</strong> 天</td>
+            <td class="text-bull"><strong>161</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.94x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.15</div>
+                <strong style="color:var(--text-primary);">3.05x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.12</div>
             </td>
             <td>
-                <span>0.46%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.44%</div>
+                <span>0.63%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.52%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.156%</span></td>
-            <td class="text-bull">0.0%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
+            <td><span class="badge-diff-lever-relax">0.207%</span></td>
+            <td class="text-bull">10.5%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">永豐</span></td>
         </tr>
         
                 </tbody>
@@ -6983,11 +7177,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="high">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #31</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-high" title="近半年位階 84.5% ｜ 逼近半年高檔過熱區 (季線乖離 +28.6%)">🔴 高位階 (84%)</span>
                     <a href="stock_6278.html" class="stock-title-link" title="點擊進入 6278 台表科 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">6278</span>
                         <span class="stock-name">台表科</span>
@@ -7097,26 +7292,26 @@
                 <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">075858</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">台表科國票65購01</div>
+                <strong style="color:#ffffff; font-size:13px;">082585</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">台表科中信62購01</div>
             </td>
-            <td>2.13 / 2.14</td>
+            <td>1.37 / 1.38</td>
             <td>
-                <span>250.00</span>
-                <small class="text-bull">(-6.4%)</small>
+                <span>265.00</span>
+                <small class="text-bull">(-5.5%)</small>
             </td>
-            <td class="text-bull"><strong>223</strong> 天</td>
+            <td class="text-bull"><strong>142</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.08x</strong>
+                <strong style="color:var(--text-primary);">3.06x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
             </td>
             <td>
-                <span>0.47%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.36%</div>
+                <span>0.72%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.61%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.225%</span></td>
-            <td class="text-bull">4.4%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">國票</span></td>
+            <td><span class="badge-diff-lever-relax">0.235%</span></td>
+            <td class="text-bull">41.9%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">商616</span></td>
         </tr>
         
         <tr>
@@ -7125,25 +7320,25 @@
                 <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">082471</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">台表科凱基65購01</div>
+                <strong style="color:#ffffff; font-size:13px;">030514</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">台表科凱基66購01</div>
             </td>
-            <td>2.87 / 2.89</td>
+            <td>2.98 / 3.00</td>
             <td>
-                <span>250.00</span>
-                <small class="text-bull">(-6.4%)</small>
+                <span>290.00</span>
+                <small class="text-bull">(-13.6%)</small>
             </td>
-            <td class="text-bull"><strong>231</strong> 天</td>
+            <td class="text-bull"><strong>243</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.43x</strong>
+                <strong style="color:var(--text-primary);">2.70x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.03</div>
             </td>
             <td>
-                <span>0.69%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.36%</div>
+                <span>0.67%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.41%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.284%</span></td>
-            <td class="text-bull">12.9%</td>
+            <td><span class="badge-diff-lever-relax">0.248%</span></td>
+            <td class="text-bull">0.1%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
         </tr>
         
@@ -7153,26 +7348,26 @@
                 <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">088720</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">台表科台新64購01</div>
+                <strong style="color:#ffffff; font-size:13px;">073749</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">台表科凱基64購01</div>
             </td>
-            <td>2.65 / 2.67</td>
+            <td>1.50 / 1.51</td>
             <td>
-                <span>248.00</span>
-                <small class="text-bull">(-5.7%)</small>
+                <span>272.21</span>
+                <small class="text-bull">(-8.0%)</small>
             </td>
-            <td class="text-bull"><strong>204</strong> 天</td>
+            <td class="text-bull"><strong>177</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.59x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.03</div>
+                <strong style="color:var(--text-primary);">2.52x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
             </td>
             <td>
-                <span>0.75%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.41%</div>
+                <span>0.66%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.49%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.289%</span></td>
-            <td class="text-bull">1.6%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">商9B0</span></td>
+            <td><span class="badge-diff-lever-relax">0.262%</span></td>
+            <td class="text-bull">5.5%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
         </tr>
         
                 </tbody>
@@ -7214,11 +7409,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="high">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #32</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-high" title="近半年位階 71.9% ｜ 逼近半年高檔過熱區 (季線乖離 +31.9%)">🔴 高位階 (72%)</span>
                     <a href="stock_2241.html" class="stock-title-link" title="點擊進入 2241 艾姆勒 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">2241</span>
                         <span class="stock-name">艾姆勒</span>
@@ -7325,11 +7521,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="high">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #33</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-high" title="近半年位階 94.1% ｜ 逼近半年高檔過熱區 (季線乖離 +26.7%)">🔴 高位階 (94%)</span>
                     <a href="stock_6196.html" class="stock-title-link" title="點擊進入 6196 帆宣 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">6196</span>
                         <span class="stock-name">帆宣</span>
@@ -7439,81 +7636,81 @@
                 <span class="badge-xiaoge-pass">⭐ 首選精選</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">079266</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">帆宣凱基63購01</div>
+                <strong style="color:#ffffff; font-size:13px;">074545</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">帆宣國泰62購01</div>
             </td>
-            <td>1.88 / 1.89</td>
+            <td>2.30 / 2.31</td>
             <td>
-                <span>730.00</span>
-                <small class="text-bull">(-9.2%)</small>
+                <span>715.00</span>
+                <small class="text-bull">(-6.3%)</small>
             </td>
-            <td class="text-bull"><strong>153</strong> 天</td>
+            <td class="text-bull"><strong>127</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">3.57x</strong>
+                <strong style="color:var(--text-primary);">5.90x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
             </td>
             <td>
-                <span>0.53%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.65%</div>
+                <span>0.43%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.37%</div>
             </td>
-            <td><span class="badge-diff-lever">0.149%</span></td>
-            <td class="text-bull">0.8%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
+            <td><span class="badge-diff-lever">0.074%</span></td>
+            <td class="text-bull">0.3%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">國泰</span></td>
         </tr>
         
         <tr>
             <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">83.0分</div>
+                <span class="badge-xiaoge-pass">⭐ 首選精選</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">078956</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">帆宣凱基66購02</div>
+                <strong style="color:#ffffff; font-size:13px;">080131</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">帆宣永豐63購02</div>
             </td>
-            <td>2.02 / 2.03</td>
+            <td>2.16 / 2.17</td>
             <td>
-                <span>670.00</span>
-                <small class="text-bull">(-1.0%)</small>
+                <span>709.80</span>
+                <small class="text-bull">(-5.6%)</small>
             </td>
-            <td class="text-bull"><strong>244</strong> 天</td>
+            <td class="text-bull"><strong>156</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.62x</strong>
+                <strong style="color:var(--text-primary);">3.37x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
             </td>
             <td>
-                <span>0.49%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.31%</div>
+                <span>0.46%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.57%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.187%</span></td>
+            <td><span class="badge-diff-lever">0.136%</span></td>
             <td class="text-bull">9.2%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">永豐</span></td>
         </tr>
         
         <tr>
             <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">83.0分</div>
+                <span class="badge-xiaoge-pass">⭐ 首選精選</span>
             </td>
             <td>
                 <strong style="color:#ffffff; font-size:13px;">081009</strong>
                 <div style="font-size:11px; color:var(--text-secondary);">帆宣凱基63購03</div>
             </td>
-            <td>3.67 / 3.70</td>
+            <td>3.77 / 3.79</td>
             <td>
                 <span>710.00</span>
-                <small class="text-bull">(-6.6%)</small>
+                <small class="text-bull">(-5.6%)</small>
             </td>
-            <td class="text-bull"><strong>162</strong> 天</td>
+            <td class="text-bull"><strong>161</strong> 天</td>
             <td>
                 <strong style="color:var(--text-primary);">3.38x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
             </td>
             <td>
-                <span>0.81%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.56%</div>
+                <span>0.53%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.55%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.240%</span></td>
-            <td class="text-bull">18.5%</td>
+            <td><span class="badge-diff-lever">0.157%</span></td>
+            <td class="text-bull">15.8%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
         </tr>
         
@@ -7556,11 +7753,12 @@
             </div>
         </div>
         
-        <div class="stock-card card-long">
+        <div class="stock-card card-long" data-pos-tier="high">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #34</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🔥 順勢強突主升</span>
+                    <span class="pos-tier-badge pos-tier-high" title="近半年位階 100.0% ｜ 逼近半年高檔過熱區 (季線乖離 +36.5%)">🔴 高位階 (100%)</span>
                     <a href="stock_7788.html" class="stock-title-link" title="點擊進入 7788 松川精密 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">7788</span>
                         <span class="stock-name">松川精密</span>
@@ -7666,86 +7864,86 @@
                     
         <tr>
             <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">66.0分</div>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
                 <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">079775</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">松川元大64購01</div>
+                <strong style="color:#ffffff; font-size:13px;">081517</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">松川群益62購03</div>
             </td>
-            <td>3.23 / 2.83</td>
+            <td>1.91 / 2.31</td>
             <td>
-                <span>263.00</span>
-                <small class="text-muted">(+39.0%)</small>
+                <span>360.00</span>
+                <small class="text-bull">(-8.6%)</small>
             </td>
-            <td class="text-bull"><strong>188</strong> 天</td>
+            <td class="text-bull"><strong>135</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.05x</strong>
+                <strong style="color:var(--text-primary);">2.94x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: 0.02</div>
             </td>
             <td>
-                <span>-12.38%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.23%</div>
+                <span>0.82%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.87%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">-6.039%</span></td>
-            <td class="text-bull">0.6%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">元大</span></td>
-        </tr>
-        
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">53.0分</div>
-                <span style="background:#334155;color:#cbd5e1;padding:3px 6px;border-radius:4px;font-size:10px;">標準流通</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">083885</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">松川富邦64購02</div>
-            </td>
-            <td>0.97 / 1.19</td>
-            <td>
-                <span>425.88</span>
-                <small class="text-bull">(-14.2%)</small>
-            </td>
-            <td class="text-bull"><strong>177</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">2.65x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
-            </td>
-            <td>
-                <span>22.68%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.56%</div>
-            </td>
-            <td><span class="">8.560%</span></td>
-            <td class="text-bull">10.3%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">富邦</span></td>
-        </tr>
-        
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">51.0分</div>
-                <span style="background:#334155;color:#cbd5e1;padding:3px 6px;border-radius:4px;font-size:10px;">標準流通</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">084151</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">松川群益65購01</div>
-            </td>
-            <td>0.63 / 1.50</td>
-            <td>
-                <span>420.00</span>
-                <small class="text-bull">(-13.0%)</small>
-            </td>
-            <td class="text-bull"><strong>209</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">2.46x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
-            </td>
-            <td>
-                <span>10.63%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 1.06%</div>
-            </td>
-            <td><span class="">4.319%</span></td>
-            <td class="text-bull">1.1%</td>
+            <td><span class="badge-diff-lever-relax">0.279%</span></td>
+            <td class="text-bull">7.5%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">群益</span></td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">071129</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">松川永豐66購01</div>
+            </td>
+            <td>1.42 / 1.61</td>
+            <td>
+                <span>349.43</span>
+                <small class="text-bull">(-5.8%)</small>
+            </td>
+            <td class="text-bull"><strong>247</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">2.00x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
+            </td>
+            <td>
+                <span>0.63%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.35%</div>
+            </td>
+            <td><span class="badge-diff-lever-relax">0.315%</span></td>
+            <td class="text-bull">5.7%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">永豐</span></td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">083336</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">松川國票63購01</div>
+            </td>
+            <td>1.32 / 1.50</td>
+            <td>
+                <span>340.00</span>
+                <small class="text-bull">(-3.2%)</small>
+            </td>
+            <td class="text-bull"><strong>174</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">2.12x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.01</div>
+            </td>
+            <td>
+                <span>0.67%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.50%</div>
+            </td>
+            <td><span class="badge-diff-lever-relax">0.317%</span></td>
+            <td class="text-bull">0.0%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">國票</span></td>
         </tr>
         
                 </tbody>
@@ -7804,13 +8002,22 @@
             </div>
         </div>
         
+        <div class="pos-filter-bar">
+            <span class="pos-filter-label">🏷️ 個股位階快速快篩：</span>
+            <button class="pos-filter-btn active" onclick="filterPosTier('all', this, 'tab-shorts')">全部 (1)</button>
+            <button class="pos-filter-btn filter-low" onclick="filterPosTier('low', this, 'tab-shorts')">🟢 低位階 (0)</button>
+            <button class="pos-filter-btn filter-mid" onclick="filterPosTier('mid', this, 'tab-shorts')">🟡 中位階 (1)</button>
+            <button class="pos-filter-btn filter-high" onclick="filterPosTier('high', this, 'tab-shorts')">🔴 高位階 (0)</button>
+        </div>
+
         <div class="cards-list">
             
-        <div class="stock-card card-short">
+        <div class="stock-card card-short" data-pos-tier="mid">
             <div class="card-header">
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-short">SHORT #1</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4);">⚡ 順勢灌破重挫</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 69.7% ｜ 中段箱型整理區 (季線乖離 +9.6%)">🟡 中位階 (70%)</span>
                     <a href="stock_2303.html" class="stock-title-link" title="點擊進入 2303 聯電 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">2303</span>
                         <span class="stock-name">聯電</span>
@@ -7923,22 +8130,22 @@
                 <strong style="color:#ffffff; font-size:13px;">04688T</strong>
                 <div style="font-size:11px; color:var(--text-secondary);">聯電國泰65售03</div>
             </td>
-            <td>2.10 / 2.11</td>
+            <td>2.07 / 2.08</td>
             <td>
                 <span>135.00</span>
-                <small class="text-bull">(-9.3%)</small>
+                <small class="text-bull">(-10.0%)</small>
             </td>
-            <td class="text-bull"><strong>230</strong> 天</td>
+            <td class="text-bull"><strong>229</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">1.56x</strong>
+                <strong style="color:var(--text-primary);">1.57x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: -0.02</div>
             </td>
             <td>
                 <span>0.48%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.37%</div>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.38%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.308%</span></td>
-            <td class="text-bull">0.1%</td>
+            <td><span class="badge-diff-lever-relax">0.307%</span></td>
+            <td class="text-bull">1.2%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">國泰</span></td>
         </tr>
         
@@ -7951,22 +8158,22 @@
                 <strong style="color:#ffffff; font-size:13px;">04630T</strong>
                 <div style="font-size:11px; color:var(--text-secondary);">聯電台新63售10</div>
             </td>
-            <td>1.38 / 1.39</td>
+            <td>1.36 / 1.37</td>
             <td>
                 <span>130.00</span>
-                <small class="text-bull">(-13.5%)</small>
+                <small class="text-bull">(-14.2%)</small>
             </td>
-            <td class="text-bull"><strong>167</strong> 天</td>
+            <td class="text-bull"><strong>166</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.09x</strong>
+                <strong style="color:var(--text-primary);">2.11x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: -0.02</div>
             </td>
             <td>
-                <span>0.72%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.59%</div>
+                <span>0.74%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.60%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.344%</span></td>
-            <td class="text-bull">0.0%</td>
+            <td><span class="badge-diff-lever-relax">0.349%</span></td>
+            <td class="text-bull">2.8%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">商9B0</span></td>
         </tr>
         
@@ -7979,22 +8186,22 @@
                 <strong style="color:#ffffff; font-size:13px;">04696T</strong>
                 <div style="font-size:11px; color:var(--text-secondary);">聯電凱基63售17</div>
             </td>
-            <td>1.29 / 1.30</td>
+            <td>1.26 / 1.27</td>
             <td>
                 <span>120.00</span>
-                <small class="text-muted">(-22.9%)</small>
+                <small class="text-muted">(-23.8%)</small>
             </td>
-            <td class="text-bull"><strong>168</strong> 天</td>
+            <td class="text-bull"><strong>167</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">2.30x</strong>
+                <strong style="color:var(--text-primary);">2.31x</strong>
                 <div style="font-size:10px; color:var(--text-muted);">Delta: -0.02</div>
             </td>
             <td>
-                <span>0.77%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.69%</div>
+                <span>0.78%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.71%</div>
             </td>
-            <td><span class="badge-diff-lever-relax">0.335%</span></td>
-            <td class="text-bull">0.7%</td>
+            <td><span class="badge-diff-lever-relax">0.337%</span></td>
+            <td class="text-bull">0.5%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
         </tr>
         
@@ -8080,7 +8287,7 @@
         
         <!-- Footer -->
         <div class="footer">
-            TW-Stock Quantitative Research System • 100% 離線純自給自足 (純 SVG 向量圖形) • 產出時間: 2026-10-06 23:08:46
+            TW-Stock Quantitative Research System • 100% 離線純自給自足 (純 SVG 向量圖形) • 產出時間: 2026-10-07 18:40:12
         </div>
     </div>
 
@@ -8092,8 +8299,24 @@
             document.getElementById(tabId).classList.add('active');
             evt.currentTarget.classList.add('active');
         }
+        function filterPosTier(tier, btn, parentTabId) {
+            const parent = document.getElementById(parentTabId);
+            if (!parent) return;
+            const btns = parent.querySelectorAll('.pos-filter-btn');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            const cards = parent.querySelectorAll('.stock-card');
+            cards.forEach(card => {
+                if (tier === 'all' || card.getAttribute('data-pos-tier') === tier) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
         function copyPlan() {
-            const text = "【台股投行機構 3 模組實戰計畫】基準日: 2026-10-06\n============================================================\n[模組 1: 市場狀態] 防禦警戒狀態 (Neutral / De-grossing) | 總曝險上限: 30% 以下\n市場季線寬度: 50.09% | 加權維持率: 199.12% | 櫃買維持率: 195.5%\n大盤融資金額: 加權 6,376.57億 (+43.05億) | 櫃買 2,261.51億 (+19.78億)\nTX 特法結構: 前五大 +18,474口 (近月 +19,574 / 遠月 -1,100)\n外資期貨淨空單: -79,517口 (-7,965.66億元)\n[溫度計與聯動配置] 評分: 61.2分 (中性偏多 (Moderate Bull)) | 聯動: 四象限全量掃描模式 (多方共 34 檔 ｜ 空方共 1 檔) | 認購佔比: 80.4%\n\n🟢【做多標的池 (共 34 檔 ｜ Volume Profile 密集區定價 + 權證嚴選推薦)】\n#1 6213 聯茂 | 現價: 787.00 | 密集區進場: 787.00 | 停損: 499.43 (-36.5%) | 目標: 1362.14 (+73.1%) | POC: 520.24 | 首選權證: 063224 聯茂統一64購05(差槓比0.379%, 槓桿1.51x, 天數185天)\n#2 6257 矽格 | 現價: 286.00 | 密集區進場: 286.00 | 停損: 240.12 (-16.0%) | 目標: 377.76 (+32.1%) | POC: 215.87 | 首選權證: 084185 矽格凱基66購01(差槓比1.370%, 槓桿2.73x, 天數239天)\n#3 8021 尖點 | 現價: 561.00 | 密集區進場: 561.00 | 停損: 442.23 (-21.2%) | 目標: 798.54 (+42.3%) | POC: 460.66 | 權證: 無合規標的(建議直接操作現股)\n#4 3044 健鼎 | 現價: 579.00 | 密集區進場: 579.00 | 停損: 484.55 (-16.3%) | 目標: 767.90 (+32.6%) | POC: 487.48 | 首選權證: 080705 健鼎台新65購01(差槓比0.180%, 槓桿4.15x, 天數223天)\n#5 2368 金像電 | 現價: 1260.00 | 密集區進場: 1260.00 | 停損: 1040.34 (-17.4%) | 目標: 1699.32 (+34.9%) | POC: 1007.38 | 首選權證: 080525 金像電元大64購08(差槓比0.311%, 槓桿2.12x, 天數189天)\n#6 1709 和益 | 現價: 63.30 | 密集區進場: 63.30 | 停損: 43.95 (-30.6%) | 目標: 102.00 (+61.1%) | POC: 35.13 | 權證: 無合規標的(建議直接操作現股)\n#7 1459 聯發 | 現價: 18.85 | 密集區進場: 19.92 | 停損: 18.76 (-5.8%) | 目標: 22.24 (+11.6%) | POC: 15.56 | 權證: 無合規標的(建議直接操作現股)\n#8 6658 聯策 | 現價: 203.00 | 密集區進場: 203.00 | 停損: 186.27 (-8.2%) | 目標: 236.46 (+16.5%) | POC: 171.55 | 首選權證: 078927 聯策國票66購01(差槓比0.415%, 槓桿1.97x, 天數244天)\n#9 6657 華安 | 現價: 34.20 | 密集區進場: 34.20 | 停損: 31.87 (-6.8%) | 目標: 38.86 (+13.6%) | POC: 30.61 | 權證: 無合規標的(建議直接操作現股)\n#10 4551 智伸科 | 現價: 181.50 | 密集區進場: 181.50 | 停損: 168.59 (-7.1%) | 目標: 207.32 (+14.2%) | POC: 166.21 | 首選權證: 089007 智伸科國票65購01(差槓比0.448%, 槓桿2.12x, 天數237天)\n#11 6794 向榮生技 | 現價: 73.60 | 密集區進場: 74.96 | 停損: 70.91 (-5.4%) | 目標: 83.06 (+10.8%) | POC: 75.12 | 權證: 無合規標的(建議直接操作現股)\n#12 1470 大統新創 | 現價: 24.50 | 密集區進場: 24.50 | 停損: 23.18 (-5.4%) | 目標: 27.14 (+10.8%) | POC: 24.15 | 權證: 無合規標的(建議直接操作現股)\n#13 6669 緯穎 | 現價: 2290.00 | 密集區進場: 2290.00 | 停損: 2060.70 (-10.0%) | 目標: 2748.60 (+20.0%) | POC: 2146.56 | 首選權證: 082284 緯穎凱基63購12(差槓比0.092%, 槓桿3.15x, 天數169天)\n#14 3557 嘉威 | 現價: 23.65 | 密集區進場: 24.36 | 停損: 23.39 (-4.0%) | 目標: 26.30 (+8.0%) | POC: 24.36 | 權證: 無合規標的(建議直接操作現股)\n#15 4572 駐龍 | 現價: 139.50 | 密集區進場: 139.59 | 停損: 134.01 (-4.0%) | 目標: 150.75 (+8.0%) | POC: 140.16 | 權證: 無合規標的(建議直接操作現股)\n#16 3025 星通 | 現價: 59.40 | 密集區進場: 59.40 | 停損: 54.10 (-8.9%) | 目標: 70.00 (+17.8%) | POC: 56.35 | 權證: 無合規標的(建議直接操作現股)\n#17 2367 燿華 | 現價: 47.65 | 密集區進場: 47.65 | 停損: 45.36 (-4.8%) | 目標: 52.23 (+9.6%) | POC: 43.02 | 首選權證: 078833 燿華永豐63購01(差槓比0.202%, 槓桿2.73x, 天數150天)\n#18 3030 德律 | 現價: 308.00 | 密集區進場: 308.25 | 停損: 294.54 (-4.4%) | 目標: 335.67 (+8.9%) | POC: 295.19 | 首選權證: 030072 德律凱基64購01(差槓比0.110%, 槓桿3.45x, 天數183天)\n#19 3715 定穎投控 | 現價: 133.00 | 密集區進場: 133.00 | 停損: 120.13 (-9.7%) | 目標: 158.74 (+19.4%) | POC: 124.44 | 首選權證: 089257 定穎控台新65購02(差槓比0.256%, 槓桿2.5x, 天數209天)\n#20 1721 國慶科技 | 現價: 29.00 | 密集區進場: 29.00 | 停損: 26.78 (-7.7%) | 目標: 33.44 (+15.3%) | POC: 20.25 | 權證: 無合規標的(建議直接操作現股)\n#21 3054 立萬利 | 現價: 60.30 | 密集區進場: 60.30 | 停損: 56.38 (-6.5%) | 目標: 68.14 (+13.0%) | POC: 58.57 | 權證: 無合規標的(建議直接操作現股)\n#22 4755 三福化 | 現價: 133.00 | 密集區進場: 149.39 | 停損: 143.41 (-4.0%) | 目標: 161.35 (+8.0%) | POC: 115.51 | 權證: 無合規標的(建議直接操作現股)\n#23 4164 承業醫 | 現價: 28.35 | 密集區進場: 28.69 | 停損: 27.54 (-4.0%) | 目標: 30.99 (+8.0%) | POC: 25.90 | 權證: 無合規標的(建議直接操作現股)\n#24 3031 佰鴻 | 現價: 34.20 | 密集區進場: 34.20 | 停損: 30.59 (-10.6%) | 目標: 41.42 (+21.1%) | POC: 31.09 | 權證: 無合規標的(建議直接操作現股)\n#25 2466 冠西電 | 現價: 170.50 | 密集區進場: 170.50 | 停損: 98.43 (-42.3%) | 目標: 314.64 (+84.5%) | POC: 102.17 | 權證: 無合規標的(建議直接操作現股)\n#26 1773 勝一 | 現價: 182.00 | 密集區進場: 182.00 | 停損: 167.29 (-8.1%) | 目標: 211.42 (+16.2%) | POC: 163.72 | 首選權證: 089940 勝一國泰67購01(差槓比0.224%, 槓桿2.55x, 天數272天)\n#27 6952 大武山 | 現價: 39.10 | 密集區進場: 39.10 | 停損: 37.22 (-4.8%) | 目標: 42.86 (+9.6%) | POC: 35.41 | 權證: 無合規標的(建議直接操作現股)\n#28 2397 友通 | 現價: 64.30 | 密集區進場: 66.34 | 停損: 63.69 (-4.0%) | 目標: 71.64 (+8.0%) | POC: 66.34 | 權證: 無合規標的(建議直接操作現股)\n#29 3013 晟銘電 | 現價: 95.00 | 密集區進場: 95.00 | 停損: 88.70 (-6.6%) | 目標: 107.60 (+13.3%) | POC: 86.83 | 首選權證: 085861 晟銘電台新63購01(差槓比0.126%, 槓桿3.24x, 天數155天)\n#30 4906 正文 | 現價: 43.00 | 密集區進場: 43.00 | 停損: 40.08 (-6.8%) | 目標: 48.84 (+13.6%) | POC: 36.62 | 首選權證: 084752 正文凱基63購01(差槓比0.083%, 槓桿3.39x, 天數153天)\n#31 6278 台表科 | 現價: 234.00 | 密集區進場: 234.00 | 停損: 205.03 (-12.4%) | 目標: 291.94 (+24.8%) | POC: 178.64 | 首選權證: 075858 台表科國票65購01(差槓比0.225%, 槓桿2.08x, 天數223天)\n#32 2241 艾姆勒 | 現價: 47.35 | 密集區進場: 47.35 | 停損: 42.19 (-10.9%) | 目標: 57.67 (+21.8%) | POC: 33.92 | 權證: 無合規標的(建議直接操作現股)\n#33 6196 帆宣 | 現價: 663.00 | 密集區進場: 663.00 | 停損: 499.02 (-24.7%) | 目標: 990.96 (+49.5%) | POC: 513.74 | 首選權證: 079266 帆宣凱基63購01(差槓比0.149%, 槓桿3.57x, 天數153天)\n#34 7788 松川精密 | 現價: 365.50 | 密集區進場: 365.50 | 停損: 280.08 (-23.4%) | 目標: 536.34 (+46.7%) | POC: 290.32 | 首選權證: 079775 松川元大64購01(差槓比-6.039%, 槓桿2.05x, 天數188天)\n\n🔴【反向做空標的池 (共 1 檔 ｜ Volume Profile 破位定價 + 權證嚴選推薦)】\n#1 2303 聯電 | 現價: 147.50 | 密集區放空: 141.33 | 停損: 152.10 (+7.6%) | 回補: 119.79 (-15.2%) | POC: 121.47 | 首選權證: 04688T 聯電國泰65售03(差槓比0.308%, 槓桿1.56x, 天數230天)\n=============================================================";
+            const text = "【台股投行機構 3 模組實戰計畫】基準日: 2026-10-06\n============================================================\n[模組 1: 市場狀態] 防禦警戒狀態 (Neutral / De-grossing) | 總曝險上限: 30% 以下\n市場季線寬度: 50.09% | 加權維持率: 199.12% | 櫃買維持率: 195.5%\n大盤融資金額: 加權 6,376.57億 (+43.05億) | 櫃買 2,261.51億 (+19.78億)\nTX 特法結構: 前五大 +18,474口 (近月 +19,574 / 遠月 -1,100)\n外資期貨淨空單: -79,517口 (-7,965.66億元)\n[溫度計與聯動配置] 評分: 61.2分 (中性偏多 (Moderate Bull)) | 聯動: 四象限全量掃描模式 (多方共 34 檔 ｜ 空方共 1 檔) | 認購佔比: 80.4%\n\n🟢【做多標的池 (共 34 檔 ｜ Volume Profile 密集區定價 + 權證嚴選推薦)】\n#1 6213 聯茂 | [🔴 高位階 (95%)] 現價: 787.00 | 密集區進場: 787.00 | 停損: 499.43 (-36.5%) | 目標: 1362.14 (+73.1%) | POC: 520.24 | 首選權證: 063224 聯茂統一64購05(差槓比0.375%, 槓桿1.49x, 天數184天)\n#2 6257 矽格 | [🔴 高位階 (100%)] 現價: 286.00 | 密集區進場: 286.00 | 停損: 240.12 (-16.0%) | 目標: 377.76 (+32.1%) | POC: 215.87 | 首選權證: 087886 矽格國泰65購01(差槓比0.159%, 槓桿2.64x, 天數229天)\n#3 8021 尖點 | [🔴 高位階 (81%)] 現價: 561.00 | 密集區進場: 561.00 | 停損: 442.23 (-21.2%) | 目標: 798.54 (+42.3%) | POC: 460.66 | 權證: 無合規標的(建議直接操作現股)\n#4 3044 健鼎 | [🔴 高位階 (93%)] 現價: 579.00 | 密集區進場: 579.00 | 停損: 484.55 (-16.3%) | 目標: 767.90 (+32.6%) | POC: 487.48 | 首選權證: 080484 健鼎凱基63購02(差槓比0.137%, 槓桿3.29x, 天數159天)\n#5 2368 金像電 | [🟡 中位階 (63%)] 現價: 1260.00 | 密集區進場: 1260.00 | 停損: 1040.34 (-17.4%) | 目標: 1699.32 (+34.9%) | POC: 1007.38 | 首選權證: 083575 金像電群益63購05(差槓比0.194%, 槓桿3.09x, 天數146天)\n#6 1709 和益 | [🔴 高位階 (94%)] 現價: 63.30 | 密集區進場: 63.30 | 停損: 43.95 (-30.6%) | 目標: 102.00 (+61.1%) | POC: 35.13 | 權證: 無合規標的(建議直接操作現股)\n#7 1459 聯發 | [🟡 中位階 (67%)] 現價: 18.85 | 密集區進場: 19.92 | 停損: 18.76 (-5.8%) | 目標: 22.24 (+11.6%) | POC: 15.56 | 權證: 無合規標的(建議直接操作現股)\n#8 6658 聯策 | [🟡 中位階 (69%)] 現價: 203.00 | 密集區進場: 203.00 | 停損: 186.27 (-8.2%) | 目標: 236.46 (+16.5%) | POC: 171.55 | 首選權證: 078927 聯策國票66購01(差槓比0.419%, 槓桿2.01x, 天數243天)\n#9 6657 華安 | [🟢 低位階 (28%)] 現價: 34.20 | 密集區進場: 34.20 | 停損: 31.87 (-6.8%) | 目標: 38.86 (+13.6%) | POC: 30.61 | 權證: 無合規標的(建議直接操作現股)\n#10 4551 智伸科 | [🟢 低位階 (33%)] 現價: 181.50 | 密集區進場: 181.50 | 停損: 168.59 (-7.1%) | 目標: 207.32 (+14.2%) | POC: 166.21 | 首選權證: 030696 智伸科台新64購01(差槓比0.192%, 槓桿3.07x, 天數182天)\n#11 6794 向榮生技 | [🟢 低位階 (30%)] 現價: 73.60 | 密集區進場: 74.96 | 停損: 70.91 (-5.4%) | 目標: 83.06 (+10.8%) | POC: 75.12 | 權證: 無合規標的(建議直接操作現股)\n#12 1470 大統新創 | [🔴 高位階 (92%)] 現價: 24.50 | 密集區進場: 24.50 | 停損: 23.18 (-5.4%) | 目標: 27.14 (+10.8%) | POC: 24.15 | 權證: 無合規標的(建議直接操作現股)\n#13 6669 緯穎 | [🟢 低位階 (4%)] 現價: 2290.00 | 密集區進場: 2290.00 | 停損: 2060.70 (-10.0%) | 目標: 2748.60 (+20.0%) | POC: 2146.56 | 首選權證: 075364 緯穎凱基63購01(差槓比0.261%, 槓桿3.18x, 天數159天)\n#14 3557 嘉威 | [🟢 低位階 (14%)] 現價: 23.65 | 密集區進場: 24.36 | 停損: 23.39 (-4.0%) | 目標: 26.30 (+8.0%) | POC: 24.36 | 權證: 無合規標的(建議直接操作現股)\n#15 4572 駐龍 | [🟢 低位階 (17%)] 現價: 139.50 | 密集區進場: 139.59 | 停損: 134.01 (-4.0%) | 目標: 150.75 (+8.0%) | POC: 140.16 | 權證: 無合規標的(建議直接操作現股)\n#16 3025 星通 | [🟢 低位階 (28%)] 現價: 59.40 | 密集區進場: 59.40 | 停損: 54.10 (-8.9%) | 目標: 70.00 (+17.8%) | POC: 56.35 | 權證: 無合規標的(建議直接操作現股)\n#17 2367 燿華 | [🟢 低位階 (35%)] 現價: 47.65 | 密集區進場: 47.65 | 停損: 45.36 (-4.8%) | 目標: 52.23 (+9.6%) | POC: 43.02 | 首選權證: 080654 燿華凱基63購01(差槓比0.190%, 槓桿3.11x, 天數160天)\n#18 3030 德律 | [🟢 低位階 (30%)] 現價: 308.00 | 密集區進場: 308.25 | 停損: 294.54 (-4.4%) | 目標: 335.67 (+8.9%) | POC: 295.19 | 首選權證: 085030 德律台新63購01(差槓比0.149%, 槓桿3.35x, 天數152天)\n#19 3715 定穎投控 | [🟡 中位階 (39%)] 現價: 133.00 | 密集區進場: 133.00 | 停損: 120.13 (-9.7%) | 目標: 158.74 (+19.4%) | POC: 124.44 | 首選權證: 080129 定穎控永豐63購04(差槓比0.332%, 槓桿2.92x, 天數156天)\n#20 1721 國慶科技 | [🟡 中位階 (61%)] 現價: 29.00 | 密集區進場: 29.00 | 停損: 26.78 (-7.7%) | 目標: 33.44 (+15.3%) | POC: 20.25 | 權證: 無合規標的(建議直接操作現股)\n#21 3054 立萬利 | [🟡 中位階 (39%)] 現價: 60.30 | 密集區進場: 60.30 | 停損: 56.38 (-6.5%) | 目標: 68.14 (+13.0%) | POC: 58.57 | 權證: 無合規標的(建議直接操作現股)\n#22 4755 三福化 | [🟡 中位階 (40%)] 現價: 133.00 | 密集區進場: 149.39 | 停損: 143.41 (-4.0%) | 目標: 161.35 (+8.0%) | POC: 115.51 | 首選權證: 088218 三福化永豐64購01(差槓比0.638%, 槓桿2.52x, 天數198天)\n#23 4164 承業醫 | [🟡 中位階 (35%)] 現價: 28.35 | 密集區進場: 28.69 | 停損: 27.54 (-4.0%) | 目標: 30.99 (+8.0%) | POC: 25.90 | 權證: 無合規標的(建議直接操作現股)\n#24 3031 佰鴻 | [🔴 高位階 (85%)] 現價: 34.20 | 密集區進場: 34.20 | 停損: 30.59 (-10.6%) | 目標: 41.42 (+21.1%) | POC: 31.09 | 權證: 無合規標的(建議直接操作現股)\n#25 2466 冠西電 | [🔴 高位階 (100%)] 現價: 170.50 | 密集區進場: 170.50 | 停損: 98.43 (-42.3%) | 目標: 314.64 (+84.5%) | POC: 102.17 | 權證: 無合規標的(建議直接操作現股)\n#26 1773 勝一 | [🟡 中位階 (64%)] 現價: 182.00 | 密集區進場: 182.00 | 停損: 167.29 (-8.1%) | 目標: 211.42 (+16.2%) | POC: 163.72 | 首選權證: 083958 勝一永豐64購01(差槓比0.312%, 槓桿3.53x, 天數177天)\n#27 6952 大武山 | [🟡 中位階 (62%)] 現價: 39.10 | 密集區進場: 39.10 | 停損: 37.22 (-4.8%) | 目標: 42.86 (+9.6%) | POC: 35.41 | 權證: 無合規標的(建議直接操作現股)\n#28 2397 友通 | [🟡 中位階 (69%)] 現價: 64.30 | 密集區進場: 66.34 | 停損: 63.69 (-4.0%) | 目標: 71.64 (+8.0%) | POC: 66.34 | 權證: 無合規標的(建議直接操作現股)\n#29 3013 晟銘電 | [🟡 中位階 (37%)] 現價: 95.00 | 密集區進場: 95.00 | 停損: 88.70 (-6.6%) | 目標: 107.60 (+13.3%) | POC: 86.83 | 首選權證: 085861 晟銘電台新63購01(差槓比0.123%, 槓桿3.25x, 天數154天)\n#30 4906 正文 | [🟡 中位階 (53%)] 現價: 43.00 | 密集區進場: 43.00 | 停損: 40.08 (-6.8%) | 目標: 48.84 (+13.6%) | POC: 36.62 | 首選權證: 084752 正文凱基63購01(差槓比0.175%, 槓桿3.49x, 天數152天)\n#31 6278 台表科 | [🔴 高位階 (84%)] 現價: 234.00 | 密集區進場: 234.00 | 停損: 205.03 (-12.4%) | 目標: 291.94 (+24.8%) | POC: 178.64 | 首選權證: 082585 台表科中信62購01(差槓比0.235%, 槓桿3.06x, 天數142天)\n#32 2241 艾姆勒 | [🔴 高位階 (72%)] 現價: 47.35 | 密集區進場: 47.35 | 停損: 42.19 (-10.9%) | 目標: 57.67 (+21.8%) | POC: 33.92 | 權證: 無合規標的(建議直接操作現股)\n#33 6196 帆宣 | [🔴 高位階 (94%)] 現價: 663.00 | 密集區進場: 663.00 | 停損: 499.02 (-24.7%) | 目標: 990.96 (+49.5%) | POC: 513.74 | 首選權證: 074545 帆宣國泰62購01(差槓比0.074%, 槓桿5.9x, 天數127天)\n#34 7788 松川精密 | [🔴 高位階 (100%)] 現價: 365.50 | 密集區進場: 365.50 | 停損: 280.08 (-23.4%) | 目標: 536.34 (+46.7%) | POC: 290.32 | 首選權證: 081517 松川群益62購03(差槓比0.279%, 槓桿2.94x, 天數135天)\n\n🔴【反向做空標的池 (共 1 檔 ｜ Volume Profile 破位定價 + 權證嚴選推薦)】\n#1 2303 聯電 | [🟡 中位階 (70%)] 現價: 147.50 | 密集區放空: 141.33 | 停損: 152.10 (+7.6%) | 回補: 119.79 (-15.2%) | POC: 121.47 | 首選權證: 04688T 聯電國泰65售03(差槓比0.307%, 槓桿1.57x, 天數229天)\n=============================================================";
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(text).then(function() {
                     alert("✓ 今日多空作戰計畫 (含權證分析) 已成功複製至剪貼簿！可直接貼至 Line 或 筆記本。");
