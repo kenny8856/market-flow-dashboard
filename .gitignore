@@ -48,3 +48,11 @@ env/
 .agents/
 .vscode/
 .idea/
+
+# Archives & compressed backups
+*.7z
+*.zip
+*.rar
+*.tar
+*.gz
+*.tar.gz
