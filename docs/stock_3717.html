@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3717 聯嘉投控 專業量化分析 (K線/九轉序列/13不連續/權證資金流) - 投行機構風控系統</title>
+    <style>
+        :root {
+            --bg-base: #0a0e17;
+            --bg-card: #111827;
+            --bg-card-hover: #1f2937;
+            --border-color: #2d3748;
+            --border-light: #374151;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --bull-red: #ef4444;
+            --bear-green: #10b981;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
+            --accent-yellow: #f59e0b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", sans-serif;
+            line-height: 1.5;
+            padding-bottom: 60px;
+        }
+        .container { max-width: 1380px; margin: 0 auto; padding: 20px 24px; }
+        
+        /* 導航 Header */
+        .top-navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #1e293b;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid #3b82f6;
+            transition: all 0.2s;
+        }
+        .btn-back:hover {
+            background: #3b82f6;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+        }
+        .header-title-box {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .stock-main-title {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+        .stock-price-box {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+        .stock-price {
+            font-size: 30px;
+            font-weight: 900;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        .stock-ret {
+            font-size: 16px;
+            font-weight: 700;
+            font-family: ui-monospace, SFMono-Regular, monospace;
+        }
+        
+        /* 通用 Card */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .card-title {
+            font-size: 17px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* 網格統計欄 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .stat-item {
+            background: #172033;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px 16px;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .stat-value {
+            font-size: 18px;
+            font-weight: 800;
+            font-family: ui-monospace, SFMono-Regular, monospace;
+        }
+        
+        /* TD 診斷卡片 */
+        .td-alert-box {
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3b82f6;
+            background: rgba(30, 41, 59, 0.7);
+        }
+        .td-alert-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .td-alert-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* 圖表容器 (主圖與三大副圖) */
+        .chart-box {
+            position: relative;
+            width: 100%;
+            height: 380px;
+            border-radius: 8px;
+            background: #0f172a;
+            border: 1px solid var(--border-light);
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .chart-box-vol {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            border-radius: 8px;
+            background: #0f172a;
+            border: 1px solid var(--border-light);
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .chart-box-inst {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            border-radius: 8px;
+            background: #0f172a;
+            border: 1px solid var(--border-light);
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .chart-box-sub {
+            position: relative;
+            width: 100%;
+            height: 150px;
+            border-radius: 8px;
+            background: #0f172a;
+            border: 1px solid var(--border-light);
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        .chart-legend {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            display: inline-block;
+        }
+        
+        /* 標籤 Badge */
+        .badge-bull { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+        .badge-bear { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+        .badge-neutral { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+        .text-bull { color: var(--bull-red); }
+        .text-bear { color: var(--bear-green); }
+        .text-muted { color: var(--text-muted); }
+        
+        /* 表格樣式 */
+        .xiaoge-warrant-box {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 14px;
+        }
+        .xiaoge-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+        .xiaoge-table th {
+            background: #1e293b;
+            color: var(--text-secondary);
+            padding: 10px 8px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .xiaoge-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #1e293b;
+        }
+        .badge-xiaoge-pass { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+        .badge-xiaoge-relax { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid #f59e0b; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+        .badge-diff-lever { background: rgba(16, 185, 129, 0.15); color: #10b981; font-weight: 700; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+        .badge-diff-lever-relax { background: rgba(245, 158, 11, 0.15); color: #f59e0b; font-weight: 700; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+        
+        /* 響應式 */
+        @media (max-width: 768px) {
+            .top-navbar { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .chart-box { height: 420px; }
+            .chart-box-sub { height: 220px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+    <!-- 本地優先載入 Lightweight Charts，外網 CDN 雙重備援 -->
+    <script src="assets/lightweight-charts.standalone.production.js"></script>
+    <script>
+        if (typeof LightweightCharts === 'undefined') {
+            document.write('<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"><\/script>');
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- 頂部導航 -->
+        <div class="top-navbar">
+            <div style="display:flex; align-items:center; gap:16px;">
+                
+                <div class="header-title-box">
+                    <span class="stock-main-title">3717 聯嘉投控</span>
+                    <span style="font-size:13px; color:var(--text-muted);">TWSE</span>
+                    <span class='badge-bull'>▲ LONG #71 結構走強</span>
+                    <span style="font-size: 13px; font-weight: 700; padding: 3px 9px; border-radius: 6px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); display: inline-flex; align-items: center; gap: 4px;" title="全市場多因子綜合量化熱度 (0-100)">
+                        🔥 社群與市場熱度 53.0 分 <span style="font-size: 11px; opacity: 0.85;">(⚡ 溫和放量交投 (常態換手))</span>
+                    </span>
+                </div>
+            </div>
+            <div class="stock-price-box">
+                <span class="stock-price text-bull">27.75</span>
+                <span class="stock-ret text-bull">5日: +10.60%</span>
+            </div>
+        </div>
+
+        <!-- 關鍵量化指標卡片格 (8大核心維度) -->
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-label">🎯 POC 短期 (60日密集區)</div>
+                <div class="stat-value" style="color:#eab308;">27.78 元</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">🎯 POC 中期 (120日波段)</div>
+                <div class="stat-value" style="color:#f97316;">27.73 元</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">🎯 POC 長期 (240日年線)</div>
+                <div class="stat-value" style="color:#ec4899;">27.65 元</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">🔥 社群與市場熱度 (0-100)</div>
+                <div class="stat-value" style="font-size:15px; color:#38bdf8;">53.0 分 <span style="font-size:11px; color:var(--text-secondary);">(⚡ 溫和放量交投 (常態換手))</span></div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">⚡ 投信 5日淨買賣</div>
+                <div class="stat-value" style="color:var(--accent-cyan);">+149 張</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">🌐 外資 5日淨買賣</div>
+                <div class="stat-value" style="color:var(--accent-blue);">-464 張</div>
+            </div>
+            
+            <div class="stat-item">
+                <div class="stat-label">📊 融資 5日增減</div>
+                <div class="stat-value" style="color:var(--accent-yellow);">-1619 張</div>
+            </div>
+            
+            <div class="stat-item">
+                <div class="stat-label">🔥 今日權證多空比</div>
+                <div class="stat-value" style="font-size:15px;">認購 0.0% : 認售 0.0%</div>
+            </div>
+        </div>
+
+        <!-- TD Sequential & Countdown 序列診斷狀態卡 -->
+        <div class="card" style="border-left: 5px solid #ef4444;">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>⏱️ Tom DeMark 九轉序列 (TD Setup 9) 與 13 不連續計數診斷</span>
+                </div>
+                <span class="badge-neutral">賣出 13 倒數中 (第 4/13 步)</span>
+            </div>
+            <div class="td-alert-box">
+                <div class="td-alert-title">
+                    <span>💡 當前 K 線計數解讀：</span>
+                </div>
+                <div class="td-alert-desc">
+                    賣九已成立，目前多頭持續創新高累計第 4 根 (滿足 Close >= High[t-2])，逼近頂部力竭區。<br>
+                    • <strong>九轉結構 (TD Setup 9)</strong>：當連續 9 日收盤價低於前第 4 日收盤價即觸發【買9】，代表空方動能竭盡轉折點；反之連續 9 日高於前第 4 日收盤價即觸發【賣9】。<br>
+                    • <strong>13 不連續序列 (TD Countdown 13)</strong>：九轉成立後，統計收盤價與前第 2 日極值（Close &lt;= Low[t-2] 或 Close &gt;= High[t-2]），累計滿 13 根觸發極限背離訊號！
+                </div>
+            </div>
+
+            <!-- 主圖：K線與九轉標籤 -->
+            <div class="chart-legend">
+                <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> 上漲K棒 (紅)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> 下跌K棒 (綠)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> ▲ 買9 (空頭力竭買點)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> ▼ 賣9 (多頭超買賣點)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#06b6d4;"></span> ★ 買13 (終極底部背離)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#f59e0b;"></span> ★ 賣13 (終極頂部反轉)</div>
+            </div>
+            <div id="kline-chart-container" class="chart-box"></div>
+
+            <!-- 副圖 1：獨立成交量 (Volume) -->
+            <div class="chart-legend" style="margin-top: 10px; margin-bottom: 4px;">
+                <div class="legend-item" style="font-weight:700; color:var(--text-primary);">📊 每日成交量 (Volume)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> 陽線量 (紅)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> 陰線量 (綠)</div>
+            </div>
+            <div id="volume-chart-container" class="chart-box-vol"></div>
+
+            <!-- 副圖 2：外資與投信每日多空金額 (Institutional Flow) -->
+            <div class="chart-legend" style="margin-top: 10px; margin-bottom: 4px; ">
+                <div class="legend-item" style="font-weight:700; color:var(--text-primary);">🏛️ 外資與投信每日多空金額 (萬元)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#38bdf8;"></span> 外資買超 (天藍柱)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#64748b;"></span> 外資賣超 (灰柱)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#f43f5e;"></span> 投信多空淨額 (桃紅線)</div>
+            </div>
+            <div id="inst-chart-container" class="chart-box-inst" style=""></div>
+
+            <!-- 副圖 3：個股關聯權證每日多空資金流 (Warrant Flow) -->
+            <div class="chart-legend" style="margin-top: 10px; margin-bottom: 4px;">
+                <div class="legend-item" style="font-weight:700; color:var(--text-primary);">🎯 權證每日多空資金流 (萬元)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> 認購成交額 (多方買氣, 萬元)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> 認售成交額 (空方避險, 萬元)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#38bdf8;"></span> 權證多空淨額 (認購 - 認售, 萬元)</div>
+            </div>
+            <div id="warrant-chart-container" class="chart-box-sub"></div>
+        </div>
+
+        <!-- 權證小哥 5 大指標推薦名單 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>⚡ 權證小哥 5 大指標嚴選標的 (實戰交易優先推薦)</span>
+                </div>
+                <span style="font-size:12px; color:var(--text-secondary);">每日 16:00 元大權證網直連 ｜ 天數 &gt; 120天 ｜ 差槓比 &lt; 0.3%~0.7%</span>
+            </div>
+            
+            <div class="xiaoge-warrant-box" style="border-left: 4px solid #ef4444; margin-top:12px;">
+                <div style="font-weight:700; color:#ef4444; font-size:14px; margin-bottom:8px;">認購 CALL</div>
+                <div style="color:var(--text-muted); font-size:13px; text-align:center; padding:12px;">
+                    ⚠️ 本標的目前市場「無符合條件」之權證（剩餘天數不足 120 天或差槓比 &gt; 0.7%）。<br>
+                    💡 實戰操作紀律：寧可直接操作現股，絕不妥協買進未滿 120 天之短天期劣質權證承擔時間價值加速衰減！
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- 圖表初始化腳本 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const klineData = [{"time": "2025-08-15", "open": 21.0, "high": 21.2, "low": 19.6, "close": 20.05}, {"time": "2025-08-18", "open": 20.05, "high": 20.05, "low": 19.45, "close": 19.5}, {"time": "2025-08-19", "open": 19.5, "high": 20.6, "low": 19.4, "close": 20.2}, {"time": "2025-08-20", "open": 20.2, "high": 20.2, "low": 19.8, "close": 19.8}, {"time": "2025-08-21", "open": 19.85, "high": 20.05, "low": 19.75, "close": 19.75}, {"time": "2025-08-22", "open": 19.75, "high": 19.75, "low": 19.55, "close": 19.55}, {"time": "2025-08-25", "open": 19.5, "high": 19.7, "low": 19.3, "close": 19.3}, {"time": "2025-08-26", "open": 19.35, "high": 19.4, "low": 18.8, "close": 18.8}, {"time": "2025-08-27", "open": 18.6, "high": 18.75, "low": 18.1, "close": 18.55}, {"time": "2025-08-28", "open": 18.6, "high": 19.65, "low": 18.6, "close": 19.5}, {"time": "2025-08-29", "open": 20.0, "high": 20.15, "low": 19.5, "close": 19.65}, {"time": "2025-09-01", "open": 19.55, "high": 19.55, "low": 19.15, "close": 19.2}, {"time": "2025-09-02", "open": 19.3, "high": 19.45, "low": 18.95, "close": 19.2}, {"time": "2025-09-03", "open": 19.3, "high": 19.75, "low": 19.3, "close": 19.4}, {"time": "2025-09-04", "open": 19.45, "high": 19.6, "low": 19.2, "close": 19.2}, {"time": "2025-09-05", "open": 19.3, "high": 20.55, "low": 19.0, "close": 20.2}, {"time": "2025-09-08", "open": 20.35, "high": 21.5, "low": 20.0, "close": 20.75}, {"time": "2025-09-09", "open": 20.9, "high": 21.25, "low": 20.5, "close": 20.85}, {"time": "2025-09-10", "open": 20.85, "high": 21.0, "low": 20.5, "close": 20.5}, {"time": "2025-09-11", "open": 20.6, "high": 20.65, "low": 20.0, "close": 20.2}, {"time": "2025-09-12", "open": 20.5, "high": 21.0, "low": 20.05, "close": 20.55}, {"time": "2025-09-15", "open": 20.7, "high": 20.9, "low": 20.2, "close": 20.9}, {"time": "2025-09-16", "open": 20.9, "high": 20.9, "low": 20.5, "close": 20.7}, {"time": "2025-09-17", "open": 20.35, "high": 20.9, "low": 20.35, "close": 20.5}, {"time": "2025-09-18", "open": 20.5, "high": 20.55, "low": 20.25, "close": 20.25}, {"time": "2025-09-19", "open": 20.25, "high": 20.5, "low": 20.1, "close": 20.1}, {"time": "2025-09-22", "open": 20.1, "high": 20.5, "low": 20.0, "close": 20.05}, {"time": "2025-09-23", "open": 20.1, "high": 20.1, "low": 19.6, "close": 19.9}, {"time": "2025-09-24", "open": 19.95, "high": 20.3, "low": 19.7, "close": 19.8}, {"time": "2025-09-25", "open": 19.95, "high": 20.15, "low": 19.8, "close": 19.8}, {"time": "2025-09-26", "open": 19.8, "high": 20.0, "low": 19.15, "close": 19.25}, {"time": "2025-09-30", "open": 19.5, "high": 19.9, "low": 19.25, "close": 19.7}, {"time": "2025-10-01", "open": 20.25, "high": 20.65, "low": 19.9, "close": 19.9}, {"time": "2025-10-02", "open": 20.0, "high": 20.4, "low": 19.7, "close": 19.75}, {"time": "2025-10-03", "open": 20.05, "high": 20.2, "low": 19.8, "close": 19.8}, {"time": "2025-10-07", "open": 19.8, "high": 20.15, "low": 19.8, "close": 19.95}, {"time": "2025-10-08", "open": 20.15, "high": 20.95, "low": 20.15, "close": 20.4}, {"time": "2025-10-09", "open": 20.55, "high": 21.45, "low": 20.55, "close": 21.0}, {"time": "2025-10-13", "open": 20.4, "high": 21.1, "low": 20.0, "close": 20.9}, {"time": "2025-10-14", "open": 21.05, "high": 21.3, "low": 20.25, "close": 20.25}, {"time": "2025-10-15", "open": 20.3, "high": 20.4, "low": 19.9, "close": 20.0}, {"time": "2025-10-16", "open": 20.1, "high": 20.45, "low": 20.1, "close": 20.2}, {"time": "2025-10-17", "open": 20.1, "high": 20.2, "low": 19.8, "close": 19.8}, {"time": "2025-10-20", "open": 19.7, "high": 19.7, "low": 19.05, "close": 19.4}, {"time": "2025-10-21", "open": 19.45, "high": 20.2, "low": 19.45, "close": 20.05}, {"time": "2025-10-22", "open": 20.05, "high": 20.15, "low": 19.9, "close": 19.95}, {"time": "2025-10-23", "open": 19.95, "high": 20.05, "low": 19.75, "close": 19.75}, {"time": "2025-10-27", "open": 19.75, "high": 19.8, "low": 19.3, "close": 19.35}, {"time": "2025-10-28", "open": 19.4, "high": 19.4, "low": 19.0, "close": 19.0}, {"time": "2025-10-29", "open": 19.15, "high": 19.25, "low": 18.9, "close": 19.0}, {"time": "2025-10-30", "open": 19.05, "high": 19.25, "low": 18.9, "close": 19.05}, {"time": "2025-10-31", "open": 19.1, "high": 19.1, "low": 18.8, "close": 18.85}, {"time": "2025-11-03", "open": 18.9, "high": 18.9, "low": 18.65, "close": 18.75}, {"time": "2025-11-04", "open": 18.75, "high": 18.8, "low": 18.05, "close": 18.1}, {"time": "2025-11-05", "open": 18.0, "high": 18.05, "low": 17.75, "close": 18.05}, {"time": "2025-11-06", "open": 18.15, "high": 18.35, "low": 18.0, "close": 18.05}, {"time": "2025-11-07", "open": 18.3, "high": 18.9, "low": 18.2, "close": 18.55}, {"time": "2025-11-10", "open": 18.65, "high": 18.65, "low": 18.0, "close": 18.1}, {"time": "2025-11-11", "open": 18.25, "high": 18.35, "low": 17.95, "close": 17.95}, {"time": "2025-11-12", "open": 18.0, "high": 18.4, "low": 18.0, "close": 18.35}, {"time": "2025-11-13", "open": 18.35, "high": 18.5, "low": 18.2, "close": 18.4}, {"time": "2025-11-14", "open": 18.15, "high": 18.65, "low": 18.1, "close": 18.15}, {"time": "2025-11-17", "open": 18.15, "high": 18.2, "low": 17.6, "close": 17.7}, {"time": "2025-11-18", "open": 17.7, "high": 17.7, "low": 17.2, "close": 17.25}, {"time": "2025-11-19", "open": 17.25, "high": 17.45, "low": 16.95, "close": 16.95}, {"time": "2025-11-20", "open": 17.3, "high": 17.5, "low": 17.05, "close": 17.35}, {"time": "2025-11-21", "open": 17.3, "high": 17.35, "low": 17.0, "close": 17.1}, {"time": "2025-11-24", "open": 17.35, "high": 17.45, "low": 16.95, "close": 16.95}, {"time": "2025-11-25", "open": 17.1, "high": 17.25, "low": 16.6, "close": 16.75}, {"time": "2025-11-26", "open": 16.8, "high": 17.1, "low": 16.8, "close": 16.95}, {"time": "2025-11-27", "open": 17.05, "high": 17.4, "low": 17.05, "close": 17.3}, {"time": "2025-11-28", "open": 17.25, "high": 17.5, "low": 17.2, "close": 17.25}, {"time": "2025-12-01", "open": 17.2, "high": 17.3, "low": 16.95, "close": 16.95}, {"time": "2025-12-02", "open": 16.9, "high": 17.15, "low": 16.9, "close": 17.05}, {"time": "2025-12-03", "open": 17.05, "high": 17.45, "low": 17.05, "close": 17.45}, {"time": "2025-12-04", "open": 17.4, "high": 17.75, "low": 17.35, "close": 17.5}, {"time": "2025-12-05", "open": 17.5, "high": 17.8, "low": 17.15, "close": 17.25}, {"time": "2025-12-08", "open": 17.25, "high": 17.45, "low": 17.2, "close": 17.25}, {"time": "2025-12-09", "open": 17.15, "high": 17.2, "low": 17.05, "close": 17.1}, {"time": "2025-12-10", "open": 17.1, "high": 17.25, "low": 16.85, "close": 16.9}, {"time": "2025-12-11", "open": 16.95, "high": 17.4, "low": 16.9, "close": 17.15}, {"time": "2025-12-12", "open": 17.2, "high": 17.7, "low": 17.2, "close": 17.55}, {"time": "2025-12-15", "open": 17.5, "high": 17.8, "low": 17.35, "close": 17.55}, {"time": "2025-12-16", "open": 17.5, "high": 17.5, "low": 17.15, "close": 17.3}, {"time": "2025-12-17", "open": 17.35, "high": 17.4, "low": 17.05, "close": 17.1}, {"time": "2025-12-18", "open": 16.95, "high": 17.05, "low": 16.85, "close": 16.9}, {"time": "2025-12-19", "open": 16.95, "high": 17.1, "low": 16.85, "close": 16.95}, {"time": "2025-12-22", "open": 17.0, "high": 17.2, "low": 17.0, "close": 17.05}, {"time": "2025-12-23", "open": 17.1, "high": 17.2, "low": 16.9, "close": 16.95}, {"time": "2025-12-24", "open": 17.0, "high": 17.05, "low": 16.85, "close": 16.85}, {"time": "2025-12-26", "open": 16.85, "high": 17.3, "low": 16.8, "close": 17.25}, {"time": "2025-12-29", "open": 17.3, "high": 17.3, "low": 17.0, "close": 17.15}, {"time": "2025-12-30", "open": 17.05, "high": 17.05, "low": 16.75, "close": 16.9}, {"time": "2025-12-31", "open": 17.0, "high": 17.35, "low": 16.65, "close": 16.7}, {"time": "2026-01-02", "open": 16.7, "high": 16.95, "low": 16.7, "close": 16.85}, {"time": "2026-01-05", "open": 16.8, "high": 16.8, "low": 16.1, "close": 16.2}, {"time": "2026-01-06", "open": 16.45, "high": 16.6, "low": 16.1, "close": 16.6}, {"time": "2026-01-07", "open": 16.5, "high": 17.3, "low": 16.5, "close": 17.2}, {"time": "2026-01-08", "open": 17.2, "high": 18.0, "low": 16.9, "close": 17.15}, {"time": "2026-01-09", "open": 17.0, "high": 17.25, "low": 16.85, "close": 17.15}, {"time": "2026-01-12", "open": 17.2, "high": 17.5, "low": 17.05, "close": 17.1}, {"time": "2026-01-13", "open": 17.1, "high": 17.1, "low": 16.7, "close": 16.75}, {"time": "2026-01-14", "open": 16.8, "high": 18.3, "low": 16.8, "close": 18.05}, {"time": "2026-01-15", "open": 18.1, "high": 18.2, "low": 17.55, "close": 17.8}, {"time": "2026-01-16", "open": 17.9, "high": 19.55, "low": 17.75, "close": 19.55}, {"time": "2026-01-19", "open": 20.0, "high": 20.2, "low": 19.05, "close": 19.75}, {"time": "2026-01-20", "open": 19.65, "high": 20.1, "low": 19.2, "close": 19.6}, {"time": "2026-01-21", "open": 19.5, "high": 19.8, "low": 19.15, "close": 19.4}, {"time": "2026-01-22", "open": 19.65, "high": 19.8, "low": 19.15, "close": 19.3}, {"time": "2026-01-23", "open": 19.3, "high": 19.4, "low": 19.0, "close": 19.0}, {"time": "2026-01-26", "open": 19.2, "high": 19.2, "low": 18.65, "close": 18.85}, {"time": "2026-01-27", "open": 18.85, "high": 18.85, "low": 18.2, "close": 18.3}, {"time": "2026-01-28", "open": 18.3, "high": 18.65, "low": 18.2, "close": 18.35}, {"time": "2026-01-29", "open": 18.35, "high": 18.35, "low": 17.95, "close": 18.1}, {"time": "2026-01-30", "open": 18.1, "high": 18.1, "low": 17.55, "close": 17.55}, {"time": "2026-02-02", "open": 17.4, "high": 17.55, "low": 17.05, "close": 17.05}, {"time": "2026-02-03", "open": 17.2, "high": 17.6, "low": 17.0, "close": 17.0}, {"time": "2026-02-04", "open": 17.0, "high": 17.35, "low": 16.95, "close": 17.15}, {"time": "2026-02-05", "open": 17.25, "high": 17.65, "low": 17.25, "close": 17.55}, {"time": "2026-02-06", "open": 17.55, "high": 17.55, "low": 17.1, "close": 17.2}, {"time": "2026-02-09", "open": 17.6, "high": 17.75, "low": 17.35, "close": 17.45}, {"time": "2026-02-10", "open": 17.55, "high": 17.8, "low": 17.5, "close": 17.6}, {"time": "2026-02-11", "open": 17.6, "high": 17.75, "low": 17.2, "close": 17.3}, {"time": "2026-02-23", "open": 17.3, "high": 17.9, "low": 17.15, "close": 17.55}, {"time": "2026-02-24", "open": 17.8, "high": 17.95, "low": 17.6, "close": 17.6}, {"time": "2026-02-25", "open": 17.7, "high": 17.75, "low": 17.4, "close": 17.55}, {"time": "2026-02-26", "open": 17.55, "high": 17.7, "low": 17.4, "close": 17.55}, {"time": "2026-03-02", "open": 17.7, "high": 17.7, "low": 17.0, "close": 17.45}, {"time": "2026-03-03", "open": 17.45, "high": 17.55, "low": 17.0, "close": 17.05}, {"time": "2026-03-04", "open": 17.0, "high": 17.0, "low": 16.25, "close": 16.35}, {"time": "2026-03-05", "open": 16.9, "high": 17.95, "low": 16.9, "close": 17.95}, {"time": "2026-03-06", "open": 18.0, "high": 18.5, "low": 17.85, "close": 18.0}, {"time": "2026-03-09", "open": 17.1, "high": 17.85, "low": 17.05, "close": 17.3}, {"time": "2026-03-10", "open": 17.55, "high": 17.9, "low": 17.5, "close": 17.9}, {"time": "2026-03-11", "open": 18.3, "high": 18.3, "low": 18.0, "close": 18.0}, {"time": "2026-03-12", "open": 18.0, "high": 19.4, "low": 18.0, "close": 18.9}, {"time": "2026-03-13", "open": 18.65, "high": 19.2, "low": 18.4, "close": 19.0}, {"time": "2026-03-16", "open": 19.4, "high": 19.75, "low": 19.15, "close": 19.2}, {"time": "2026-03-17", "open": 19.35, "high": 19.35, "low": 18.75, "close": 18.8}, {"time": "2026-03-18", "open": 18.8, "high": 19.2, "low": 18.75, "close": 19.0}, {"time": "2026-03-19", "open": 19.0, "high": 19.05, "low": 18.75, "close": 18.75}, {"time": "2026-03-20", "open": 18.75, "high": 20.4, "low": 18.65, "close": 20.05}, {"time": "2026-03-23", "open": 20.2, "high": 21.75, "low": 19.8, "close": 21.05}, {"time": "2026-03-24", "open": 22.3, "high": 22.55, "low": 20.45, "close": 20.8}, {"time": "2026-03-25", "open": 21.1, "high": 22.15, "low": 20.95, "close": 21.9}, {"time": "2026-03-26", "open": 23.05, "high": 23.2, "low": 21.6, "close": 21.6}, {"time": "2026-03-27", "open": 22.0, "high": 22.75, "low": 21.35, "close": 22.5}, {"time": "2026-03-30", "open": 22.5, "high": 22.5, "low": 21.5, "close": 21.65}, {"time": "2026-03-31", "open": 21.05, "high": 21.9, "low": 20.85, "close": 21.65}, {"time": "2026-04-01", "open": 22.2, "high": 22.85, "low": 22.05, "close": 22.85}, {"time": "2026-04-02", "open": 22.85, "high": 22.85, "low": 22.1, "close": 22.1}, {"time": "2026-04-07", "open": 22.15, "high": 22.85, "low": 21.8, "close": 22.8}, {"time": "2026-04-08", "open": 22.85, "high": 24.2, "low": 22.15, "close": 23.85}, {"time": "2026-04-09", "open": 23.9, "high": 23.95, "low": 22.9, "close": 22.9}, {"time": "2026-04-10", "open": 23.0, "high": 23.3, "low": 22.05, "close": 22.15}, {"time": "2026-04-13", "open": 22.15, "high": 22.8, "low": 21.95, "close": 22.35}, {"time": "2026-04-14", "open": 22.6, "high": 22.6, "low": 21.85, "close": 21.85}, {"time": "2026-04-15", "open": 22.05, "high": 22.3, "low": 21.7, "close": 21.85}, {"time": "2026-04-16", "open": 21.95, "high": 22.35, "low": 21.85, "close": 21.85}, {"time": "2026-04-17", "open": 22.05, "high": 22.25, "low": 21.75, "close": 21.9}, {"time": "2026-04-20", "open": 22.0, "high": 22.65, "low": 22.0, "close": 22.45}, {"time": "2026-04-21", "open": 22.85, "high": 22.95, "low": 22.1, "close": 22.3}, {"time": "2026-04-22", "open": 22.3, "high": 22.35, "low": 21.9, "close": 22.1}, {"time": "2026-04-23", "open": 22.15, "high": 22.2, "low": 20.7, "close": 21.05}, {"time": "2026-04-24", "open": 21.7, "high": 21.85, "low": 20.6, "close": 20.65}, {"time": "2026-04-27", "open": 20.6, "high": 20.6, "low": 19.55, "close": 19.8}, {"time": "2026-04-28", "open": 20.1, "high": 20.25, "low": 19.65, "close": 19.95}, {"time": "2026-04-29", "open": 20.2, "high": 20.2, "low": 19.7, "close": 19.75}, {"time": "2026-04-30", "open": 19.75, "high": 19.8, "low": 19.5, "close": 19.5}, {"time": "2026-05-04", "open": 19.85, "high": 20.3, "low": 19.8, "close": 20.0}, {"time": "2026-05-05", "open": 20.0, "high": 22.0, "low": 20.0, "close": 22.0}, {"time": "2026-05-06", "open": 22.9, "high": 23.45, "low": 22.25, "close": 22.9}, {"time": "2026-05-07", "open": 23.1, "high": 24.2, "low": 22.35, "close": 24.2}, {"time": "2026-05-08", "open": 24.25, "high": 24.75, "low": 23.45, "close": 24.05}, {"time": "2026-05-11", "open": 24.3, "high": 24.4, "low": 23.3, "close": 23.3}, {"time": "2026-05-12", "open": 23.3, "high": 23.3, "low": 22.25, "close": 22.8}, {"time": "2026-05-13", "open": 22.9, "high": 22.9, "low": 22.0, "close": 22.3}, {"time": "2026-05-14", "open": 22.3, "high": 23.2, "low": 22.2, "close": 22.2}, {"time": "2026-05-15", "open": 22.2, "high": 22.7, "low": 21.85, "close": 22.15}, {"time": "2026-05-18", "open": 22.1, "high": 23.15, "low": 21.7, "close": 22.45}, {"time": "2026-05-19", "open": 22.55, "high": 23.55, "low": 22.4, "close": 22.5}, {"time": "2026-05-20", "open": 22.8, "high": 23.25, "low": 22.7, "close": 23.05}, {"time": "2026-05-21", "open": 23.55, "high": 24.3, "low": 23.1, "close": 23.75}, {"time": "2026-05-22", "open": 24.1, "high": 25.0, "low": 24.05, "close": 24.65}, {"time": "2026-05-25", "open": 25.0, "high": 25.0, "low": 22.95, "close": 22.95}, {"time": "2026-05-26", "open": 23.5, "high": 23.5, "low": 22.0, "close": 22.45}, {"time": "2026-05-27", "open": 22.5, "high": 22.65, "low": 21.95, "close": 22.0}, {"time": "2026-05-28", "open": 22.0, "high": 22.4, "low": 21.4, "close": 21.6}, {"time": "2026-05-29", "open": 21.8, "high": 22.6, "low": 21.5, "close": 22.6}, {"time": "2026-06-01", "open": 22.85, "high": 23.15, "low": 22.05, "close": 22.4}, {"time": "2026-06-02", "open": 22.45, "high": 22.65, "low": 21.9, "close": 22.4}, {"time": "2026-06-03", "open": 22.45, "high": 23.6, "low": 22.45, "close": 23.35}, {"time": "2026-06-04", "open": 23.5, "high": 23.55, "low": 22.65, "close": 22.85}, {"time": "2026-06-05", "open": 22.85, "high": 22.85, "low": 22.2, "close": 22.25}, {"time": "2026-06-08", "open": 20.6, "high": 21.45, "low": 20.55, "close": 21.45}, {"time": "2026-06-09", "open": 21.5, "high": 21.5, "low": 20.8, "close": 21.15}, {"time": "2026-06-10", "open": 21.0, "high": 21.3, "low": 20.1, "close": 20.2}, {"time": "2026-06-11", "open": 20.2, "high": 20.9, "low": 20.1, "close": 20.3}, {"time": "2026-06-12", "open": 20.6, "high": 20.65, "low": 20.25, "close": 20.25}, {"time": "2026-06-15", "open": 22.0, "high": 22.25, "low": 21.4, "close": 22.25}, {"time": "2026-06-16", "open": 22.0, "high": 23.35, "low": 21.65, "close": 21.65}, {"time": "2026-06-17", "open": 21.7, "high": 23.8, "low": 21.7, "close": 22.45}, {"time": "2026-06-18", "open": 22.8, "high": 23.55, "low": 22.45, "close": 22.55}, {"time": "2026-06-22", "open": 23.0, "high": 23.1, "low": 21.85, "close": 22.2}, {"time": "2026-06-23", "open": 22.25, "high": 22.3, "low": 21.65, "close": 22.15}, {"time": "2026-06-24", "open": 22.0, "high": 22.45, "low": 21.6, "close": 22.45}, {"time": "2026-06-25", "open": 22.5, "high": 22.9, "low": 22.1, "close": 22.35}, {"time": "2026-06-26", "open": 22.2, "high": 24.55, "low": 22.2, "close": 23.6}, {"time": "2026-06-29", "open": 25.9, "high": 25.95, "low": 25.1, "close": 25.95}, {"time": "2026-06-30", "open": 25.95, "high": 27.65, "low": 25.45, "close": 27.45}, {"time": "2026-07-01", "open": 28.2, "high": 30.15, "low": 27.6, "close": 28.95}, {"time": "2026-07-02", "open": 28.85, "high": 29.75, "low": 27.4, "close": 28.55}, {"time": "2026-07-03", "open": 28.55, "high": 28.95, "low": 27.75, "close": 28.9}, {"time": "2026-07-06", "open": 29.6, "high": 31.5, "low": 29.3, "close": 29.35}, {"time": "2026-07-07", "open": 30.1, "high": 31.0, "low": 27.2, "close": 27.6}, {"time": "2026-07-08", "open": 27.85, "high": 28.4, "low": 27.0, "close": 27.55}, {"time": "2026-07-09", "open": 27.3, "high": 27.55, "low": 25.2, "close": 25.45}, {"time": "2026-07-13", "open": 26.0, "high": 26.3, "low": 24.95, "close": 25.4}, {"time": "2026-07-14", "open": 25.6, "high": 25.7, "low": 23.1, "close": 24.5}, {"time": "2026-07-15", "open": 24.8, "high": 24.95, "low": 24.0, "close": 24.3}, {"time": "2026-07-16", "open": 24.3, "high": 24.75, "low": 23.8, "close": 24.1}, {"time": "2026-07-17", "open": 23.75, "high": 23.75, "low": 22.1, "close": 22.45}, {"time": "2026-07-20", "open": 22.45, "high": 22.45, "low": 21.3, "close": 21.9}, {"time": "2026-07-21", "open": 22.3, "high": 22.3, "low": 21.7, "close": 21.85}, {"time": "2026-07-22", "open": 22.05, "high": 22.5, "low": 21.8, "close": 21.85}, {"time": "2026-07-23", "open": 22.1, "high": 23.0, "low": 21.85, "close": 22.8}, {"time": "2026-07-24", "open": 22.4, "high": 22.75, "low": 21.65, "close": 21.7}, {"time": "2026-07-27", "open": 22.25, "high": 22.5, "low": 21.55, "close": 22.1}, {"time": "2026-07-28", "open": 21.7, "high": 22.05, "low": 21.1, "close": 21.15}, {"time": "2026-07-29", "open": 21.2, "high": 21.45, "low": 19.35, "close": 20.4}, {"time": "2026-07-30", "open": 20.4, "high": 21.5, "low": 20.1, "close": 20.3}, {"time": "2026-07-31", "open": 21.5, "high": 22.3, "low": 21.3, "close": 22.1}, {"time": "2026-08-03", "open": 22.2, "high": 23.5, "low": 22.1, "close": 22.85}, {"time": "2026-08-04", "open": 22.4, "high": 23.3, "low": 22.4, "close": 23.15}, {"time": "2026-08-05", "open": 23.3, "high": 23.95, "low": 23.0, "close": 23.05}, {"time": "2026-08-06", "open": 23.05, "high": 23.05, "low": 22.4, "close": 22.9}, {"time": "2026-08-07", "open": 24.8, "high": 25.15, "low": 23.95, "close": 24.05}, {"time": "2026-08-10", "open": 24.0, "high": 24.35, "low": 23.45, "close": 23.45}, {"time": "2026-08-11", "open": 23.5, "high": 23.8, "low": 22.9, "close": 22.9}, {"time": "2026-08-12", "open": 23.0, "high": 23.15, "low": 22.75, "close": 22.9}, {"time": "2026-08-13", "open": 23.15, "high": 23.15, "low": 22.4, "close": 22.7}, {"time": "2026-08-14", "open": 23.25, "high": 23.25, "low": 22.0, "close": 22.55}, {"time": "2026-08-17", "open": 22.9, "high": 22.9, "low": 22.1, "close": 22.15}, {"time": "2026-08-18", "open": 22.5, "high": 23.2, "low": 22.2, "close": 22.45}, {"time": "2026-08-19", "open": 22.05, "high": 23.0, "low": 22.0, "close": 22.2}, {"time": "2026-08-20", "open": 22.55, "high": 22.7, "low": 22.0, "close": 22.15}, {"time": "2026-08-21", "open": 22.4, "high": 22.5, "low": 22.15, "close": 22.25}, {"time": "2026-08-24", "open": 22.5, "high": 22.75, "low": 22.15, "close": 22.45}, {"time": "2026-08-25", "open": 22.5, "high": 22.75, "low": 22.05, "close": 22.75}, {"time": "2026-08-26", "open": 22.7, "high": 23.1, "low": 22.7, "close": 22.85}, {"time": "2026-08-27", "open": 22.9, "high": 23.4, "low": 22.65, "close": 23.0}, {"time": "2026-08-28", "open": 23.25, "high": 23.55, "low": 23.0, "close": 23.25}, {"time": "2026-08-31", "open": 23.2, "high": 23.3, "low": 22.65, "close": 22.65}, {"time": "2026-09-01", "open": 22.7, "high": 22.8, "low": 22.15, "close": 22.3}, {"time": "2026-09-02", "open": 22.3, "high": 22.5, "low": 21.95, "close": 22.35}, {"time": "2026-09-03", "open": 22.4, "high": 22.95, "low": 22.05, "close": 22.05}, {"time": "2026-09-04", "open": 22.6, "high": 22.6, "low": 22.05, "close": 22.3}, {"time": "2026-09-07", "open": 22.35, "high": 22.4, "low": 21.75, "close": 21.85}, {"time": "2026-09-08", "open": 21.95, "high": 21.95, "low": 21.3, "close": 21.4}, {"time": "2026-09-09", "open": 21.1, "high": 22.3, "low": 21.1, "close": 21.75}, {"time": "2026-09-10", "open": 21.9, "high": 21.9, "low": 21.2, "close": 21.45}, {"time": "2026-09-11", "open": 21.3, "high": 21.3, "low": 21.0, "close": 21.05}, {"time": "2026-09-14", "open": 21.15, "high": 21.25, "low": 20.9, "close": 21.1}, {"time": "2026-09-15", "open": 21.1, "high": 21.1, "low": 20.9, "close": 21.0}, {"time": "2026-09-16", "open": 21.0, "high": 22.15, "low": 21.0, "close": 21.95}, {"time": "2026-09-17", "open": 22.0, "high": 23.15, "low": 21.9, "close": 22.9}, {"time": "2026-09-18", "open": 23.3, "high": 25.15, "low": 23.05, "close": 25.1}, {"time": "2026-09-21", "open": 26.0, "high": 27.6, "low": 24.8, "close": 24.9}, {"time": "2026-09-22", "open": 25.3, "high": 26.3, "low": 24.95, "close": 25.25}, {"time": "2026-09-23", "open": 25.55, "high": 27.75, "low": 25.35, "close": 26.05}, {"time": "2026-09-24", "open": 25.55, "high": 26.5, "low": 24.5, "close": 25.35}, {"time": "2026-09-29", "open": 26.0, "high": 27.85, "low": 25.85, "close": 27.85}, {"time": "2026-09-30", "open": 28.6, "high": 28.85, "low": 27.3, "close": 27.7}, {"time": "2026-10-01", "open": 27.5, "high": 28.2, "low": 27.05, "close": 27.35}, {"time": "2026-10-02", "open": 27.25, "high": 27.5, "low": 26.4, "close": 26.45}, {"time": "2026-10-05", "open": 26.6, "high": 28.25, "low": 26.25, "close": 27.75}, {"time": "2026-10-06", "open": 28.4, "high": 30.4, "low": 28.2, "close": 28.45}, {"time": "2026-10-07", "open": 28.4, "high": 28.4, "low": 26.7, "close": 27.45}, {"time": "2026-10-08", "open": 27.45, "high": 29.0, "low": 27.2, "close": 27.75}, {"time": "2026-10-12", "open": 27.4, "high": 29.65, "low": 27.25, "close": 28.95}, {"time": "2026-10-13", "open": 28.45, "high": 30.9, "low": 28.4, "close": 29.45}, {"time": "2026-10-14", "open": 29.65, "high": 30.15, "low": 28.9, "close": 29.6}, {"time": "2026-10-15", "open": 28.8, "high": 29.45, "low": 28.4, "close": 28.4}, {"time": "2026-10-16", "open": 29.1, "high": 29.15, "low": 27.45, "close": 28.0}, {"time": "2026-10-19", "open": 27.2, "high": 29.2, "low": 27.2, "close": 28.5}, {"time": "2026-10-20", "open": 28.8, "high": 30.35, "low": 27.45, "close": 27.75}];
+            const volumeData = [{"time": "2025-08-15", "value": 503.0, "color": "#10b98188"}, {"time": "2025-08-18", "value": 695.0, "color": "#10b98188"}, {"time": "2025-08-19", "value": 510.0, "color": "#ef444488"}, {"time": "2025-08-20", "value": 289.0, "color": "#10b98188"}, {"time": "2025-08-21", "value": 267.0, "color": "#10b98188"}, {"time": "2025-08-22", "value": 242.0, "color": "#10b98188"}, {"time": "2025-08-25", "value": 491.0, "color": "#10b98188"}, {"time": "2025-08-26", "value": 498.0, "color": "#10b98188"}, {"time": "2025-08-27", "value": 1162.0, "color": "#10b98188"}, {"time": "2025-08-28", "value": 676.0, "color": "#ef444488"}, {"time": "2025-08-29", "value": 657.0, "color": "#10b98188"}, {"time": "2025-09-01", "value": 351.0, "color": "#10b98188"}, {"time": "2025-09-02", "value": 339.0, "color": "#10b98188"}, {"time": "2025-09-03", "value": 374.0, "color": "#ef444488"}, {"time": "2025-09-04", "value": 326.0, "color": "#10b98188"}, {"time": "2025-09-05", "value": 915.0, "color": "#ef444488"}, {"time": "2025-09-08", "value": 1311.0, "color": "#ef444488"}, {"time": "2025-09-09", "value": 825.0, "color": "#10b98188"}, {"time": "2025-09-10", "value": 486.0, "color": "#10b98188"}, {"time": "2025-09-11", "value": 556.0, "color": "#10b98188"}, {"time": "2025-09-12", "value": 607.0, "color": "#ef444488"}, {"time": "2025-09-15", "value": 435.0, "color": "#ef444488"}, {"time": "2025-09-16", "value": 433.0, "color": "#10b98188"}, {"time": "2025-09-17", "value": 798.0, "color": "#ef444488"}, {"time": "2025-09-18", "value": 346.0, "color": "#10b98188"}, {"time": "2025-09-19", "value": 691.0, "color": "#10b98188"}, {"time": "2025-09-22", "value": 426.0, "color": "#10b98188"}, {"time": "2025-09-23", "value": 652.0, "color": "#10b98188"}, {"time": "2025-09-24", "value": 321.0, "color": "#10b98188"}, {"time": "2025-09-25", "value": 224.0, "color": "#10b98188"}, {"time": "2025-09-26", "value": 523.0, "color": "#10b98188"}, {"time": "2025-09-30", "value": 334.0, "color": "#ef444488"}, {"time": "2025-10-01", "value": 582.0, "color": "#10b98188"}, {"time": "2025-10-02", "value": 327.0, "color": "#10b98188"}, {"time": "2025-10-03", "value": 239.0, "color": "#10b98188"}, {"time": "2025-10-07", "value": 470.0, "color": "#ef444488"}, {"time": "2025-10-08", "value": 1145.0, "color": "#ef444488"}, {"time": "2025-10-09", "value": 1473.0, "color": "#ef444488"}, {"time": "2025-10-13", "value": 624.0, "color": "#ef444488"}, {"time": "2025-10-14", "value": 551.0, "color": "#10b98188"}, {"time": "2025-10-15", "value": 675.0, "color": "#10b98188"}, {"time": "2025-10-16", "value": 181.0, "color": "#ef444488"}, {"time": "2025-10-17", "value": 413.0, "color": "#10b98188"}, {"time": "2025-10-20", "value": 1292.0, "color": "#10b98188"}, {"time": "2025-10-21", "value": 446.0, "color": "#ef444488"}, {"time": "2025-10-22", "value": 372.0, "color": "#10b98188"}, {"time": "2025-10-23", "value": 204.0, "color": "#10b98188"}, {"time": "2025-10-27", "value": 452.0, "color": "#10b98188"}, {"time": "2025-10-28", "value": 569.0, "color": "#10b98188"}, {"time": "2025-10-29", "value": 327.0, "color": "#10b98188"}, {"time": "2025-10-30", "value": 369.0, "color": "#ef444488"}, {"time": "2025-10-31", "value": 358.0, "color": "#10b98188"}, {"time": "2025-11-03", "value": 314.0, "color": "#10b98188"}, {"time": "2025-11-04", "value": 682.0, "color": "#10b98188"}, {"time": "2025-11-05", "value": 337.0, "color": "#ef444488"}, {"time": "2025-11-06", "value": 281.0, "color": "#10b98188"}, {"time": "2025-11-07", "value": 419.0, "color": "#ef444488"}, {"time": "2025-11-10", "value": 311.0, "color": "#10b98188"}, {"time": "2025-11-11", "value": 430.0, "color": "#10b98188"}, {"time": "2025-11-12", "value": 358.0, "color": "#ef444488"}, {"time": "2025-11-13", "value": 222.0, "color": "#ef444488"}, {"time": "2025-11-14", "value": 373.0, "color": "#ef444488"}, {"time": "2025-11-17", "value": 573.0, "color": "#10b98188"}, {"time": "2025-11-18", "value": 595.0, "color": "#10b98188"}, {"time": "2025-11-19", "value": 251.0, "color": "#10b98188"}, {"time": "2025-11-20", "value": 162.0, "color": "#ef444488"}, {"time": "2025-11-21", "value": 190.0, "color": "#10b98188"}, {"time": "2025-11-24", "value": 134.0, "color": "#10b98188"}, {"time": "2025-11-25", "value": 498.0, "color": "#10b98188"}, {"time": "2025-11-26", "value": 434.0, "color": "#ef444488"}, {"time": "2025-11-27", "value": 261.0, "color": "#ef444488"}, {"time": "2025-11-28", "value": 174.0, "color": "#ef444488"}, {"time": "2025-12-01", "value": 295.0, "color": "#10b98188"}, {"time": "2025-12-02", "value": 243.0, "color": "#ef444488"}, {"time": "2025-12-03", "value": 249.0, "color": "#ef444488"}, {"time": "2025-12-04", "value": 195.0, "color": "#ef444488"}, {"time": "2025-12-05", "value": 269.0, "color": "#10b98188"}, {"time": "2025-12-08", "value": 165.0, "color": "#ef444488"}, {"time": "2025-12-09", "value": 162.0, "color": "#10b98188"}, {"time": "2025-12-10", "value": 429.0, "color": "#10b98188"}, {"time": "2025-12-11", "value": 396.0, "color": "#ef444488"}, {"time": "2025-12-12", "value": 390.0, "color": "#ef444488"}, {"time": "2025-12-15", "value": 186.0, "color": "#ef444488"}, {"time": "2025-12-16", "value": 253.0, "color": "#10b98188"}, {"time": "2025-12-17", "value": 159.0, "color": "#10b98188"}, {"time": "2025-12-18", "value": 291.0, "color": "#10b98188"}, {"time": "2025-12-19", "value": 205.0, "color": "#ef444488"}, {"time": "2025-12-22", "value": 227.0, "color": "#ef444488"}, {"time": "2025-12-23", "value": 341.0, "color": "#10b98188"}, {"time": "2025-12-24", "value": 268.0, "color": "#10b98188"}, {"time": "2025-12-26", "value": 505.0, "color": "#ef444488"}, {"time": "2025-12-29", "value": 252.0, "color": "#10b98188"}, {"time": "2025-12-30", "value": 551.0, "color": "#10b98188"}, {"time": "2025-12-31", "value": 553.0, "color": "#10b98188"}, {"time": "2026-01-02", "value": 218.0, "color": "#ef444488"}, {"time": "2026-01-05", "value": 1187.0, "color": "#10b98188"}, {"time": "2026-01-06", "value": 438.0, "color": "#ef444488"}, {"time": "2026-01-07", "value": 701.0, "color": "#ef444488"}, {"time": "2026-01-08", "value": 1982.0, "color": "#10b98188"}, {"time": "2026-01-09", "value": 473.0, "color": "#ef444488"}, {"time": "2026-01-12", "value": 617.0, "color": "#10b98188"}, {"time": "2026-01-13", "value": 648.0, "color": "#10b98188"}, {"time": "2026-01-14", "value": 2615.0, "color": "#ef444488"}, {"time": "2026-01-15", "value": 992.0, "color": "#10b98188"}, {"time": "2026-01-16", "value": 3671.0, "color": "#ef444488"}, {"time": "2026-01-19", "value": 4166.0, "color": "#10b98188"}, {"time": "2026-01-20", "value": 1485.0, "color": "#10b98188"}, {"time": "2026-01-21", "value": 1799.0, "color": "#10b98188"}, {"time": "2026-01-22", "value": 1193.0, "color": "#10b98188"}, {"time": "2026-01-23", "value": 874.0, "color": "#10b98188"}, {"time": "2026-01-26", "value": 881.0, "color": "#10b98188"}, {"time": "2026-01-27", "value": 998.0, "color": "#10b98188"}, {"time": "2026-01-28", "value": 617.0, "color": "#ef444488"}, {"time": "2026-01-29", "value": 541.0, "color": "#10b98188"}, {"time": "2026-01-30", "value": 663.0, "color": "#10b98188"}, {"time": "2026-02-02", "value": 575.0, "color": "#10b98188"}, {"time": "2026-02-03", "value": 571.0, "color": "#10b98188"}, {"time": "2026-02-04", "value": 313.0, "color": "#ef444488"}, {"time": "2026-02-05", "value": 386.0, "color": "#ef444488"}, {"time": "2026-02-06", "value": 453.0, "color": "#10b98188"}, {"time": "2026-02-09", "value": 294.0, "color": "#10b98188"}, {"time": "2026-02-10", "value": 358.0, "color": "#ef444488"}, {"time": "2026-02-11", "value": 366.0, "color": "#10b98188"}, {"time": "2026-02-23", "value": 597.0, "color": "#ef444488"}, {"time": "2026-02-24", "value": 361.0, "color": "#10b98188"}, {"time": "2026-02-25", "value": 388.0, "color": "#10b98188"}, {"time": "2026-02-26", "value": 404.0, "color": "#ef444488"}, {"time": "2026-03-02", "value": 413.0, "color": "#10b98188"}, {"time": "2026-03-03", "value": 369.0, "color": "#10b98188"}, {"time": "2026-03-04", "value": 845.0, "color": "#10b98188"}, {"time": "2026-03-05", "value": 1508.0, "color": "#ef444488"}, {"time": "2026-03-06", "value": 1888.0, "color": "#ef444488"}, {"time": "2026-03-09", "value": 790.0, "color": "#ef444488"}, {"time": "2026-03-10", "value": 501.0, "color": "#ef444488"}, {"time": "2026-03-11", "value": 435.0, "color": "#10b98188"}, {"time": "2026-03-12", "value": 2108.0, "color": "#ef444488"}, {"time": "2026-03-13", "value": 1036.0, "color": "#ef444488"}, {"time": "2026-03-16", "value": 1054.0, "color": "#10b98188"}, {"time": "2026-03-17", "value": 1046.0, "color": "#10b98188"}, {"time": "2026-03-18", "value": 863.0, "color": "#ef444488"}, {"time": "2026-03-19", "value": 578.0, "color": "#10b98188"}, {"time": "2026-03-20", "value": 3055.0, "color": "#ef444488"}, {"time": "2026-03-23", "value": 4994.0, "color": "#ef444488"}, {"time": "2026-03-24", "value": 4040.0, "color": "#10b98188"}, {"time": "2026-03-25", "value": 3571.0, "color": "#ef444488"}, {"time": "2026-03-26", "value": 3708.0, "color": "#10b98188"}, {"time": "2026-03-27", "value": 2079.0, "color": "#ef444488"}, {"time": "2026-03-30", "value": 2020.0, "color": "#10b98188"}, {"time": "2026-03-31", "value": 1421.0, "color": "#ef444488"}, {"time": "2026-04-01", "value": 2299.0, "color": "#ef444488"}, {"time": "2026-04-02", "value": 1483.0, "color": "#10b98188"}, {"time": "2026-04-07", "value": 1861.0, "color": "#ef444488"}, {"time": "2026-04-08", "value": 4103.0, "color": "#ef444488"}, {"time": "2026-04-09", "value": 4694.0, "color": "#10b98188"}, {"time": "2026-04-10", "value": 1919.0, "color": "#10b98188"}, {"time": "2026-04-13", "value": 1268.0, "color": "#ef444488"}, {"time": "2026-04-14", "value": 1743.0, "color": "#10b98188"}, {"time": "2026-04-15", "value": 1186.0, "color": "#10b98188"}, {"time": "2026-04-16", "value": 1009.0, "color": "#10b98188"}, {"time": "2026-04-17", "value": 1199.0, "color": "#10b98188"}, {"time": "2026-04-20", "value": 1215.0, "color": "#ef444488"}, {"time": "2026-04-21", "value": 991.0, "color": "#10b98188"}, {"time": "2026-04-22", "value": 1122.0, "color": "#10b98188"}, {"time": "2026-04-23", "value": 1575.0, "color": "#10b98188"}, {"time": "2026-04-24", "value": 809.0, "color": "#10b98188"}, {"time": "2026-04-27", "value": 1251.0, "color": "#10b98188"}, {"time": "2026-04-28", "value": 509.0, "color": "#10b98188"}, {"time": "2026-04-29", "value": 516.0, "color": "#10b98188"}, {"time": "2026-04-30", "value": 398.0, "color": "#10b98188"}, {"time": "2026-05-04", "value": 641.0, "color": "#ef444488"}, {"time": "2026-05-05", "value": 1859.0, "color": "#ef444488"}, {"time": "2026-05-06", "value": 7636.0, "color": "#ef444488"}, {"time": "2026-05-07", "value": 5611.0, "color": "#ef444488"}, {"time": "2026-05-08", "value": 6716.0, "color": "#10b98188"}, {"time": "2026-05-11", "value": 3399.0, "color": "#10b98188"}, {"time": "2026-05-12", "value": 2514.0, "color": "#10b98188"}, {"time": "2026-05-13", "value": 1475.0, "color": "#10b98188"}, {"time": "2026-05-14", "value": 1323.0, "color": "#10b98188"}, {"time": "2026-05-15", "value": 1121.0, "color": "#10b98188"}, {"time": "2026-05-18", "value": 2708.0, "color": "#ef444488"}, {"time": "2026-05-19", "value": 1979.0, "color": "#10b98188"}, {"time": "2026-05-20", "value": 1638.0, "color": "#ef444488"}, {"time": "2026-05-21", "value": 4854.0, "color": "#ef444488"}, {"time": "2026-05-22", "value": 4702.0, "color": "#ef444488"}, {"time": "2026-05-25", "value": 4285.0, "color": "#10b98188"}, {"time": "2026-05-26", "value": 2580.0, "color": "#10b98188"}, {"time": "2026-05-27", "value": 1744.0, "color": "#10b98188"}, {"time": "2026-05-28", "value": 3779.0, "color": "#10b98188"}, {"time": "2026-05-29", "value": 1489.0, "color": "#ef444488"}, {"time": "2026-06-01", "value": 2246.0, "color": "#10b98188"}, {"time": "2026-06-02", "value": 1655.0, "color": "#10b98188"}, {"time": "2026-06-03", "value": 3678.0, "color": "#ef444488"}, {"time": "2026-06-04", "value": 1973.0, "color": "#10b98188"}, {"time": "2026-06-05", "value": 1306.0, "color": "#10b98188"}, {"time": "2026-06-08", "value": 1767.0, "color": "#ef444488"}, {"time": "2026-06-09", "value": 1638.0, "color": "#10b98188"}, {"time": "2026-06-10", "value": 2731.0, "color": "#10b98188"}, {"time": "2026-06-11", "value": 1765.0, "color": "#ef444488"}, {"time": "2026-06-12", "value": 1077.0, "color": "#10b98188"}, {"time": "2026-06-15", "value": 3470.0, "color": "#ef444488"}, {"time": "2026-06-16", "value": 4310.0, "color": "#10b98188"}, {"time": "2026-06-17", "value": 19629.0, "color": "#ef444488"}, {"time": "2026-06-18", "value": 8578.0, "color": "#10b98188"}, {"time": "2026-06-22", "value": 3417.0, "color": "#10b98188"}, {"time": "2026-06-23", "value": 1981.0, "color": "#10b98188"}, {"time": "2026-06-24", "value": 1932.0, "color": "#ef444488"}, {"time": "2026-06-25", "value": 3009.0, "color": "#10b98188"}, {"time": "2026-06-26", "value": 11385.0, "color": "#ef444488"}, {"time": "2026-06-29", "value": 20834.0, "color": "#ef444488"}, {"time": "2026-06-30", "value": 31917.0, "color": "#ef444488"}, {"time": "2026-07-01", "value": 42492.0, "color": "#ef444488"}, {"time": "2026-07-02", "value": 16647.0, "color": "#10b98188"}, {"time": "2026-07-03", "value": 7894.0, "color": "#ef444488"}, {"time": "2026-07-06", "value": 15176.0, "color": "#10b98188"}, {"time": "2026-07-07", "value": 21643.0, "color": "#10b98188"}, {"time": "2026-07-08", "value": 5541.0, "color": "#10b98188"}, {"time": "2026-07-09", "value": 8710.0, "color": "#10b98188"}, {"time": "2026-07-13", "value": 4250.0, "color": "#10b98188"}, {"time": "2026-07-14", "value": 5764.0, "color": "#10b98188"}, {"time": "2026-07-15", "value": 2647.0, "color": "#10b98188"}, {"time": "2026-07-16", "value": 2734.0, "color": "#10b98188"}, {"time": "2026-07-17", "value": 4629.0, "color": "#10b98188"}, {"time": "2026-07-20", "value": 4535.0, "color": "#10b98188"}, {"time": "2026-07-21", "value": 2066.0, "color": "#10b98188"}, {"time": "2026-07-22", "value": 2475.0, "color": "#10b98188"}, {"time": "2026-07-23", "value": 4405.0, "color": "#ef444488"}, {"time": "2026-07-24", "value": 3451.0, "color": "#10b98188"}, {"time": "2026-07-27", "value": 1761.0, "color": "#10b98188"}, {"time": "2026-07-28", "value": 1964.0, "color": "#10b98188"}, {"time": "2026-07-29", "value": 4267.0, "color": "#10b98188"}, {"time": "2026-07-30", "value": 1791.0, "color": "#10b98188"}, {"time": "2026-07-31", "value": 3028.0, "color": "#ef444488"}, {"time": "2026-08-03", "value": 2231.0, "color": "#ef444488"}, {"time": "2026-08-04", "value": 1758.0, "color": "#ef444488"}, {"time": "2026-08-05", "value": 2201.0, "color": "#10b98188"}, {"time": "2026-08-06", "value": 2229.0, "color": "#10b98188"}, {"time": "2026-08-07", "value": 10508.0, "color": "#10b98188"}, {"time": "2026-08-10", "value": 3849.0, "color": "#10b98188"}, {"time": "2026-08-11", "value": 2198.0, "color": "#10b98188"}, {"time": "2026-08-12", "value": 1446.0, "color": "#10b98188"}, {"time": "2026-08-13", "value": 1520.0, "color": "#10b98188"}, {"time": "2026-08-14", "value": 2160.0, "color": "#10b98188"}, {"time": "2026-08-17", "value": 1488.0, "color": "#10b98188"}, {"time": "2026-08-18", "value": 1641.0, "color": "#10b98188"}, {"time": "2026-08-19", "value": 1276.0, "color": "#ef444488"}, {"time": "2026-08-20", "value": 1109.0, "color": "#10b98188"}, {"time": "2026-08-21", "value": 895.0, "color": "#10b98188"}, {"time": "2026-08-24", "value": 1300.0, "color": "#10b98188"}, {"time": "2026-08-25", "value": 742.0, "color": "#ef444488"}, {"time": "2026-08-26", "value": 945.0, "color": "#ef444488"}, {"time": "2026-08-27", "value": 1356.0, "color": "#ef444488"}, {"time": "2026-08-28", "value": 2126.0, "color": "#ef444488"}, {"time": "2026-08-31", "value": 1230.0, "color": "#10b98188"}, {"time": "2026-09-01", "value": 1627.0, "color": "#10b98188"}, {"time": "2026-09-02", "value": 827.0, "color": "#ef444488"}, {"time": "2026-09-03", "value": 1404.0, "color": "#10b98188"}, {"time": "2026-09-04", "value": 907.0, "color": "#10b98188"}, {"time": "2026-09-07", "value": 2038.0, "color": "#10b98188"}, {"time": "2026-09-08", "value": 1473.0, "color": "#10b98188"}, {"time": "2026-09-09", "value": 1183.0, "color": "#ef444488"}, {"time": "2026-09-10", "value": 941.0, "color": "#10b98188"}, {"time": "2026-09-11", "value": 758.0, "color": "#10b98188"}, {"time": "2026-09-14", "value": 580.0, "color": "#10b98188"}, {"time": "2026-09-15", "value": 470.0, "color": "#10b98188"}, {"time": "2026-09-16", "value": 803.0, "color": "#ef444488"}, {"time": "2026-09-17", "value": 3951.0, "color": "#ef444488"}, {"time": "2026-09-18", "value": 16980.0, "color": "#ef444488"}, {"time": "2026-09-21", "value": 20510.0, "color": "#10b98188"}, {"time": "2026-09-22", "value": 8764.0, "color": "#10b98188"}, {"time": "2026-09-23", "value": 30360.0, "color": "#ef444488"}, {"time": "2026-09-24", "value": 13381.0, "color": "#10b98188"}, {"time": "2026-09-29", "value": 17004.0, "color": "#ef444488"}, {"time": "2026-09-30", "value": 31519.0, "color": "#10b98188"}, {"time": "2026-10-01", "value": 8871.0, "color": "#10b98188"}, {"time": "2026-10-02", "value": 9385.0, "color": "#10b98188"}, {"time": "2026-10-05", "value": 16061.0, "color": "#ef444488"}, {"time": "2026-10-06", "value": 35812.0, "color": "#ef444488"}, {"time": "2026-10-07", "value": 12885.0, "color": "#10b98188"}, {"time": "2026-10-08", "value": 10210.0, "color": "#ef444488"}, {"time": "2026-10-12", "value": 13347.0, "color": "#ef444488"}, {"time": "2026-10-13", "value": 20784.0, "color": "#ef444488"}, {"time": "2026-10-14", "value": 11922.0, "color": "#10b98188"}, {"time": "2026-10-15", "value": 7300.0, "color": "#10b98188"}, {"time": "2026-10-16", "value": 8746.0, "color": "#10b98188"}, {"time": "2026-10-19", "value": 7652.0, "color": "#ef444488"}, {"time": "2026-10-20", "value": 13664.0, "color": "#10b98188"}];
+            const markersData = [{"time": "2025-11-04", "position": "belowBar", "color": "#10b981", "shape": "arrowUp", "text": "\u8cb79"}, {"time": "2025-12-08", "position": "belowBar", "color": "#06b6d4", "shape": "circle", "text": "\u2605\u8cb713"}, {"time": "2026-02-03", "position": "belowBar", "color": "#10b981", "shape": "arrowUp", "text": "\u8cb79"}, {"time": "2026-03-17", "position": "aboveBar", "color": "#ef4444", "shape": "arrowDown", "text": "\u8ce39"}, {"time": "2026-05-06", "position": "aboveBar", "color": "#f59e0b", "shape": "circle", "text": "\u2605\u8ce313"}, {"time": "2026-07-20", "position": "belowBar", "color": "#10b981", "shape": "arrowUp", "text": "\u8cb79"}, {"time": "2026-08-31", "position": "belowBar", "color": "#06b6d4", "shape": "circle", "text": "\u2605\u8cb713"}, {"time": "2026-09-10", "position": "belowBar", "color": "#10b981", "shape": "arrowUp", "text": "\u8cb79"}, {"time": "2026-09-30", "position": "aboveBar", "color": "#ef4444", "shape": "arrowDown", "text": "\u8ce39"}];
+            const instForeignData = [{"time": "2025-08-15", "value": 0.0, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-08-18", "value": -58.3, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-08-19", "value": -169.7, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-08-20", "value": -63.4, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-08-21", "value": -181.7, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-08-22", "value": -35.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-08-25", "value": -204.6, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-08-26", "value": -268.8, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-08-27", "value": -37.1, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-08-28", "value": 46.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-08-29", "value": -143.4, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-09-01", "value": -84.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-09-02", "value": -21.1, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-09-03", "value": -21.3, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-09-04", "value": 32.6, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-09-05", "value": 149.5, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-09-08", "value": 116.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-09-09", "value": 62.5, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-09-10", "value": 22.6, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-09-11", "value": 157.6, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-09-12", "value": 96.6, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-09-15", "value": -12.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-09-16", "value": -60.0, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-09-17", "value": -13.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-09-18", "value": -32.4, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-09-19", "value": -146.7, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-09-22", "value": 156.4, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-09-23", "value": 212.9, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-09-24", "value": -59.4, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-09-25", "value": 25.7, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-09-26", "value": -452.4, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-09-30", "value": 254.1, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-10-01", "value": 103.5, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-10-02", "value": 11.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-10-03", "value": 81.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-10-07", "value": 462.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-10-08", "value": 487.6, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-10-09", "value": 504.0, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-10-13", "value": 50.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-10-14", "value": -117.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-10-15", "value": -139.0, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-10-16", "value": 146.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-10-17", "value": -104.9, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-10-20", "value": -318.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-10-21", "value": 599.5, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-10-22", "value": 259.4, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-10-23", "value": -195.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-10-27", "value": -367.7, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-10-28", "value": -385.7, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-10-29", "value": -106.4, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-10-30", "value": -99.1, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-10-31", "value": -250.7, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-11-03", "value": -155.6, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-11-04", "value": -200.9, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-11-05", "value": -48.7, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-11-06", "value": 65.0, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-11-07", "value": -230.0, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-11-10", "value": -202.7, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-11-11", "value": 290.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-11-12", "value": 278.9, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-11-13", "value": 84.6, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-11-14", "value": -39.9, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-11-17", "value": -219.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-11-18", "value": -93.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-11-19", "value": 5.1, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-11-20", "value": 60.7, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-11-21", "value": -14.3, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-11-24", "value": -45.8, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-11-25", "value": 202.7, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-11-26", "value": 372.6, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-11-27", "value": 95.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-11-28", "value": 39.7, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-12-01", "value": -130.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-12-02", "value": 218.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-12-03", "value": -5.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-12-04", "value": -14.0, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-12-05", "value": -148.3, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-12-08", "value": 81.1, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-12-09", "value": 3.4, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-12-10", "value": -311.0, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-12-11", "value": 125.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-12-12", "value": 57.9, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-12-15", "value": 115.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-12-16", "value": -74.4, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-12-17", "value": -34.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-12-18", "value": -261.9, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-12-19", "value": 128.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-12-22", "value": 191.0, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-12-23", "value": 39.0, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-12-24", "value": -79.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-12-26", "value": 115.6, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2025-12-29", "value": -66.9, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-12-30", "value": -160.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2025-12-31", "value": -25.1, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-01-02", "value": 52.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-01-05", "value": -921.8, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-01-06", "value": 278.9, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-01-07", "value": 488.5, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-01-08", "value": -612.3, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-01-09", "value": -257.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-01-12", "value": 191.5, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-01-13", "value": -229.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-01-14", "value": 1081.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-01-15", "value": -516.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-01-16", "value": 185.7, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-01-19", "value": -1653.1, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-01-20", "value": -74.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-01-21", "value": 576.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-01-22", "value": -544.3, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-01-23", "value": -93.1, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-01-26", "value": 169.7, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-01-27", "value": -274.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-01-28", "value": 233.0, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-01-29", "value": -67.0, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-01-30", "value": -205.3, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-02-02", "value": -122.8, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-02-03", "value": -78.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-02-04", "value": 140.6, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-02-05", "value": -70.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-02-06", "value": -270.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-02-09", "value": 141.3, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-02-10", "value": 262.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-02-11", "value": -159.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-02-23", "value": 451.0, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-02-24", "value": 213.0, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-02-25", "value": 50.9, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-02-26", "value": 166.7, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-03-02", "value": 125.6, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-03-03", "value": -168.8, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-03-04", "value": -395.7, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-03-05", "value": 497.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-03-06", "value": -761.4, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-03-09", "value": -20.1, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-03-10", "value": 263.1, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-03-11", "value": 136.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-03-12", "value": 688.0, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-03-13", "value": 222.3, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-03-16", "value": 297.3, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-03-17", "value": 586.6, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-03-18", "value": 345.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-03-19", "value": 140.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-03-20", "value": 1114.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-03-23", "value": -1450.3, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-03-24", "value": 409.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-03-25", "value": 2527.3, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-03-26", "value": -116.6, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-03-27", "value": 423.0, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-03-30", "value": -1348.8, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-03-31", "value": 727.4, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-04-01", "value": 820.3, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-04-02", "value": -269.6, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-04-07", "value": 597.4, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-04-08", "value": 1414.3, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-04-09", "value": -2494.7, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-04-10", "value": -343.3, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-04-13", "value": 999.0, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-04-14", "value": 321.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-04-15", "value": 880.6, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-04-16", "value": 236.0, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-04-17", "value": 466.5, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-04-20", "value": 853.1, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-04-21", "value": -33.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-04-22", "value": 371.3, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-04-23", "value": -65.3, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-04-24", "value": -49.6, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-04-27", "value": -85.1, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-04-28", "value": 91.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-04-29", "value": -37.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-04-30", "value": -93.6, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-05-04", "value": 96.0, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-05-05", "value": -17.6, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-05-06", "value": -634.3, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-05-07", "value": 2231.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-05-08", "value": -358.3, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-05-11", "value": -1984.6, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-05-12", "value": 662.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-05-13", "value": -51.3, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-05-14", "value": -299.7, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-05-15", "value": 332.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-05-18", "value": 1133.7, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-05-19", "value": 153.0, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-05-20", "value": 938.1, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-05-21", "value": 3935.4, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-05-22", "value": 1520.7, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-05-25", "value": -2946.8, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-05-26", "value": -336.8, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-05-27", "value": -1502.6, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-05-28", "value": -777.6, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-05-29", "value": -395.9, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-06-01", "value": -637.1, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-06-02", "value": -145.6, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-06-03", "value": 3072.4, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-06-04", "value": -188.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-06-05", "value": -991.0, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-06-08", "value": -206.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-06-09", "value": -605.0, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-06-10", "value": -1000.8, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-06-11", "value": 652.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-06-12", "value": -575.3, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-06-15", "value": 1332.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-06-16", "value": 997.5, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-06-17", "value": 9818.4, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-06-18", "value": 4839.4, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-06-22", "value": -2251.4, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-06-23", "value": 76.3, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-06-24", "value": -1118.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-06-25", "value": -1826.0, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-06-26", "value": 8089.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-06-29", "value": -3228.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-06-30", "value": 188.3, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-07-01", "value": 3195.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-07-02", "value": -3295.3, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-07-03", "value": -413.8, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-07-06", "value": -1469.1, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-07-07", "value": -4433.8, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-07-08", "value": -1319.8, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-07-09", "value": 5354.7, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-07-13", "value": -1146.9, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-07-14", "value": 610.3, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-07-15", "value": -2336.1, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-07-16", "value": -1102.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-07-17", "value": 518.1, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-07-20", "value": 1046.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-07-21", "value": -2331.9, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-07-22", "value": -1084.7, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-07-23", "value": -1843.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-07-24", "value": -1118.9, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-07-27", "value": -1489.4, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-07-28", "value": -438.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-07-29", "value": -986.1, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-07-30", "value": -330.9, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-07-31", "value": 1348.6, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-08-03", "value": -105.1, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-08-04", "value": -356.4, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-08-05", "value": -561.9, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-08-06", "value": 125.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-08-07", "value": -376.1, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-08-10", "value": -2049.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-08-11", "value": 1222.9, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-08-12", "value": -451.1, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-08-13", "value": -11.8, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-08-14", "value": 1059.6, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-08-17", "value": 462.9, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-08-18", "value": -638.8, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-08-19", "value": -937.4, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-08-20", "value": 80.0, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-08-21", "value": 385.1, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-08-24", "value": -482.9, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-08-25", "value": 311.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-08-26", "value": 217.6, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-08-27", "value": 290.6, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-08-28", "value": -483.8, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-08-31", "value": -1161.9, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-09-01", "value": -491.7, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-09-02", "value": 528.7, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-09-03", "value": -639.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-09-04", "value": 569.6, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-09-07", "value": -2348.9, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-09-08", "value": -681.7, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-09-09", "value": -175.8, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-09-10", "value": -641.4, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-09-11", "value": -407.9, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-09-14", "value": 38.0, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-09-15", "value": -298.2, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-09-16", "value": 681.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-09-17", "value": 1811.7, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-09-18", "value": 12186.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-09-21", "value": 2561.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-09-22", "value": 1778.2, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-09-23", "value": 1328.5, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-09-24", "value": -4206.9, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-09-29", "value": 9165.4, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-09-30", "value": -5762.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-10-01", "value": 1773.3, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-10-02", "value": -4108.1, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-10-05", "value": 7340.4, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-10-06", "value": -16772.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-10-07", "value": 1883.0, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-10-08", "value": -209.5, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-10-12", "value": 4400.3, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-10-13", "value": 5666.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-10-14", "value": -3533.9, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-10-15", "value": 1286.3, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-10-16", "value": -3253.0, "color": "rgba(100, 116, 139, 0.75)"}, {"time": "2026-10-19", "value": 3563.8, "color": "rgba(56, 189, 248, 0.75)"}, {"time": "2026-10-20", "value": 529.0, "color": "rgba(56, 189, 248, 0.75)"}];
+            const instTrustData = [{"time": "2025-08-15", "value": 0.0}, {"time": "2025-08-18", "value": 0.0}, {"time": "2025-08-19", "value": 0.0}, {"time": "2025-08-20", "value": 0.0}, {"time": "2025-08-21", "value": 0.0}, {"time": "2025-08-22", "value": 0.0}, {"time": "2025-08-25", "value": 0.0}, {"time": "2025-08-26", "value": 0.0}, {"time": "2025-08-27", "value": 0.0}, {"time": "2025-08-28", "value": 0.0}, {"time": "2025-08-29", "value": 0.0}, {"time": "2025-09-01", "value": 0.0}, {"time": "2025-09-02", "value": 0.0}, {"time": "2025-09-03", "value": 0.0}, {"time": "2025-09-04", "value": 0.0}, {"time": "2025-09-05", "value": 0.0}, {"time": "2025-09-08", "value": 0.0}, {"time": "2025-09-09", "value": 0.0}, {"time": "2025-09-10", "value": 0.0}, {"time": "2025-09-11", "value": 0.0}, {"time": "2025-09-12", "value": 0.0}, {"time": "2025-09-15", "value": 0.0}, {"time": "2025-09-16", "value": 0.0}, {"time": "2025-09-17", "value": 0.0}, {"time": "2025-09-18", "value": 0.0}, {"time": "2025-09-19", "value": 0.0}, {"time": "2025-09-22", "value": 0.0}, {"time": "2025-09-23", "value": 0.0}, {"time": "2025-09-24", "value": 0.0}, {"time": "2025-09-25", "value": 0.0}, {"time": "2025-09-26", "value": 0.0}, {"time": "2025-09-30", "value": 0.0}, {"time": "2025-10-01", "value": 0.0}, {"time": "2025-10-02", "value": 0.0}, {"time": "2025-10-03", "value": 0.0}, {"time": "2025-10-07", "value": 0.0}, {"time": "2025-10-08", "value": 0.0}, {"time": "2025-10-09", "value": 0.0}, {"time": "2025-10-13", "value": 0.0}, {"time": "2025-10-14", "value": 0.0}, {"time": "2025-10-15", "value": 0.0}, {"time": "2025-10-16", "value": 0.0}, {"time": "2025-10-17", "value": 0.0}, {"time": "2025-10-20", "value": 0.0}, {"time": "2025-10-21", "value": 0.0}, {"time": "2025-10-22", "value": 0.0}, {"time": "2025-10-23", "value": 0.0}, {"time": "2025-10-27", "value": 0.0}, {"time": "2025-10-28", "value": 0.0}, {"time": "2025-10-29", "value": 0.0}, {"time": "2025-10-30", "value": 0.0}, {"time": "2025-10-31", "value": 0.0}, {"time": "2025-11-03", "value": 0.0}, {"time": "2025-11-04", "value": 0.0}, {"time": "2025-11-05", "value": 0.0}, {"time": "2025-11-06", "value": 0.0}, {"time": "2025-11-07", "value": 0.0}, {"time": "2025-11-10", "value": 0.0}, {"time": "2025-11-11", "value": 0.0}, {"time": "2025-11-12", "value": 0.0}, {"time": "2025-11-13", "value": 0.0}, {"time": "2025-11-14", "value": 0.0}, {"time": "2025-11-17", "value": 0.0}, {"time": "2025-11-18", "value": 0.0}, {"time": "2025-11-19", "value": 0.0}, {"time": "2025-11-20", "value": 0.0}, {"time": "2025-11-21", "value": 0.0}, {"time": "2025-11-24", "value": 0.0}, {"time": "2025-11-25", "value": 0.0}, {"time": "2025-11-26", "value": 0.0}, {"time": "2025-11-27", "value": 0.0}, {"time": "2025-11-28", "value": 0.0}, {"time": "2025-12-01", "value": 0.0}, {"time": "2025-12-02", "value": 0.0}, {"time": "2025-12-03", "value": 0.0}, {"time": "2025-12-04", "value": 0.0}, {"time": "2025-12-05", "value": 0.0}, {"time": "2025-12-08", "value": 0.0}, {"time": "2025-12-09", "value": 0.0}, {"time": "2025-12-10", "value": 0.0}, {"time": "2025-12-11", "value": 0.0}, {"time": "2025-12-12", "value": 0.0}, {"time": "2025-12-15", "value": 0.0}, {"time": "2025-12-16", "value": 0.0}, {"time": "2025-12-17", "value": 0.0}, {"time": "2025-12-18", "value": 0.0}, {"time": "2025-12-19", "value": 0.0}, {"time": "2025-12-22", "value": 0.0}, {"time": "2025-12-23", "value": 0.0}, {"time": "2025-12-24", "value": 0.0}, {"time": "2025-12-26", "value": 0.0}, {"time": "2025-12-29", "value": 0.0}, {"time": "2025-12-30", "value": 0.0}, {"time": "2025-12-31", "value": 0.0}, {"time": "2026-01-02", "value": 0.0}, {"time": "2026-01-05", "value": 0.0}, {"time": "2026-01-06", "value": 0.0}, {"time": "2026-01-07", "value": 0.0}, {"time": "2026-01-08", "value": 0.0}, {"time": "2026-01-09", "value": 0.0}, {"time": "2026-01-12", "value": 0.0}, {"time": "2026-01-13", "value": 0.0}, {"time": "2026-01-14", "value": 0.0}, {"time": "2026-01-15", "value": 0.0}, {"time": "2026-01-16", "value": 0.0}, {"time": "2026-01-19", "value": 0.0}, {"time": "2026-01-20", "value": 0.0}, {"time": "2026-01-21", "value": 0.0}, {"time": "2026-01-22", "value": 0.0}, {"time": "2026-01-23", "value": 0.0}, {"time": "2026-01-26", "value": 0.0}, {"time": "2026-01-27", "value": 0.0}, {"time": "2026-01-28", "value": 0.0}, {"time": "2026-01-29", "value": 0.0}, {"time": "2026-01-30", "value": 0.0}, {"time": "2026-02-02", "value": 0.0}, {"time": "2026-02-03", "value": 0.0}, {"time": "2026-02-04", "value": 0.0}, {"time": "2026-02-05", "value": 0.0}, {"time": "2026-02-06", "value": 0.0}, {"time": "2026-02-09", "value": 0.0}, {"time": "2026-02-10", "value": 0.0}, {"time": "2026-02-11", "value": 0.0}, {"time": "2026-02-23", "value": 0.0}, {"time": "2026-02-24", "value": 0.0}, {"time": "2026-02-25", "value": 0.0}, {"time": "2026-02-26", "value": 0.0}, {"time": "2026-03-02", "value": 0.0}, {"time": "2026-03-03", "value": 0.0}, {"time": "2026-03-04", "value": 0.0}, {"time": "2026-03-05", "value": 0.0}, {"time": "2026-03-06", "value": 0.0}, {"time": "2026-03-09", "value": 0.0}, {"time": "2026-03-10", "value": 0.0}, {"time": "2026-03-11", "value": 0.0}, {"time": "2026-03-12", "value": 0.0}, {"time": "2026-03-13", "value": 0.0}, {"time": "2026-03-16", "value": 0.0}, {"time": "2026-03-17", "value": 0.0}, {"time": "2026-03-18", "value": 0.0}, {"time": "2026-03-19", "value": 0.0}, {"time": "2026-03-20", "value": 0.0}, {"time": "2026-03-23", "value": 0.0}, {"time": "2026-03-24", "value": 0.0}, {"time": "2026-03-25", "value": 0.0}, {"time": "2026-03-26", "value": 0.0}, {"time": "2026-03-27", "value": 0.0}, {"time": "2026-03-30", "value": 0.0}, {"time": "2026-03-31", "value": 0.0}, {"time": "2026-04-01", "value": 0.0}, {"time": "2026-04-02", "value": 0.0}, {"time": "2026-04-07", "value": 0.0}, {"time": "2026-04-08", "value": 0.0}, {"time": "2026-04-09", "value": 0.0}, {"time": "2026-04-10", "value": 0.0}, {"time": "2026-04-13", "value": 0.0}, {"time": "2026-04-14", "value": 0.0}, {"time": "2026-04-15", "value": 0.0}, {"time": "2026-04-16", "value": 0.0}, {"time": "2026-04-17", "value": 0.0}, {"time": "2026-04-20", "value": 0.0}, {"time": "2026-04-21", "value": 0.0}, {"time": "2026-04-22", "value": 0.0}, {"time": "2026-04-23", "value": 0.0}, {"time": "2026-04-24", "value": 0.0}, {"time": "2026-04-27", "value": 0.0}, {"time": "2026-04-28", "value": 0.0}, {"time": "2026-04-29", "value": 0.0}, {"time": "2026-04-30", "value": 0.0}, {"time": "2026-05-04", "value": 0.0}, {"time": "2026-05-05", "value": 0.0}, {"time": "2026-05-06", "value": 0.0}, {"time": "2026-05-07", "value": 0.0}, {"time": "2026-05-08", "value": 0.0}, {"time": "2026-05-11", "value": 0.0}, {"time": "2026-05-12", "value": 0.0}, {"time": "2026-05-13", "value": 0.0}, {"time": "2026-05-14", "value": 0.0}, {"time": "2026-05-15", "value": 0.0}, {"time": "2026-05-18", "value": 0.0}, {"time": "2026-05-19", "value": 0.0}, {"time": "2026-05-20", "value": 0.0}, {"time": "2026-05-21", "value": 0.0}, {"time": "2026-05-22", "value": 0.0}, {"time": "2026-05-25", "value": 0.0}, {"time": "2026-05-26", "value": 0.0}, {"time": "2026-05-27", "value": 0.0}, {"time": "2026-05-28", "value": 0.0}, {"time": "2026-05-29", "value": 0.0}, {"time": "2026-06-01", "value": 0.0}, {"time": "2026-06-02", "value": 0.0}, {"time": "2026-06-03", "value": 0.0}, {"time": "2026-06-04", "value": 0.0}, {"time": "2026-06-05", "value": 0.0}, {"time": "2026-06-08", "value": 0.0}, {"time": "2026-06-09", "value": 0.0}, {"time": "2026-06-10", "value": 0.0}, {"time": "2026-06-11", "value": 0.0}, {"time": "2026-06-12", "value": 0.0}, {"time": "2026-06-15", "value": 0.0}, {"time": "2026-06-16", "value": 0.0}, {"time": "2026-06-17", "value": 0.0}, {"time": "2026-06-18", "value": 0.0}, {"time": "2026-06-22", "value": 0.0}, {"time": "2026-06-23", "value": 0.0}, {"time": "2026-06-24", "value": 0.0}, {"time": "2026-06-25", "value": 0.0}, {"time": "2026-06-26", "value": 0.0}, {"time": "2026-06-29", "value": 0.0}, {"time": "2026-06-30", "value": 0.0}, {"time": "2026-07-01", "value": 0.0}, {"time": "2026-07-02", "value": 0.0}, {"time": "2026-07-03", "value": 0.0}, {"time": "2026-07-06", "value": 0.0}, {"time": "2026-07-07", "value": 0.0}, {"time": "2026-07-08", "value": 0.0}, {"time": "2026-07-09", "value": 0.0}, {"time": "2026-07-13", "value": 0.0}, {"time": "2026-07-14", "value": 0.0}, {"time": "2026-07-15", "value": 0.0}, {"time": "2026-07-16", "value": 0.0}, {"time": "2026-07-17", "value": 0.0}, {"time": "2026-07-20", "value": 0.0}, {"time": "2026-07-21", "value": 0.0}, {"time": "2026-07-22", "value": 0.0}, {"time": "2026-07-23", "value": 0.0}, {"time": "2026-07-24", "value": 0.0}, {"time": "2026-07-27", "value": 0.0}, {"time": "2026-07-28", "value": 0.0}, {"time": "2026-07-29", "value": 0.0}, {"time": "2026-07-30", "value": 0.0}, {"time": "2026-07-31", "value": 0.0}, {"time": "2026-08-03", "value": 0.0}, {"time": "2026-08-04", "value": 0.0}, {"time": "2026-08-05", "value": 0.0}, {"time": "2026-08-06", "value": 0.0}, {"time": "2026-08-07", "value": 0.0}, {"time": "2026-08-10", "value": 0.0}, {"time": "2026-08-11", "value": 0.0}, {"time": "2026-08-12", "value": 0.0}, {"time": "2026-08-13", "value": 0.0}, {"time": "2026-08-14", "value": 0.0}, {"time": "2026-08-17", "value": 0.0}, {"time": "2026-08-18", "value": 0.0}, {"time": "2026-08-19", "value": 0.0}, {"time": "2026-08-20", "value": 0.0}, {"time": "2026-08-21", "value": 0.0}, {"time": "2026-08-24", "value": 0.0}, {"time": "2026-08-25", "value": 0.0}, {"time": "2026-08-26", "value": 0.0}, {"time": "2026-08-27", "value": 0.0}, {"time": "2026-08-28", "value": 0.0}, {"time": "2026-08-31", "value": 0.0}, {"time": "2026-09-01", "value": 0.0}, {"time": "2026-09-02", "value": 0.0}, {"time": "2026-09-03", "value": 0.0}, {"time": "2026-09-04", "value": 0.0}, {"time": "2026-09-07", "value": 0.0}, {"time": "2026-09-08", "value": 0.0}, {"time": "2026-09-09", "value": 0.0}, {"time": "2026-09-10", "value": 0.0}, {"time": "2026-09-11", "value": 0.0}, {"time": "2026-09-14", "value": 0.0}, {"time": "2026-09-15", "value": 0.0}, {"time": "2026-09-16", "value": 0.0}, {"time": "2026-09-17", "value": 0.0}, {"time": "2026-09-18", "value": 0.0}, {"time": "2026-09-21", "value": 0.0}, {"time": "2026-09-22", "value": 0.0}, {"time": "2026-09-23", "value": 0.0}, {"time": "2026-09-24", "value": 0.0}, {"time": "2026-09-29", "value": 0.0}, {"time": "2026-09-30", "value": 0.0}, {"time": "2026-10-01", "value": 0.0}, {"time": "2026-10-02", "value": 0.0}, {"time": "2026-10-05", "value": 0.0}, {"time": "2026-10-06", "value": 0.0}, {"time": "2026-10-07", "value": 0.0}, {"time": "2026-10-08", "value": 0.0}, {"time": "2026-10-12", "value": 0.0}, {"time": "2026-10-13", "value": 0.0}, {"time": "2026-10-14", "value": 0.0}, {"time": "2026-10-15", "value": 0.0}, {"time": "2026-10-16", "value": 0.0}, {"time": "2026-10-19", "value": 210.9}, {"time": "2026-10-20", "value": 208.1}];
+            const warrantCallData = [{"time": "2025-08-15", "value": 0}, {"time": "2025-08-18", "value": 0}, {"time": "2025-08-19", "value": 0}, {"time": "2025-08-20", "value": 0}, {"time": "2025-08-21", "value": 0}, {"time": "2025-08-22", "value": 0}, {"time": "2025-08-25", "value": 0}, {"time": "2025-08-26", "value": 0}, {"time": "2025-08-27", "value": 0}, {"time": "2025-08-28", "value": 0}, {"time": "2025-08-29", "value": 0}, {"time": "2025-09-01", "value": 0}, {"time": "2025-09-02", "value": 0}, {"time": "2025-09-03", "value": 0}, {"time": "2025-09-04", "value": 0}, {"time": "2025-09-05", "value": 0}, {"time": "2025-09-08", "value": 0}, {"time": "2025-09-09", "value": 0}, {"time": "2025-09-10", "value": 0}, {"time": "2025-09-11", "value": 0}, {"time": "2025-09-12", "value": 0}, {"time": "2025-09-15", "value": 0}, {"time": "2025-09-16", "value": 0}, {"time": "2025-09-17", "value": 0}, {"time": "2025-09-18", "value": 0}, {"time": "2025-09-19", "value": 0}, {"time": "2025-09-22", "value": 0}, {"time": "2025-09-23", "value": 0}, {"time": "2025-09-24", "value": 0}, {"time": "2025-09-25", "value": 0}, {"time": "2025-09-26", "value": 0}, {"time": "2025-09-30", "value": 0}, {"time": "2025-10-01", "value": 0}, {"time": "2025-10-02", "value": 0}, {"time": "2025-10-03", "value": 0}, {"time": "2025-10-07", "value": 0}, {"time": "2025-10-08", "value": 0}, {"time": "2025-10-09", "value": 0}, {"time": "2025-10-13", "value": 0}, {"time": "2025-10-14", "value": 0}, {"time": "2025-10-15", "value": 0}, {"time": "2025-10-16", "value": 0}, {"time": "2025-10-17", "value": 0}, {"time": "2025-10-20", "value": 0}, {"time": "2025-10-21", "value": 0}, {"time": "2025-10-22", "value": 0}, {"time": "2025-10-23", "value": 0}, {"time": "2025-10-27", "value": 0}, {"time": "2025-10-28", "value": 0}, {"time": "2025-10-29", "value": 0}, {"time": "2025-10-30", "value": 0}, {"time": "2025-10-31", "value": 0}, {"time": "2025-11-03", "value": 0}, {"time": "2025-11-04", "value": 0}, {"time": "2025-11-05", "value": 0}, {"time": "2025-11-06", "value": 0}, {"time": "2025-11-07", "value": 0}, {"time": "2025-11-10", "value": 0}, {"time": "2025-11-11", "value": 0}, {"time": "2025-11-12", "value": 0}, {"time": "2025-11-13", "value": 0}, {"time": "2025-11-14", "value": 0}, {"time": "2025-11-17", "value": 0}, {"time": "2025-11-18", "value": 0}, {"time": "2025-11-19", "value": 0}, {"time": "2025-11-20", "value": 0}, {"time": "2025-11-21", "value": 0}, {"time": "2025-11-24", "value": 0}, {"time": "2025-11-25", "value": 0}, {"time": "2025-11-26", "value": 0}, {"time": "2025-11-27", "value": 0}, {"time": "2025-11-28", "value": 0}, {"time": "2025-12-01", "value": 0}, {"time": "2025-12-02", "value": 0}, {"time": "2025-12-03", "value": 0}, {"time": "2025-12-04", "value": 0}, {"time": "2025-12-05", "value": 0}, {"time": "2025-12-08", "value": 0}, {"time": "2025-12-09", "value": 0}, {"time": "2025-12-10", "value": 0}, {"time": "2025-12-11", "value": 0}, {"time": "2025-12-12", "value": 0}, {"time": "2025-12-15", "value": 0}, {"time": "2025-12-16", "value": 0}, {"time": "2025-12-17", "value": 0}, {"time": "2025-12-18", "value": 0}, {"time": "2025-12-19", "value": 0}, {"time": "2025-12-22", "value": 0}, {"time": "2025-12-23", "value": 0}, {"time": "2025-12-24", "value": 0}, {"time": "2025-12-26", "value": 0}, {"time": "2025-12-29", "value": 0}, {"time": "2025-12-30", "value": 0}, {"time": "2025-12-31", "value": 0}, {"time": "2026-01-02", "value": 0}, {"time": "2026-01-05", "value": 0}, {"time": "2026-01-06", "value": 0}, {"time": "2026-01-07", "value": 0}, {"time": "2026-01-08", "value": 0}, {"time": "2026-01-09", "value": 0}, {"time": "2026-01-12", "value": 0}, {"time": "2026-01-13", "value": 0}, {"time": "2026-01-14", "value": 0}, {"time": "2026-01-15", "value": 0}, {"time": "2026-01-16", "value": 0}, {"time": "2026-01-19", "value": 0}, {"time": "2026-01-20", "value": 0}, {"time": "2026-01-21", "value": 0}, {"time": "2026-01-22", "value": 0}, {"time": "2026-01-23", "value": 0}, {"time": "2026-01-26", "value": 0}, {"time": "2026-01-27", "value": 0}, {"time": "2026-01-28", "value": 0}, {"time": "2026-01-29", "value": 0}, {"time": "2026-01-30", "value": 0}, {"time": "2026-02-02", "value": 0}, {"time": "2026-02-03", "value": 0}, {"time": "2026-02-04", "value": 0}, {"time": "2026-02-05", "value": 0}, {"time": "2026-02-06", "value": 0}, {"time": "2026-02-09", "value": 0}, {"time": "2026-02-10", "value": 0}, {"time": "2026-02-11", "value": 0}, {"time": "2026-02-23", "value": 0}, {"time": "2026-02-24", "value": 0}, {"time": "2026-02-25", "value": 0}, {"time": "2026-02-26", "value": 0}, {"time": "2026-03-02", "value": 0}, {"time": "2026-03-03", "value": 0}, {"time": "2026-03-04", "value": 0}, {"time": "2026-03-05", "value": 0}, {"time": "2026-03-06", "value": 0}, {"time": "2026-03-09", "value": 0}, {"time": "2026-03-10", "value": 0}, {"time": "2026-03-11", "value": 0}, {"time": "2026-03-12", "value": 0}, {"time": "2026-03-13", "value": 0}, {"time": "2026-03-16", "value": 0}, {"time": "2026-03-17", "value": 0}, {"time": "2026-03-18", "value": 0}, {"time": "2026-03-19", "value": 0}, {"time": "2026-03-20", "value": 0}, {"time": "2026-03-23", "value": 0}, {"time": "2026-03-24", "value": 0}, {"time": "2026-03-25", "value": 0}, {"time": "2026-03-26", "value": 0}, {"time": "2026-03-27", "value": 0}, {"time": "2026-03-30", "value": 0}, {"time": "2026-03-31", "value": 0}, {"time": "2026-04-01", "value": 0}, {"time": "2026-04-02", "value": 0}, {"time": "2026-04-07", "value": 0}, {"time": "2026-04-08", "value": 0}, {"time": "2026-04-09", "value": 0}, {"time": "2026-04-10", "value": 0}, {"time": "2026-04-13", "value": 0}, {"time": "2026-04-14", "value": 0}, {"time": "2026-04-15", "value": 0}, {"time": "2026-04-16", "value": 0}, {"time": "2026-04-17", "value": 0}, {"time": "2026-04-20", "value": 0}, {"time": "2026-04-21", "value": 0}, {"time": "2026-04-22", "value": 0}, {"time": "2026-04-23", "value": 0}, {"time": "2026-04-24", "value": 0}, {"time": "2026-04-27", "value": 0}, {"time": "2026-04-28", "value": 0}, {"time": "2026-04-29", "value": 0}, {"time": "2026-04-30", "value": 0}, {"time": "2026-05-04", "value": 0}, {"time": "2026-05-05", "value": 0}, {"time": "2026-05-06", "value": 0}, {"time": "2026-05-07", "value": 0}, {"time": "2026-05-08", "value": 0}, {"time": "2026-05-11", "value": 0}, {"time": "2026-05-12", "value": 0}, {"time": "2026-05-13", "value": 0}, {"time": "2026-05-14", "value": 0}, {"time": "2026-05-15", "value": 0}, {"time": "2026-05-18", "value": 0}, {"time": "2026-05-19", "value": 0}, {"time": "2026-05-20", "value": 0}, {"time": "2026-05-21", "value": 0}, {"time": "2026-05-22", "value": 0}, {"time": "2026-05-25", "value": 0}, {"time": "2026-05-26", "value": 0}, {"time": "2026-05-27", "value": 0}, {"time": "2026-05-28", "value": 0}, {"time": "2026-05-29", "value": 0}, {"time": "2026-06-01", "value": 0}, {"time": "2026-06-02", "value": 0}, {"time": "2026-06-03", "value": 0}, {"time": "2026-06-04", "value": 0}, {"time": "2026-06-05", "value": 0}, {"time": "2026-06-08", "value": 0}, {"time": "2026-06-09", "value": 0}, {"time": "2026-06-10", "value": 0}, {"time": "2026-06-11", "value": 0}, {"time": "2026-06-12", "value": 0}, {"time": "2026-06-15", "value": 0}, {"time": "2026-06-16", "value": 0}, {"time": "2026-06-17", "value": 0}, {"time": "2026-06-18", "value": 0}, {"time": "2026-06-22", "value": 0}, {"time": "2026-06-23", "value": 0}, {"time": "2026-06-24", "value": 0}, {"time": "2026-06-25", "value": 0}, {"time": "2026-06-26", "value": 0}, {"time": "2026-06-29", "value": 0}, {"time": "2026-06-30", "value": 0}, {"time": "2026-07-01", "value": 0}, {"time": "2026-07-02", "value": 0}, {"time": "2026-07-03", "value": 0}, {"time": "2026-07-06", "value": 0}, {"time": "2026-07-07", "value": 0}, {"time": "2026-07-08", "value": 0}, {"time": "2026-07-09", "value": 0}, {"time": "2026-07-13", "value": 0}, {"time": "2026-07-14", "value": 0}, {"time": "2026-07-15", "value": 0}, {"time": "2026-07-16", "value": 0}, {"time": "2026-07-17", "value": 0}, {"time": "2026-07-20", "value": 0}, {"time": "2026-07-21", "value": 0}, {"time": "2026-07-22", "value": 0}, {"time": "2026-07-23", "value": 0}, {"time": "2026-07-24", "value": 0}, {"time": "2026-07-27", "value": 0}, {"time": "2026-07-28", "value": 0}, {"time": "2026-07-29", "value": 0}, {"time": "2026-07-30", "value": 0}, {"time": "2026-07-31", "value": 0}, {"time": "2026-08-03", "value": 0}, {"time": "2026-08-04", "value": 0}, {"time": "2026-08-05", "value": 0}, {"time": "2026-08-06", "value": 0}, {"time": "2026-08-07", "value": 0}, {"time": "2026-08-10", "value": 0}, {"time": "2026-08-11", "value": 0}, {"time": "2026-08-12", "value": 0}, {"time": "2026-08-13", "value": 0}, {"time": "2026-08-14", "value": 0}, {"time": "2026-08-17", "value": 0}, {"time": "2026-08-18", "value": 0}, {"time": "2026-08-19", "value": 0}, {"time": "2026-08-20", "value": 0}, {"time": "2026-08-21", "value": 0}, {"time": "2026-08-24", "value": 0}, {"time": "2026-08-25", "value": 0}, {"time": "2026-08-26", "value": 0}, {"time": "2026-08-27", "value": 0}, {"time": "2026-08-28", "value": 0}, {"time": "2026-08-31", "value": 0}, {"time": "2026-09-01", "value": 0}, {"time": "2026-09-02", "value": 0}, {"time": "2026-09-03", "value": 0}, {"time": "2026-09-04", "value": 0}, {"time": "2026-09-07", "value": 0}, {"time": "2026-09-08", "value": 0}, {"time": "2026-09-09", "value": 0}, {"time": "2026-09-10", "value": 0}, {"time": "2026-09-11", "value": 0}, {"time": "2026-09-14", "value": 0}, {"time": "2026-09-15", "value": 0}, {"time": "2026-09-16", "value": 0}, {"time": "2026-09-17", "value": 0}, {"time": "2026-09-18", "value": 0}, {"time": "2026-09-21", "value": 0}, {"time": "2026-09-22", "value": 0}, {"time": "2026-09-23", "value": 0}, {"time": "2026-09-24", "value": 0}, {"time": "2026-09-29", "value": 0}, {"time": "2026-09-30", "value": 0}, {"time": "2026-10-01", "value": 0}, {"time": "2026-10-02", "value": 0}, {"time": "2026-10-05", "value": 0}, {"time": "2026-10-06", "value": 0}, {"time": "2026-10-07", "value": 0}, {"time": "2026-10-08", "value": 0}, {"time": "2026-10-12", "value": 0}, {"time": "2026-10-13", "value": 0}, {"time": "2026-10-14", "value": 0}, {"time": "2026-10-15", "value": 0}, {"time": "2026-10-16", "value": 0}, {"time": "2026-10-19", "value": 0}, {"time": "2026-10-20", "value": 0}];
+            const warrantPutData = [{"time": "2025-08-15", "value": 0}, {"time": "2025-08-18", "value": 0}, {"time": "2025-08-19", "value": 0}, {"time": "2025-08-20", "value": 0}, {"time": "2025-08-21", "value": 0}, {"time": "2025-08-22", "value": 0}, {"time": "2025-08-25", "value": 0}, {"time": "2025-08-26", "value": 0}, {"time": "2025-08-27", "value": 0}, {"time": "2025-08-28", "value": 0}, {"time": "2025-08-29", "value": 0}, {"time": "2025-09-01", "value": 0}, {"time": "2025-09-02", "value": 0}, {"time": "2025-09-03", "value": 0}, {"time": "2025-09-04", "value": 0}, {"time": "2025-09-05", "value": 0}, {"time": "2025-09-08", "value": 0}, {"time": "2025-09-09", "value": 0}, {"time": "2025-09-10", "value": 0}, {"time": "2025-09-11", "value": 0}, {"time": "2025-09-12", "value": 0}, {"time": "2025-09-15", "value": 0}, {"time": "2025-09-16", "value": 0}, {"time": "2025-09-17", "value": 0}, {"time": "2025-09-18", "value": 0}, {"time": "2025-09-19", "value": 0}, {"time": "2025-09-22", "value": 0}, {"time": "2025-09-23", "value": 0}, {"time": "2025-09-24", "value": 0}, {"time": "2025-09-25", "value": 0}, {"time": "2025-09-26", "value": 0}, {"time": "2025-09-30", "value": 0}, {"time": "2025-10-01", "value": 0}, {"time": "2025-10-02", "value": 0}, {"time": "2025-10-03", "value": 0}, {"time": "2025-10-07", "value": 0}, {"time": "2025-10-08", "value": 0}, {"time": "2025-10-09", "value": 0}, {"time": "2025-10-13", "value": 0}, {"time": "2025-10-14", "value": 0}, {"time": "2025-10-15", "value": 0}, {"time": "2025-10-16", "value": 0}, {"time": "2025-10-17", "value": 0}, {"time": "2025-10-20", "value": 0}, {"time": "2025-10-21", "value": 0}, {"time": "2025-10-22", "value": 0}, {"time": "2025-10-23", "value": 0}, {"time": "2025-10-27", "value": 0}, {"time": "2025-10-28", "value": 0}, {"time": "2025-10-29", "value": 0}, {"time": "2025-10-30", "value": 0}, {"time": "2025-10-31", "value": 0}, {"time": "2025-11-03", "value": 0}, {"time": "2025-11-04", "value": 0}, {"time": "2025-11-05", "value": 0}, {"time": "2025-11-06", "value": 0}, {"time": "2025-11-07", "value": 0}, {"time": "2025-11-10", "value": 0}, {"time": "2025-11-11", "value": 0}, {"time": "2025-11-12", "value": 0}, {"time": "2025-11-13", "value": 0}, {"time": "2025-11-14", "value": 0}, {"time": "2025-11-17", "value": 0}, {"time": "2025-11-18", "value": 0}, {"time": "2025-11-19", "value": 0}, {"time": "2025-11-20", "value": 0}, {"time": "2025-11-21", "value": 0}, {"time": "2025-11-24", "value": 0}, {"time": "2025-11-25", "value": 0}, {"time": "2025-11-26", "value": 0}, {"time": "2025-11-27", "value": 0}, {"time": "2025-11-28", "value": 0}, {"time": "2025-12-01", "value": 0}, {"time": "2025-12-02", "value": 0}, {"time": "2025-12-03", "value": 0}, {"time": "2025-12-04", "value": 0}, {"time": "2025-12-05", "value": 0}, {"time": "2025-12-08", "value": 0}, {"time": "2025-12-09", "value": 0}, {"time": "2025-12-10", "value": 0}, {"time": "2025-12-11", "value": 0}, {"time": "2025-12-12", "value": 0}, {"time": "2025-12-15", "value": 0}, {"time": "2025-12-16", "value": 0}, {"time": "2025-12-17", "value": 0}, {"time": "2025-12-18", "value": 0}, {"time": "2025-12-19", "value": 0}, {"time": "2025-12-22", "value": 0}, {"time": "2025-12-23", "value": 0}, {"time": "2025-12-24", "value": 0}, {"time": "2025-12-26", "value": 0}, {"time": "2025-12-29", "value": 0}, {"time": "2025-12-30", "value": 0}, {"time": "2025-12-31", "value": 0}, {"time": "2026-01-02", "value": 0}, {"time": "2026-01-05", "value": 0}, {"time": "2026-01-06", "value": 0}, {"time": "2026-01-07", "value": 0}, {"time": "2026-01-08", "value": 0}, {"time": "2026-01-09", "value": 0}, {"time": "2026-01-12", "value": 0}, {"time": "2026-01-13", "value": 0}, {"time": "2026-01-14", "value": 0}, {"time": "2026-01-15", "value": 0}, {"time": "2026-01-16", "value": 0}, {"time": "2026-01-19", "value": 0}, {"time": "2026-01-20", "value": 0}, {"time": "2026-01-21", "value": 0}, {"time": "2026-01-22", "value": 0}, {"time": "2026-01-23", "value": 0}, {"time": "2026-01-26", "value": 0}, {"time": "2026-01-27", "value": 0}, {"time": "2026-01-28", "value": 0}, {"time": "2026-01-29", "value": 0}, {"time": "2026-01-30", "value": 0}, {"time": "2026-02-02", "value": 0}, {"time": "2026-02-03", "value": 0}, {"time": "2026-02-04", "value": 0}, {"time": "2026-02-05", "value": 0}, {"time": "2026-02-06", "value": 0}, {"time": "2026-02-09", "value": 0}, {"time": "2026-02-10", "value": 0}, {"time": "2026-02-11", "value": 0}, {"time": "2026-02-23", "value": 0}, {"time": "2026-02-24", "value": 0}, {"time": "2026-02-25", "value": 0}, {"time": "2026-02-26", "value": 0}, {"time": "2026-03-02", "value": 0}, {"time": "2026-03-03", "value": 0}, {"time": "2026-03-04", "value": 0}, {"time": "2026-03-05", "value": 0}, {"time": "2026-03-06", "value": 0}, {"time": "2026-03-09", "value": 0}, {"time": "2026-03-10", "value": 0}, {"time": "2026-03-11", "value": 0}, {"time": "2026-03-12", "value": 0}, {"time": "2026-03-13", "value": 0}, {"time": "2026-03-16", "value": 0}, {"time": "2026-03-17", "value": 0}, {"time": "2026-03-18", "value": 0}, {"time": "2026-03-19", "value": 0}, {"time": "2026-03-20", "value": 0}, {"time": "2026-03-23", "value": 0}, {"time": "2026-03-24", "value": 0}, {"time": "2026-03-25", "value": 0}, {"time": "2026-03-26", "value": 0}, {"time": "2026-03-27", "value": 0}, {"time": "2026-03-30", "value": 0}, {"time": "2026-03-31", "value": 0}, {"time": "2026-04-01", "value": 0}, {"time": "2026-04-02", "value": 0}, {"time": "2026-04-07", "value": 0}, {"time": "2026-04-08", "value": 0}, {"time": "2026-04-09", "value": 0}, {"time": "2026-04-10", "value": 0}, {"time": "2026-04-13", "value": 0}, {"time": "2026-04-14", "value": 0}, {"time": "2026-04-15", "value": 0}, {"time": "2026-04-16", "value": 0}, {"time": "2026-04-17", "value": 0}, {"time": "2026-04-20", "value": 0}, {"time": "2026-04-21", "value": 0}, {"time": "2026-04-22", "value": 0}, {"time": "2026-04-23", "value": 0}, {"time": "2026-04-24", "value": 0}, {"time": "2026-04-27", "value": 0}, {"time": "2026-04-28", "value": 0}, {"time": "2026-04-29", "value": 0}, {"time": "2026-04-30", "value": 0}, {"time": "2026-05-04", "value": 0}, {"time": "2026-05-05", "value": 0}, {"time": "2026-05-06", "value": 0}, {"time": "2026-05-07", "value": 0}, {"time": "2026-05-08", "value": 0}, {"time": "2026-05-11", "value": 0}, {"time": "2026-05-12", "value": 0}, {"time": "2026-05-13", "value": 0}, {"time": "2026-05-14", "value": 0}, {"time": "2026-05-15", "value": 0}, {"time": "2026-05-18", "value": 0}, {"time": "2026-05-19", "value": 0}, {"time": "2026-05-20", "value": 0}, {"time": "2026-05-21", "value": 0}, {"time": "2026-05-22", "value": 0}, {"time": "2026-05-25", "value": 0}, {"time": "2026-05-26", "value": 0}, {"time": "2026-05-27", "value": 0}, {"time": "2026-05-28", "value": 0}, {"time": "2026-05-29", "value": 0}, {"time": "2026-06-01", "value": 0}, {"time": "2026-06-02", "value": 0}, {"time": "2026-06-03", "value": 0}, {"time": "2026-06-04", "value": 0}, {"time": "2026-06-05", "value": 0}, {"time": "2026-06-08", "value": 0}, {"time": "2026-06-09", "value": 0}, {"time": "2026-06-10", "value": 0}, {"time": "2026-06-11", "value": 0}, {"time": "2026-06-12", "value": 0}, {"time": "2026-06-15", "value": 0}, {"time": "2026-06-16", "value": 0}, {"time": "2026-06-17", "value": 0}, {"time": "2026-06-18", "value": 0}, {"time": "2026-06-22", "value": 0}, {"time": "2026-06-23", "value": 0}, {"time": "2026-06-24", "value": 0}, {"time": "2026-06-25", "value": 0}, {"time": "2026-06-26", "value": 0}, {"time": "2026-06-29", "value": 0}, {"time": "2026-06-30", "value": 0}, {"time": "2026-07-01", "value": 0}, {"time": "2026-07-02", "value": 0}, {"time": "2026-07-03", "value": 0}, {"time": "2026-07-06", "value": 0}, {"time": "2026-07-07", "value": 0}, {"time": "2026-07-08", "value": 0}, {"time": "2026-07-09", "value": 0}, {"time": "2026-07-13", "value": 0}, {"time": "2026-07-14", "value": 0}, {"time": "2026-07-15", "value": 0}, {"time": "2026-07-16", "value": 0}, {"time": "2026-07-17", "value": 0}, {"time": "2026-07-20", "value": 0}, {"time": "2026-07-21", "value": 0}, {"time": "2026-07-22", "value": 0}, {"time": "2026-07-23", "value": 0}, {"time": "2026-07-24", "value": 0}, {"time": "2026-07-27", "value": 0}, {"time": "2026-07-28", "value": 0}, {"time": "2026-07-29", "value": 0}, {"time": "2026-07-30", "value": 0}, {"time": "2026-07-31", "value": 0}, {"time": "2026-08-03", "value": 0}, {"time": "2026-08-04", "value": 0}, {"time": "2026-08-05", "value": 0}, {"time": "2026-08-06", "value": 0}, {"time": "2026-08-07", "value": 0}, {"time": "2026-08-10", "value": 0}, {"time": "2026-08-11", "value": 0}, {"time": "2026-08-12", "value": 0}, {"time": "2026-08-13", "value": 0}, {"time": "2026-08-14", "value": 0}, {"time": "2026-08-17", "value": 0}, {"time": "2026-08-18", "value": 0}, {"time": "2026-08-19", "value": 0}, {"time": "2026-08-20", "value": 0}, {"time": "2026-08-21", "value": 0}, {"time": "2026-08-24", "value": 0}, {"time": "2026-08-25", "value": 0}, {"time": "2026-08-26", "value": 0}, {"time": "2026-08-27", "value": 0}, {"time": "2026-08-28", "value": 0}, {"time": "2026-08-31", "value": 0}, {"time": "2026-09-01", "value": 0}, {"time": "2026-09-02", "value": 0}, {"time": "2026-09-03", "value": 0}, {"time": "2026-09-04", "value": 0}, {"time": "2026-09-07", "value": 0}, {"time": "2026-09-08", "value": 0}, {"time": "2026-09-09", "value": 0}, {"time": "2026-09-10", "value": 0}, {"time": "2026-09-11", "value": 0}, {"time": "2026-09-14", "value": 0}, {"time": "2026-09-15", "value": 0}, {"time": "2026-09-16", "value": 0}, {"time": "2026-09-17", "value": 0}, {"time": "2026-09-18", "value": 0}, {"time": "2026-09-21", "value": 0}, {"time": "2026-09-22", "value": 0}, {"time": "2026-09-23", "value": 0}, {"time": "2026-09-24", "value": 0}, {"time": "2026-09-29", "value": 0}, {"time": "2026-09-30", "value": 0}, {"time": "2026-10-01", "value": 0}, {"time": "2026-10-02", "value": 0}, {"time": "2026-10-05", "value": 0}, {"time": "2026-10-06", "value": 0}, {"time": "2026-10-07", "value": 0}, {"time": "2026-10-08", "value": 0}, {"time": "2026-10-12", "value": 0}, {"time": "2026-10-13", "value": 0}, {"time": "2026-10-14", "value": 0}, {"time": "2026-10-15", "value": 0}, {"time": "2026-10-16", "value": 0}, {"time": "2026-10-19", "value": 0}, {"time": "2026-10-20", "value": 0}];
+            const warrantNetData = [{"time": "2025-08-15", "value": 0}, {"time": "2025-08-18", "value": 0}, {"time": "2025-08-19", "value": 0}, {"time": "2025-08-20", "value": 0}, {"time": "2025-08-21", "value": 0}, {"time": "2025-08-22", "value": 0}, {"time": "2025-08-25", "value": 0}, {"time": "2025-08-26", "value": 0}, {"time": "2025-08-27", "value": 0}, {"time": "2025-08-28", "value": 0}, {"time": "2025-08-29", "value": 0}, {"time": "2025-09-01", "value": 0}, {"time": "2025-09-02", "value": 0}, {"time": "2025-09-03", "value": 0}, {"time": "2025-09-04", "value": 0}, {"time": "2025-09-05", "value": 0}, {"time": "2025-09-08", "value": 0}, {"time": "2025-09-09", "value": 0}, {"time": "2025-09-10", "value": 0}, {"time": "2025-09-11", "value": 0}, {"time": "2025-09-12", "value": 0}, {"time": "2025-09-15", "value": 0}, {"time": "2025-09-16", "value": 0}, {"time": "2025-09-17", "value": 0}, {"time": "2025-09-18", "value": 0}, {"time": "2025-09-19", "value": 0}, {"time": "2025-09-22", "value": 0}, {"time": "2025-09-23", "value": 0}, {"time": "2025-09-24", "value": 0}, {"time": "2025-09-25", "value": 0}, {"time": "2025-09-26", "value": 0}, {"time": "2025-09-30", "value": 0}, {"time": "2025-10-01", "value": 0}, {"time": "2025-10-02", "value": 0}, {"time": "2025-10-03", "value": 0}, {"time": "2025-10-07", "value": 0}, {"time": "2025-10-08", "value": 0}, {"time": "2025-10-09", "value": 0}, {"time": "2025-10-13", "value": 0}, {"time": "2025-10-14", "value": 0}, {"time": "2025-10-15", "value": 0}, {"time": "2025-10-16", "value": 0}, {"time": "2025-10-17", "value": 0}, {"time": "2025-10-20", "value": 0}, {"time": "2025-10-21", "value": 0}, {"time": "2025-10-22", "value": 0}, {"time": "2025-10-23", "value": 0}, {"time": "2025-10-27", "value": 0}, {"time": "2025-10-28", "value": 0}, {"time": "2025-10-29", "value": 0}, {"time": "2025-10-30", "value": 0}, {"time": "2025-10-31", "value": 0}, {"time": "2025-11-03", "value": 0}, {"time": "2025-11-04", "value": 0}, {"time": "2025-11-05", "value": 0}, {"time": "2025-11-06", "value": 0}, {"time": "2025-11-07", "value": 0}, {"time": "2025-11-10", "value": 0}, {"time": "2025-11-11", "value": 0}, {"time": "2025-11-12", "value": 0}, {"time": "2025-11-13", "value": 0}, {"time": "2025-11-14", "value": 0}, {"time": "2025-11-17", "value": 0}, {"time": "2025-11-18", "value": 0}, {"time": "2025-11-19", "value": 0}, {"time": "2025-11-20", "value": 0}, {"time": "2025-11-21", "value": 0}, {"time": "2025-11-24", "value": 0}, {"time": "2025-11-25", "value": 0}, {"time": "2025-11-26", "value": 0}, {"time": "2025-11-27", "value": 0}, {"time": "2025-11-28", "value": 0}, {"time": "2025-12-01", "value": 0}, {"time": "2025-12-02", "value": 0}, {"time": "2025-12-03", "value": 0}, {"time": "2025-12-04", "value": 0}, {"time": "2025-12-05", "value": 0}, {"time": "2025-12-08", "value": 0}, {"time": "2025-12-09", "value": 0}, {"time": "2025-12-10", "value": 0}, {"time": "2025-12-11", "value": 0}, {"time": "2025-12-12", "value": 0}, {"time": "2025-12-15", "value": 0}, {"time": "2025-12-16", "value": 0}, {"time": "2025-12-17", "value": 0}, {"time": "2025-12-18", "value": 0}, {"time": "2025-12-19", "value": 0}, {"time": "2025-12-22", "value": 0}, {"time": "2025-12-23", "value": 0}, {"time": "2025-12-24", "value": 0}, {"time": "2025-12-26", "value": 0}, {"time": "2025-12-29", "value": 0}, {"time": "2025-12-30", "value": 0}, {"time": "2025-12-31", "value": 0}, {"time": "2026-01-02", "value": 0}, {"time": "2026-01-05", "value": 0}, {"time": "2026-01-06", "value": 0}, {"time": "2026-01-07", "value": 0}, {"time": "2026-01-08", "value": 0}, {"time": "2026-01-09", "value": 0}, {"time": "2026-01-12", "value": 0}, {"time": "2026-01-13", "value": 0}, {"time": "2026-01-14", "value": 0}, {"time": "2026-01-15", "value": 0}, {"time": "2026-01-16", "value": 0}, {"time": "2026-01-19", "value": 0}, {"time": "2026-01-20", "value": 0}, {"time": "2026-01-21", "value": 0}, {"time": "2026-01-22", "value": 0}, {"time": "2026-01-23", "value": 0}, {"time": "2026-01-26", "value": 0}, {"time": "2026-01-27", "value": 0}, {"time": "2026-01-28", "value": 0}, {"time": "2026-01-29", "value": 0}, {"time": "2026-01-30", "value": 0}, {"time": "2026-02-02", "value": 0}, {"time": "2026-02-03", "value": 0}, {"time": "2026-02-04", "value": 0}, {"time": "2026-02-05", "value": 0}, {"time": "2026-02-06", "value": 0}, {"time": "2026-02-09", "value": 0}, {"time": "2026-02-10", "value": 0}, {"time": "2026-02-11", "value": 0}, {"time": "2026-02-23", "value": 0}, {"time": "2026-02-24", "value": 0}, {"time": "2026-02-25", "value": 0}, {"time": "2026-02-26", "value": 0}, {"time": "2026-03-02", "value": 0}, {"time": "2026-03-03", "value": 0}, {"time": "2026-03-04", "value": 0}, {"time": "2026-03-05", "value": 0}, {"time": "2026-03-06", "value": 0}, {"time": "2026-03-09", "value": 0}, {"time": "2026-03-10", "value": 0}, {"time": "2026-03-11", "value": 0}, {"time": "2026-03-12", "value": 0}, {"time": "2026-03-13", "value": 0}, {"time": "2026-03-16", "value": 0}, {"time": "2026-03-17", "value": 0}, {"time": "2026-03-18", "value": 0}, {"time": "2026-03-19", "value": 0}, {"time": "2026-03-20", "value": 0}, {"time": "2026-03-23", "value": 0}, {"time": "2026-03-24", "value": 0}, {"time": "2026-03-25", "value": 0}, {"time": "2026-03-26", "value": 0}, {"time": "2026-03-27", "value": 0}, {"time": "2026-03-30", "value": 0}, {"time": "2026-03-31", "value": 0}, {"time": "2026-04-01", "value": 0}, {"time": "2026-04-02", "value": 0}, {"time": "2026-04-07", "value": 0}, {"time": "2026-04-08", "value": 0}, {"time": "2026-04-09", "value": 0}, {"time": "2026-04-10", "value": 0}, {"time": "2026-04-13", "value": 0}, {"time": "2026-04-14", "value": 0}, {"time": "2026-04-15", "value": 0}, {"time": "2026-04-16", "value": 0}, {"time": "2026-04-17", "value": 0}, {"time": "2026-04-20", "value": 0}, {"time": "2026-04-21", "value": 0}, {"time": "2026-04-22", "value": 0}, {"time": "2026-04-23", "value": 0}, {"time": "2026-04-24", "value": 0}, {"time": "2026-04-27", "value": 0}, {"time": "2026-04-28", "value": 0}, {"time": "2026-04-29", "value": 0}, {"time": "2026-04-30", "value": 0}, {"time": "2026-05-04", "value": 0}, {"time": "2026-05-05", "value": 0}, {"time": "2026-05-06", "value": 0}, {"time": "2026-05-07", "value": 0}, {"time": "2026-05-08", "value": 0}, {"time": "2026-05-11", "value": 0}, {"time": "2026-05-12", "value": 0}, {"time": "2026-05-13", "value": 0}, {"time": "2026-05-14", "value": 0}, {"time": "2026-05-15", "value": 0}, {"time": "2026-05-18", "value": 0}, {"time": "2026-05-19", "value": 0}, {"time": "2026-05-20", "value": 0}, {"time": "2026-05-21", "value": 0}, {"time": "2026-05-22", "value": 0}, {"time": "2026-05-25", "value": 0}, {"time": "2026-05-26", "value": 0}, {"time": "2026-05-27", "value": 0}, {"time": "2026-05-28", "value": 0}, {"time": "2026-05-29", "value": 0}, {"time": "2026-06-01", "value": 0}, {"time": "2026-06-02", "value": 0}, {"time": "2026-06-03", "value": 0}, {"time": "2026-06-04", "value": 0}, {"time": "2026-06-05", "value": 0}, {"time": "2026-06-08", "value": 0}, {"time": "2026-06-09", "value": 0}, {"time": "2026-06-10", "value": 0}, {"time": "2026-06-11", "value": 0}, {"time": "2026-06-12", "value": 0}, {"time": "2026-06-15", "value": 0}, {"time": "2026-06-16", "value": 0}, {"time": "2026-06-17", "value": 0}, {"time": "2026-06-18", "value": 0}, {"time": "2026-06-22", "value": 0}, {"time": "2026-06-23", "value": 0}, {"time": "2026-06-24", "value": 0}, {"time": "2026-06-25", "value": 0}, {"time": "2026-06-26", "value": 0}, {"time": "2026-06-29", "value": 0}, {"time": "2026-06-30", "value": 0}, {"time": "2026-07-01", "value": 0}, {"time": "2026-07-02", "value": 0}, {"time": "2026-07-03", "value": 0}, {"time": "2026-07-06", "value": 0}, {"time": "2026-07-07", "value": 0}, {"time": "2026-07-08", "value": 0}, {"time": "2026-07-09", "value": 0}, {"time": "2026-07-13", "value": 0}, {"time": "2026-07-14", "value": 0}, {"time": "2026-07-15", "value": 0}, {"time": "2026-07-16", "value": 0}, {"time": "2026-07-17", "value": 0}, {"time": "2026-07-20", "value": 0}, {"time": "2026-07-21", "value": 0}, {"time": "2026-07-22", "value": 0}, {"time": "2026-07-23", "value": 0}, {"time": "2026-07-24", "value": 0}, {"time": "2026-07-27", "value": 0}, {"time": "2026-07-28", "value": 0}, {"time": "2026-07-29", "value": 0}, {"time": "2026-07-30", "value": 0}, {"time": "2026-07-31", "value": 0}, {"time": "2026-08-03", "value": 0}, {"time": "2026-08-04", "value": 0}, {"time": "2026-08-05", "value": 0}, {"time": "2026-08-06", "value": 0}, {"time": "2026-08-07", "value": 0}, {"time": "2026-08-10", "value": 0}, {"time": "2026-08-11", "value": 0}, {"time": "2026-08-12", "value": 0}, {"time": "2026-08-13", "value": 0}, {"time": "2026-08-14", "value": 0}, {"time": "2026-08-17", "value": 0}, {"time": "2026-08-18", "value": 0}, {"time": "2026-08-19", "value": 0}, {"time": "2026-08-20", "value": 0}, {"time": "2026-08-21", "value": 0}, {"time": "2026-08-24", "value": 0}, {"time": "2026-08-25", "value": 0}, {"time": "2026-08-26", "value": 0}, {"time": "2026-08-27", "value": 0}, {"time": "2026-08-28", "value": 0}, {"time": "2026-08-31", "value": 0}, {"time": "2026-09-01", "value": 0}, {"time": "2026-09-02", "value": 0}, {"time": "2026-09-03", "value": 0}, {"time": "2026-09-04", "value": 0}, {"time": "2026-09-07", "value": 0}, {"time": "2026-09-08", "value": 0}, {"time": "2026-09-09", "value": 0}, {"time": "2026-09-10", "value": 0}, {"time": "2026-09-11", "value": 0}, {"time": "2026-09-14", "value": 0}, {"time": "2026-09-15", "value": 0}, {"time": "2026-09-16", "value": 0}, {"time": "2026-09-17", "value": 0}, {"time": "2026-09-18", "value": 0}, {"time": "2026-09-21", "value": 0}, {"time": "2026-09-22", "value": 0}, {"time": "2026-09-23", "value": 0}, {"time": "2026-09-24", "value": 0}, {"time": "2026-09-29", "value": 0}, {"time": "2026-09-30", "value": 0}, {"time": "2026-10-01", "value": 0}, {"time": "2026-10-02", "value": 0}, {"time": "2026-10-05", "value": 0}, {"time": "2026-10-06", "value": 0}, {"time": "2026-10-07", "value": 0}, {"time": "2026-10-08", "value": 0}, {"time": "2026-10-12", "value": 0}, {"time": "2026-10-13", "value": 0}, {"time": "2026-10-14", "value": 0}, {"time": "2026-10-15", "value": 0}, {"time": "2026-10-16", "value": 0}, {"time": "2026-10-19", "value": 0}, {"time": "2026-10-20", "value": 0}];
+
+            // 通用圖表配置 (統一格式化只顯示日期、消除 00:00:00、鎖定右側軸寬達成精準垂直對齊)
+            const commonChartOptions = {
+                layout: {
+                    background: { color: '#0f172a' },
+                    textColor: '#94a3b8',
+                },
+                grid: {
+                    vertLines: { color: '#1e293b' },
+                    horzLines: { color: '#1e293b' },
+                },
+                crosshair: {
+                    mode: LightweightCharts.CrosshairMode.Normal,
+                },
+                localization: {
+                    locale: 'zh-TW',
+                    dateFormat: 'yyyy-MM-dd',
+                    timeFormatter: function(t) {
+                        if (typeof t === 'string') return t;
+                        if (t && t.year) {
+                            const m = String(t.month).padStart(2, '0');
+                            const d = String(t.day).padStart(2, '0');
+                            return `${t.year}-${m}-${d}`;
+                        }
+                        return String(t);
+                    }
+                },
+                leftPriceScale: {
+                    visible: false,
+                },
+                rightPriceScale: {
+                    borderColor: '#334155',
+                    minimumWidth: 105,
+                },
+                timeScale: {
+                    borderColor: '#334155',
+                    timeVisible: false,
+                    secondsVisible: false,
+                },
+            };
+
+            // 1. 初始化 K 線主圖 (純 K 線 + 九轉標籤)
+            const klineContainer = document.getElementById('kline-chart-container');
+            const klineChart = LightweightCharts.createChart(klineContainer, Object.assign({}, commonChartOptions, {
+                width: klineContainer.clientWidth,
+                height: klineContainer.clientHeight,
+            }));
+
+            const candleSeries = klineChart.addCandlestickSeries({
+                upColor: '#ef4444',
+                downColor: '#10b981',
+                borderUpColor: '#ef4444',
+                borderDownColor: '#10b981',
+                wickUpColor: '#ef4444',
+                wickDownColor: '#10b981',
+                priceFormat: {
+                    type: 'price',
+                    precision: 1,
+                    minMove: 0.1,
+                },
+            });
+            candleSeries.setData(klineData);
+            candleSeries.setMarkers(markersData);
+
+            const poc60 = 27.78;
+            if (poc60 !== null) {
+                candleSeries.createPriceLine({
+                    price: poc60,
+                    color: '#eab308',
+                    lineWidth: 2,
+                    lineStyle: LightweightCharts.LineStyle.Dotted,
+                    axisLabelVisible: true,
+                    title: 'POC(60)'
+                });
+            }
+            const poc120 = 27.73;
+            if (poc120 !== null) {
+                candleSeries.createPriceLine({
+                    price: poc120,
+                    color: '#f97316',
+                    lineWidth: 2,
+                    lineStyle: LightweightCharts.LineStyle.Dashed,
+                    axisLabelVisible: true,
+                    title: 'POC(120)'
+                });
+            }
+            const poc240 = 27.65;
+            if (poc240 !== null) {
+                candleSeries.createPriceLine({
+                    price: poc240,
+                    color: '#ec4899',
+                    lineWidth: 2,
+                    lineStyle: LightweightCharts.LineStyle.LargeDashed,
+                    axisLabelVisible: true,
+                    title: 'POC(240)'
+                });
+            }
+
+
+            // 2. 初始化副圖 1：獨立成交量 (解決重疊問題)
+            const volumeContainer = document.getElementById('volume-chart-container');
+            const volumeChart = LightweightCharts.createChart(volumeContainer, Object.assign({}, commonChartOptions, {
+                width: volumeContainer.clientWidth,
+                height: volumeContainer.clientHeight,
+            }));
+
+            const volumeSeries = volumeChart.addHistogramSeries({
+                priceFormat: {
+                    type: 'custom',
+                    formatter: function(val) {
+                        if (Math.abs(val) >= 10000) {
+                            return (val / 10000).toFixed(1) + ' 萬張';
+                        }
+                        return Number(val).toFixed(0) + ' 張';
+                    }
+                },
+                title: '成交量'
+            });
+            volumeSeries.setData(volumeData);
+
+            // 3. 繪製副圖 2
+            const isIndex = (['TAIEX', 'TPEx'].includes('3717'));
+            const unitName = isIndex ? '億' : '萬';
+            const instContainer = document.getElementById('inst-chart-container');
+            const instChart = LightweightCharts.createChart(instContainer, Object.assign({}, commonChartOptions, {
+                width: instContainer.clientWidth,
+                height: instContainer.clientHeight,
+            }));
+
+            const foreignSeries = instChart.addHistogramSeries({
+                priceFormat: {
+                    type: 'custom',
+                    formatter: function(val) {
+                        return Number(val).toFixed(1) + ' ' + (typeof unitName !== 'undefined' ? unitName : '萬');
+                    }
+                },
+                title: '外資多空金額'
+            });
+            foreignSeries.setData(instForeignData);
+
+            const trustSeries = instChart.addLineSeries({
+                color: '#f43f5e',
+                lineWidth: 2,
+                priceFormat: {
+                    type: 'custom',
+                    formatter: function(val) {
+                        return Number(val).toFixed(1) + ' ' + (typeof unitName !== 'undefined' ? unitName : '萬');
+                    }
+                },
+                title: '投信多空淨額'
+            });
+            trustSeries.setData(instTrustData);
+
+            // 4. 初始化副圖 3：權證多空資金流 (嚴格限制 Y 軸頂多 1 位小數)
+            const warrantContainer = document.getElementById('warrant-chart-container');
+            const warrantChart = LightweightCharts.createChart(warrantContainer, Object.assign({}, commonChartOptions, {
+                width: warrantContainer.clientWidth,
+                height: warrantContainer.clientHeight,
+            }));
+
+            const callSeries = warrantChart.addHistogramSeries({
+                color: 'rgba(239, 68, 68, 0.75)',
+                priceFormat: {
+                    type: 'custom',
+                    formatter: function(val) {
+                        return Number(val).toFixed(1) + ' 萬';
+                    }
+                },
+                title: '認購額(萬)',
+            });
+            callSeries.setData(warrantCallData);
+
+            const putSeries = warrantChart.addHistogramSeries({
+                color: 'rgba(16, 185, 129, 0.75)',
+                priceFormat: {
+                    type: 'custom',
+                    formatter: function(val) {
+                        return Number(val).toFixed(1) + ' 萬';
+                    }
+                },
+                title: '認售額(萬)',
+            });
+            putSeries.setData(warrantPutData);
+
+            const netLineSeries = warrantChart.addLineSeries({
+                color: '#38bdf8',
+                lineWidth: 2,
+                priceFormat: {
+                    type: 'custom',
+                    formatter: function(val) {
+                        return Number(val).toFixed(1) + ' 萬';
+                    }
+                },
+                title: '多空淨額(萬)',
+            });
+            netLineSeries.setData(warrantNetData);
+
+            const allCharts = [klineChart, volumeChart, instChart, warrantChart].filter(c => c !== null);
+
+            // 四圖時間軸與邏輯區間連動 (Smooth Logical Range Sync)
+            allCharts.forEach(c1 => {
+                c1.timeScale().subscribeVisibleLogicalRangeChange(range => {
+                    if (!range) return;
+                    allCharts.forEach(c2 => {
+                        if (c1 !== c2) {
+                            c2.timeScale().setVisibleLogicalRange(range);
+                        }
+                    });
+                    syncPriceScaleWidths();
+                });
+            });
+
+            // 四圖十字游標無縫連動 (Crosshair Synchronization)
+            const candleMap = new Map(klineData.map(d => [d.time, d.close]));
+            const volumeMap = new Map(volumeData.map(d => [d.time, d.value]));
+            const instMap = new Map(instForeignData.map(d => [d.time, d.value]));
+            const warrantMap = new Map(warrantNetData.map(d => [d.time, d.value]));
+
+            function syncCrosshair(sourceChart, param) {
+                if (!param || !param.time || !param.point) {
+                    allCharts.forEach(c => {
+                        if (c !== sourceChart) {
+                            try { c.clearCrosshairPosition(); } catch(e) {}
+                        }
+                    });
+                    return;
+                }
+                const t = param.time;
+                if (klineChart !== sourceChart && candleMap.has(t)) {
+                    try { klineChart.setCrosshairPosition(candleMap.get(t), t, candleSeries); } catch(e) {}
+                }
+                if (volumeChart !== sourceChart && volumeMap.has(t)) {
+                    try { volumeChart.setCrosshairPosition(volumeMap.get(t), t, volumeSeries); } catch(e) {}
+                }
+                if (instChart && instChart !== sourceChart && instMap.has(t)) {
+                    try { instChart.setCrosshairPosition(instMap.get(t), t, foreignSeries); } catch(e) {}
+                }
+                if (warrantChart !== sourceChart && warrantMap.has(t)) {
+                    try { warrantChart.setCrosshairPosition(warrantMap.get(t), t, netLineSeries); } catch(e) {}
+                }
+            }
+
+            klineChart.subscribeCrosshairMove(p => syncCrosshair(klineChart, p));
+            volumeChart.subscribeCrosshairMove(p => syncCrosshair(volumeChart, p));
+            if(instChart) instChart.subscribeCrosshairMove(p => syncCrosshair(instChart, p));
+            warrantChart.subscribeCrosshairMove(p => syncCrosshair(warrantChart, p));
+
+            // 精確同步右側價格刻度寬度 (保證四張圖繪圖區與網格線 100% 垂直對齊)
+            let currentSyncedWidth = 105;
+            function syncPriceScaleWidths() {
+                let maxW = 105;
+                allCharts.forEach(c => {
+                    try {
+                        const w = c.priceScale('right').width();
+                        if (w > maxW) maxW = w;
+                    } catch(e) {}
+                });
+                if (maxW !== currentSyncedWidth) {
+                    currentSyncedWidth = maxW;
+                    allCharts.forEach(c => {
+                        try {
+                            c.priceScale('right').applyOptions({ minimumWidth: currentSyncedWidth });
+                        } catch(e) {}
+                    });
+                }
+            }
+            setTimeout(syncPriceScaleWidths, 80);
+
+            // 視窗縮放自適應
+            window.addEventListener('resize', () => {
+                klineChart.applyOptions({ width: klineContainer.clientWidth });
+                volumeChart.applyOptions({ width: volumeContainer.clientWidth });
+                instChart.applyOptions({ width: instContainer.clientWidth });
+                warrantChart.applyOptions({ width: warrantContainer.clientWidth });
+                syncPriceScaleWidths();
+            });
+        });
+    </script>
+</body>
+</html>
