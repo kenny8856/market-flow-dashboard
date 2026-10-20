@@ -158,17 +158,17 @@
             <div class="stat-value" style="color: #fff;">46,769.0</div>
             <div class="stat-sub">成交量: 101,828 口</div>
         </div>
-        <!-- 3. 選擇權最大壓力 -->
+        <!-- 3. 選擇權加權壓力 -->
         <div class="stat-card" style="border-left: 3px solid #f59e0b;">
-            <div class="stat-label">🎯 選擇權最大壓力 (Call OI)</div>
-            <div class="stat-value" style="color: #f59e0b;">49,500</div>
-            <div class="stat-sub">未平倉量: 6,136 口</div>
+            <div class="stat-label">🚨 選擇權加權壓力 (Call OI)</div>
+            <div class="stat-value" style="color: #f59e0b;">47,791</div>
+            <div class="stat-sub">增量重心: 48,000 (+2,369口)</div>
         </div>
-        <!-- 4. 選擇權最大支撐 -->
+        <!-- 4. 選擇權加權支撐 -->
         <div class="stat-card" style="border-left: 3px solid #38bdf8;">
-            <div class="stat-label">🛡️ 選擇權最大支撐 (Put OI)</div>
-            <div class="stat-value" style="color: #38bdf8;">45,000</div>
-            <div class="stat-sub">未平倉量: 4,210 口</div>
+            <div class="stat-label">🛡️ 選擇權加權支撐 (Put OI)</div>
+            <div class="stat-value" style="color: #38bdf8;">45,408</div>
+            <div class="stat-sub">增量重心: 45,000 (+2,435口)</div>
         </div>
         <!-- 5. 外資期貨淨持倉 -->
         <div class="stat-card">
@@ -366,28 +366,28 @@
         candleSeries.setData(klineData);
         candleSeries.setMarkers(tdMarkers);
 
-        // 加入選擇權最大壓力 / 最大支撐 水平線
-        const callMaxStrike = 49500.0;
-        if (callMaxStrike > 0) {
+        // 加入選擇權動態加權壓力 / 加權支撐 水平線
+        const callWeightedStrike = 47791.0;
+        if (callWeightedStrike > 0) {
             candleSeries.createPriceLine({
-                price: callMaxStrike,
+                price: callWeightedStrike,
                 color: '#f59e0b',
                 lineWidth: 2,
                 lineStyle: LightweightCharts.LineStyle.Dashed,
                 axisLabelVisible: true,
-                title: 'CALL Max OI 壓力',
+                title: 'Call加權壓力 47,791',
             });
         }
 
-        const putMaxStrike = 45000.0;
-        if (putMaxStrike > 0) {
+        const putWeightedStrike = 45408.0;
+        if (putWeightedStrike > 0) {
             candleSeries.createPriceLine({
-                price: putMaxStrike,
+                price: putWeightedStrike,
                 color: '#38bdf8',
                 lineWidth: 2,
                 lineStyle: LightweightCharts.LineStyle.Dashed,
                 axisLabelVisible: true,
-                title: 'PUT Max OI 支撐',
+                title: 'Put加權支撐 45,408',
             });
         }
 
