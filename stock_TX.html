@@ -174,17 +174,15 @@
             background: rgba(255, 255, 255, 0.08);
         }
 
-        /* 各獨立圖表高度 */
-        #main-chart { height: 380px; width: 100%; }
-        #volume-chart { height: 130px; width: 100%; }
-        #foreign-chart { height: 150px; width: 100%; }
+        /* 各獨立圖表高度 (移除成交量，精煉 4 層核心圖表) */
+        #main-chart { height: 400px; width: 100%; }
         #opt-lots-chart { height: 150px; width: 100%; }
         #opt-amount-chart { height: 150px; width: 100%; }
+        #foreign-chart { height: 140px; width: 100%; }
 
         @media (max-width: 768px) {
-            #main-chart { height: 300px; }
-            #volume-chart { height: 110px; }
-            #foreign-chart, #opt-lots-chart, #opt-amount-chart { height: 130px; }
+            #main-chart { height: 320px; }
+            #opt-lots-chart, #opt-amount-chart, #foreign-chart { height: 130px; }
             .stats-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
@@ -289,6 +287,21 @@
         </div>
     </div>
 
+    <!-- 🏛️ 外資期權實質多空意圖客觀診斷橫幅 (每日自動綜合研判) -->
+    <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-left: 4px solid #10b981; border-radius: 10px; padding: 12px 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 20px;">🌪️</span>
+            <div>
+                <strong style="color: #fff; font-size: 14px;">外資期權實質意圖客觀診斷：</strong>
+                <span style="color: #10b981; font-weight: 800; font-size: 14px;">實質空方避險防守</span>
+                <span style="color: var(--text-secondary); font-size: 12px; margin-left: 8px;">期貨淨空單達 -86,072 口高水位，且選擇權實質金額 (-1.25 億) 與 5 日動量 (-1.64 億) 同步偏空，外資防守警戒濃厚；未見金額翻正前，指數逢加權壓力線易壓回。</span>
+            </div>
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted); font-family: monospace;">
+            客觀判讀矩陣：真金白銀(契約金額) > 資金動量(5日均線) > 留倉口數(保險差異)
+        </div>
+    </div>
+
     <!-- 神奇九轉 (TD Setup 9) 與 不連續13轉序列 (TD Countdown 13) 診斷橫幅 -->
     <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-left: 4px solid #ef4444; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -304,7 +317,7 @@
         </div>
     </div>
 
-    <!-- 圖表區域 (純K線主圖 + 獨立成交量副圖 + 3層籌碼副圖) -->
+    <!-- 圖表區域 (純K線主圖 + 3層核心期權與期貨副圖) -->
     <div class="charts-wrapper">
         <!-- 1. 純 K 線主圖：TX 主力連續 K 線 + 選擇權全歷史動態加權防線通道 (替換舊 POC) -->
         <div class="chart-box">
@@ -339,17 +352,6 @@
                 </div>
             </div>
             <div id="main-chart"></div>
-        </div>
-
-        <!-- 2. 獨立日成交量副圖 -->
-        <div class="chart-box">
-            <div class="chart-header">
-                <div class="chart-title">
-                    <span>📊 日成交量 (口數)</span>
-                    <span id="volume-tooltip" style="font-family: monospace; font-size: 12px; color: var(--text-secondary); margin-left: 12px;"></span>
-                </div>
-            </div>
-            <div id="volume-chart"></div>
         </div>
 
         <!-- 3. 副圖一：外資選擇權多空淨留倉口數 (0軸基準雙向柱狀圖 + 淨多空差動量線) -->
@@ -596,19 +598,7 @@
             });
         }
 
-        // 2. 建立獨立成交量副圖
-        const volEl = document.getElementById('volume-chart');
-        const volChart = LightweightCharts.createChart(volEl, {
-            ...chartTheme,
-            height: volEl.clientHeight || 130,
-        });
-        const volumeSeries = volChart.addHistogramSeries({
-            priceFormat: {
-                type: 'custom',
-                formatter: (val) => val.toLocaleString() + ' 口'
-            }
-        });
-        volumeSeries.setData(volumeData);
+// [成交量副圖已移除，資訊精煉整合至 K 線頂部 Tooltip 與指標卡]
 
         // 3. 建立副圖一：外資選擇權多空淨留倉口數 (0軸基準：多單向上/空單向下柱狀圖 ＋ 淨多空差動量線)
         const optLotsEl = document.getElementById('opt-lots-chart');
@@ -695,7 +685,7 @@
         foreignSeries.setData(foreignData);
 
         // 十字線全圖時間軸聯動 (Crosshair Sync Across All 5 Charts，由上而下對應順序)
-        const allCharts = [mainChart, volChart, optLotsChart, optAmountChart, foreignChart];
+        const allCharts = [mainChart, optLotsChart, optAmountChart, foreignChart];
         let isSyncingRange = false;
         allCharts.forEach((c1) => {
             c1.timeScale().subscribeVisibleLogicalRangeChange((range) => {
@@ -724,8 +714,7 @@
 
         // 全圖十字線定位映射 Map (用於 setCrosshairPosition 數值對齊)
         const candleCloseMap = new Map(klineData.map(d => [d.time, d.close]));
-        const volValSyncMap = new Map(volumeData.map(d => [d.time, d.value]));
-        const foreignValSyncMap = new Map(foreignData.map(d => [d.time, d.value]));
+                const foreignValSyncMap = new Map(foreignData.map(d => [d.time, d.value]));
         const optNetLotsSyncMap = new Map(foreignOptNetLotsData.map(d => [d.time, d.value]));
         const optAmtValSyncMap = new Map(foreignOptAmountData.map(d => [d.time, d.value]));
 
@@ -733,8 +722,7 @@
         function updateCrosshairTooltips(param) {
             if (!param || !param.time) {
                 document.getElementById('kline-tooltip').innerText = '';
-                document.getElementById('volume-tooltip').innerText = '';
-                document.getElementById('foreign-tooltip').innerText = '';
+                                document.getElementById('foreign-tooltip').innerText = '';
                 document.getElementById('opt-lots-tooltip').innerText = '';
                 document.getElementById('opt-amount-tooltip').innerText = '';
                 updateLatestLegend();
@@ -759,8 +747,7 @@
                     <span style="color:#38bdf8; margin-left:8px;">🛡️ 加權支撐: ${curP ? Number(curP).toLocaleString() : '-'} (履約價 ${curPStk} / 增量 +${curPDel}口)</span>
                     <span style="color:#a78bfa; margin-left:8px;">[明日尚未開盤]</span>
                 `;
-                document.getElementById('volume-tooltip').innerText = '明日尚未開盤';
-                document.getElementById('foreign-tooltip').innerText = '';
+                                document.getElementById('foreign-tooltip').innerText = '';
                 document.getElementById('opt-lots-tooltip').innerText = '明日尚未開盤';
                 document.getElementById('opt-amount-tooltip').innerText = '明日尚未開盤';
                 updateLegendValues(curC, curP, `🚨 明日 ${nextDateStr} 戰備：`);
@@ -815,14 +802,12 @@
                     optStr = `  |  [${curExp || '-'}] 🚨壓力: ${curC.toLocaleString()}  🛡️支撐: ${curP.toLocaleString()}${touchStr}`;
                 }
                 document.getElementById('kline-tooltip').innerText = 
-                    `${t}  開: ${k.open.toLocaleString()}  高: ${k.high.toLocaleString()}  低: ${k.low.toLocaleString()}  收: ${k.close.toLocaleString()} (${sign}${k.change.toLocaleString()})${optStr}${tdText}`;
+                    `${t}  開: ${k.open.toLocaleString()}  高: ${k.high.toLocaleString()}  低: ${k.low.toLocaleString()}  收: ${k.close.toLocaleString()} (${sign}${k.change.toLocaleString()})  成交: ${v.toLocaleString()}口${optStr}${tdText}`;
             } else if (opt && opt.is_forward) {
                 document.getElementById('kline-tooltip').innerText = 
                     `📅 ${t} (明日戰備預測)  |  [${curExp || '-'}] 🚨預期壓力: ${curC.toLocaleString()} (重心${curCStk ? curCStk.toLocaleString() : '-'}+${curCDel || 0}口)  🛡️預期支撐: ${curP.toLocaleString()} (重心${curPStk ? curPStk.toLocaleString() : '-'}+${curPDel || 0}口)`;
             }
-            document.getElementById('volume-tooltip').innerText = 
-                `${t}  成交量: ${v.toLocaleString()} 口`;
-            document.getElementById('foreign-tooltip').innerText = 
+                        document.getElementById('foreign-tooltip').innerText = 
                 `${t}  外資淨持倉: ${fVal.toLocaleString()} 口`;
 
             const diffLots = cLots - pLots;
@@ -862,9 +847,7 @@
                         }
                     }
                 }
-                if (volChart !== sourceChart && volValSyncMap.has(t)) {
-                    try { volChart.setCrosshairPosition(volValSyncMap.get(t), t, volumeSeries); } catch(e) {}
-                }
+
                 if (foreignChart !== sourceChart && foreignValSyncMap.has(t)) {
                     try { foreignChart.setCrosshairPosition(foreignValSyncMap.get(t), t, foreignSeries); } catch(e) {}
                 }
@@ -911,7 +894,6 @@
         // 視窗 Resize 自適應與坐標軸寬度重新對齊
         window.addEventListener('resize', () => {
             mainChart.applyOptions({ width: mainEl.clientWidth });
-            volChart.applyOptions({ width: volEl.clientWidth });
             foreignChart.applyOptions({ width: foreignEl.clientWidth });
             optLotsChart.applyOptions({ width: optLotsEl.clientWidth });
             optAmountChart.applyOptions({ width: optAmountEl.clientWidth });
@@ -926,7 +908,6 @@
                 to: totalLen - 1,
             };
             mainChart.timeScale().setVisibleLogicalRange(range);
-            volChart.timeScale().setVisibleLogicalRange(range);
             foreignChart.timeScale().setVisibleLogicalRange(range);
             optLotsChart.timeScale().setVisibleLogicalRange(range);
             optAmountChart.timeScale().setVisibleLogicalRange(range);
