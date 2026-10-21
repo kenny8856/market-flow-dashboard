@@ -352,18 +352,7 @@
             <div id="volume-chart"></div>
         </div>
 
-        <!-- 3. 副圖一：外資期貨淨未平倉口數 (紅多綠空) -->
-        <div class="chart-box">
-            <div class="chart-header">
-                <div class="chart-title">
-                    <span>🌏 外資期貨淨未平倉口數 (紅: 多單 / 綠: 空單)</span>
-                    <span id="foreign-tooltip" style="font-family: monospace; font-size: 12px; color: var(--text-secondary); margin-left: 12px;"></span>
-                </div>
-            </div>
-            <div id="foreign-chart"></div>
-        </div>
-
-        <!-- 4. 副圖二：外資選擇權多空淨留倉口數 (0軸基準雙向柱狀圖 + 淨多空差動量線) -->
+        <!-- 3. 副圖一：外資選擇權多空淨留倉口數 (0軸基準雙向柱狀圖 + 淨多空差動量線) -->
         <div class="chart-box">
             <div class="chart-header">
                 <div class="chart-title">
@@ -379,7 +368,7 @@
             <div id="opt-lots-chart"></div>
         </div>
 
-        <!-- 5. 副圖三：外資選擇權多空淨契約金額 ＋ 5日資金動量 (紅多綠空，億元) -->
+        <!-- 4. 副圖二：外資選擇權多空淨契約金額 ＋ 5日資金動量 (紅多綠空，億元) -->
         <div class="chart-box">
             <div class="chart-header">
                 <div class="chart-title">
@@ -392,6 +381,17 @@
                 </div>
             </div>
             <div id="opt-amount-chart"></div>
+        </div>
+
+        <!-- 5. 副圖三：外資期貨淨未平倉口數 (移至最下方，紅多綠空) -->
+        <div class="chart-box">
+            <div class="chart-header">
+                <div class="chart-title">
+                    <span>🌏 外資期貨淨未平倉口數 (紅: 多單 / 綠: 空單)</span>
+                    <span id="foreign-tooltip" style="font-family: monospace; font-size: 12px; color: var(--text-secondary); margin-left: 12px;"></span>
+                </div>
+            </div>
+            <div id="foreign-chart"></div>
         </div>
     </div>
 
@@ -610,21 +610,7 @@
         });
         volumeSeries.setData(volumeData);
 
-        // 3. 建立副圖一：外資淨持倉 (紅多綠空)
-        const foreignEl = document.getElementById('foreign-chart');
-        const foreignChart = LightweightCharts.createChart(foreignEl, {
-            ...chartTheme,
-            height: foreignEl.clientHeight || 150,
-        });
-        const foreignSeries = foreignChart.addHistogramSeries({
-            priceFormat: {
-                type: 'custom',
-                formatter: (val) => val.toLocaleString() + ' 口'
-            }
-        });
-        foreignSeries.setData(foreignData);
-
-        // 4. 建立副圖二：外資選擇權多空淨留倉口數 (0軸基準：多單向上/空單向下柱狀圖 ＋ 淨多空差動量線)
+        // 3. 建立副圖一：外資選擇權多空淨留倉口數 (0軸基準：多單向上/空單向下柱狀圖 ＋ 淨多空差動量線)
         const optLotsEl = document.getElementById('opt-lots-chart');
         const optLotsChart = LightweightCharts.createChart(optLotsEl, {
             ...chartTheme,
@@ -675,7 +661,7 @@
             title: '0軸',
         });
 
-        // 5. 建立副圖三：外資選擇權多空淨契約金額 ＋ 5日資金動量
+        // 4. 建立副圖二：外資選擇權多空淨契約金額 ＋ 5日資金動量
         const optAmountEl = document.getElementById('opt-amount-chart');
         const optAmountChart = LightweightCharts.createChart(optAmountEl, {
             ...chartTheme,
@@ -694,8 +680,22 @@
         });
         optMomentumSeries.setData(foreignOptMomentumData);
 
-        // 十字線全圖時間軸聯動 (Crosshair Sync Across All 5 Charts)
-        const allCharts = [mainChart, volChart, foreignChart, optLotsChart, optAmountChart];
+        // 5. 建立副圖三：外資期貨淨未平倉口數 (移至最下方，紅多綠空)
+        const foreignEl = document.getElementById('foreign-chart');
+        const foreignChart = LightweightCharts.createChart(foreignEl, {
+            ...chartTheme,
+            height: foreignEl.clientHeight || 150,
+        });
+        const foreignSeries = foreignChart.addHistogramSeries({
+            priceFormat: {
+                type: 'custom',
+                formatter: (val) => val.toLocaleString() + ' 口'
+            }
+        });
+        foreignSeries.setData(foreignData);
+
+        // 十字線全圖時間軸聯動 (Crosshair Sync Across All 5 Charts，由上而下對應順序)
+        const allCharts = [mainChart, volChart, optLotsChart, optAmountChart, foreignChart];
         let isSyncingRange = false;
         allCharts.forEach((c1) => {
             c1.timeScale().subscribeVisibleLogicalRangeChange((range) => {
