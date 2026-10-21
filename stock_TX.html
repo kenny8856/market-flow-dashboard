@@ -327,8 +327,8 @@
                         <button id="btn-marker-td" class="toggle-btn inactive">🔮 神奇九轉訊號</button>
                     </div>
                     <div class="chart-legend">
-                        <div class="legend-item"><span class="legend-dot" style="background:#f59e0b;"></span> 🚨 壓力 (<span id="legend-call-val" style="color:#f59e0b; font-weight:700;">48,464</span>)</div>
-                        <div class="legend-item"><span class="legend-dot" style="background:#38bdf8;"></span> 🛡️ 支撐 (<span id="legend-put-val" style="color:#38bdf8; font-weight:700;">45,207</span>)</div>
+                        <div class="legend-item"><span id="legend-date-prefix" style="color:var(--text-secondary); margin-right:4px;">🚨 明日 2026-10-22 戰備：</span><span class="legend-dot" style="background:#f59e0b;"></span> 壓力 (<span id="legend-call-val" style="color:#f59e0b; font-weight:700;">48,464</span>)</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#38bdf8;"></span> 支撐 (<span id="legend-put-val" style="color:#38bdf8; font-weight:700;">45,207</span>)</div>
                         <div id="legend-marker-touch-items" style="display: flex; gap: 8px;">
                             <div class="legend-item"><span class="legend-dot" style="background:#f59e0b;"></span> 觸壓(壓回)</div>
                             <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> 突破</div>
@@ -429,8 +429,9 @@
             },
             timeScale: {
                 borderColor: 'rgba(255, 255, 255, 0.1)',
-                timeVisible: true,
+                timeVisible: false,
                 secondsVisible: false,
+                rightOffset: 8,
             },
             rightPriceScale: {
                 borderColor: 'rgba(255, 255, 255, 0.1)',
@@ -504,22 +505,63 @@
         const legendTouchItems = document.getElementById('legend-marker-touch-items');
         const legendTDItems = document.getElementById('legend-marker-td-items');
 
-        function updateLegendValues(cVal, pVal) {
+        const nextDateStr = '2026-10-22';
+
+        function updateLegendValues(cVal, pVal, prefixLabel = '') {
+            const elPrefix = document.getElementById('legend-date-prefix');
             const elC = document.getElementById('legend-call-val');
             const elP = document.getElementById('legend-put-val');
+            if (elPrefix) {
+                elPrefix.innerText = prefixLabel || `🚨 明日 ${nextDateStr} 戰備：`;
+            }
             if (elC) elC.innerText = (cVal && cVal > 0) ? Number(cVal).toLocaleString() : '-';
             if (elP) elP.innerText = (pVal && pVal > 0) ? Number(pVal).toLocaleString() : '-';
         }
 
-        const nextDateStr = '2026-10-22';
         function updateLatestLegend() {
             const latestOpt = optHistMap.get(nextDateStr) || optHistMap.get(latestDate) || {};
             if (currentOptTrack === 'month') {
-                updateLegendValues(latestOpt.month_call_res, latestOpt.month_put_sup);
+                updateLegendValues(latestOpt.month_call_res, latestOpt.month_put_sup, `🚨 明日 ${nextDateStr} 戰備：`);
             } else {
-                updateLegendValues(latestOpt.front_call_res, latestOpt.front_put_sup);
+                updateLegendValues(latestOpt.front_call_res, latestOpt.front_put_sup, `🚨 明日 ${nextDateStr} 戰備：`);
             }
         }
+
+        let forwardResLine = null;
+        let forwardSupLine = null;
+
+        function updateForwardPriceLines() {
+            if (forwardResLine) candleSeries.removePriceLine(forwardResLine);
+            if (forwardSupLine) candleSeries.removePriceLine(forwardSupLine);
+
+            const isMonth = (currentOptTrack === 'month');
+            const fOpt = optHistMap.get(nextDateStr) || {};
+            const cVal = isMonth ? fOpt.month_call_res : fOpt.front_call_res;
+            const pVal = isMonth ? fOpt.month_put_sup : fOpt.front_put_sup;
+            const prefix = isMonth ? '明日月選' : '明日週選';
+
+            if (cVal && cVal > 0) {
+                forwardResLine = candleSeries.createPriceLine({
+                    price: Number(cVal),
+                    color: '#f59e0b',
+                    lineWidth: 2,
+                    lineStyle: LightweightCharts.LineStyle.Dashed,
+                    axisLabelVisible: true,
+                    title: `${prefix}壓力 ${Number(cVal).toLocaleString()}`,
+                });
+            }
+            if (pVal && pVal > 0) {
+                forwardSupLine = candleSeries.createPriceLine({
+                    price: Number(pVal),
+                    color: '#38bdf8',
+                    lineWidth: 2,
+                    lineStyle: LightweightCharts.LineStyle.Dashed,
+                    axisLabelVisible: true,
+                    title: `${prefix}支撐 ${Number(pVal).toLocaleString()}`,
+                });
+            }
+        }
+        updateForwardPriceLines();
 
         if (btnMonth && btnWeek) {
             btnWeek.addEventListener('click', () => {
@@ -533,6 +575,7 @@
                 optPutSeries.applyOptions({ title: '週選加權支撐' });
                 updateActiveMarkers();
                 updateLatestLegend();
+                updateForwardPriceLines();
             });
 
             btnMonth.addEventListener('click', () => {
@@ -546,6 +589,7 @@
                 optPutSeries.applyOptions({ title: '月選加權支撐' });
                 updateActiveMarkers();
                 updateLatestLegend();
+                updateForwardPriceLines();
             });
         }
 
@@ -679,6 +723,31 @@
                 return;
             }
             const t = param.time;
+            if (t === nextDateStr) {
+                const isMonth = currentOptTrack === 'month';
+                const fOpt = optHistMap.get(nextDateStr) || {};
+                const curC = isMonth ? fOpt.month_call_res : fOpt.front_call_res;
+                const curP = isMonth ? fOpt.month_put_sup : fOpt.front_put_sup;
+                const curExp = isMonth ? fOpt.month_exp : fOpt.front_exp;
+                const curCStk = isMonth ? fOpt.month_call_strike : fOpt.front_call_strike;
+                const curCDel = isMonth ? fOpt.month_call_delta : fOpt.front_call_delta;
+                const curPStk = isMonth ? fOpt.month_put_strike : fOpt.front_put_strike;
+                const curPDel = isMonth ? fOpt.month_put_delta : fOpt.front_put_delta;
+
+                document.getElementById('kline-tooltip').innerHTML = `
+                    <span style="color:#f59e0b; font-weight:700;">【明日 ${nextDateStr} 戰備預測通道】</span>
+                    <span style="color:#94a3b8;">鎖定合約: [${curExp || '-'}]</span>
+                    <span style="color:#f59e0b; margin-left:8px;">🚨 加權壓力: ${curC ? Number(curC).toLocaleString() : '-'} (履約價 ${curCStk} / 增量 +${curCDel}口)</span>
+                    <span style="color:#38bdf8; margin-left:8px;">🛡️ 加權支撐: ${curP ? Number(curP).toLocaleString() : '-'} (履約價 ${curPStk} / 增量 +${curPDel}口)</span>
+                    <span style="color:#a78bfa; margin-left:8px;">[明日尚未開盤]</span>
+                `;
+                document.getElementById('volume-tooltip').innerText = '明日尚未開盤';
+                document.getElementById('foreign-tooltip').innerText = '';
+                document.getElementById('top5-tooltip').innerText = '';
+                document.getElementById('top10-tooltip').innerText = '';
+                updateLegendValues(curC, curP, `🚨 明日 ${nextDateStr} 戰備：`);
+                return;
+            }
             const k = klineMap.get(t);
             const v = volMap.get(t) || 0;
             const fVal = foreignMap.get(t) || 0;
@@ -698,7 +767,7 @@
             const curPStk = currentOptTrack === 'month' ? opt.month_put_strike : opt.front_put_strike;
             const curPDel = currentOptTrack === 'month' ? opt.month_put_delta : opt.front_put_delta;
 
-            updateLegendValues(curC, curP);
+            updateLegendValues(curC, curP, `📅 ${t} 對照：`);
 
             let tdText = '';
             if (td) {
