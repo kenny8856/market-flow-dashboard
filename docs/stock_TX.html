@@ -722,7 +722,15 @@
         const optAmtMap = new Map(foreignOptAmountData.map(a => [a.time, a.value]));
         const optMomMap = new Map(foreignOptMomentumData.map(m => [m.time, m.value]));
 
-        mainChart.subscribeCrosshairMove((param) => {
+        // 全圖十字線定位映射 Map (用於 setCrosshairPosition 數值對齊)
+        const candleCloseMap = new Map(klineData.map(d => [d.time, d.close]));
+        const volValSyncMap = new Map(volumeData.map(d => [d.time, d.value]));
+        const foreignValSyncMap = new Map(foreignData.map(d => [d.time, d.value]));
+        const optNetLotsSyncMap = new Map(foreignOptNetLotsData.map(d => [d.time, d.value]));
+        const optAmtValSyncMap = new Map(foreignOptAmountData.map(d => [d.time, d.value]));
+
+        // Tooltip 懸浮內容更新函數
+        function updateCrosshairTooltips(param) {
             if (!param || !param.time) {
                 document.getElementById('kline-tooltip').innerText = '';
                 document.getElementById('volume-tooltip').innerText = '';
@@ -826,15 +834,88 @@
             const momSign = nMom >= 0 ? '+' : '';
             document.getElementById('opt-amount-tooltip').innerHTML = 
                 `${t}  淨契約金額: <span style="color:${nAmt >= 0 ? '#ef4444' : '#10b981'}; font-weight:700;">${amtSign}${nAmt.toFixed(2)} 億</span>  |  5日資金動量: <span style="color:#fbbf24; font-weight:700;">${momSign}${nMom.toFixed(2)} 億</span>`;
+        }
+
+        // 全圖 5 層十字線垂直無縫貫穿同步 (Crosshair Synchronization)
+        let isSyncingCrosshair = false;
+        function syncCrosshair(sourceChart, param) {
+            if (isSyncingCrosshair) return;
+            isSyncingCrosshair = true;
+            try {
+                if (!param || !param.time || !param.point) {
+                    allCharts.forEach(c => {
+                        if (c !== sourceChart) {
+                            try { c.clearCrosshairPosition(); } catch(e) {}
+                        }
+                    });
+                    return;
+                }
+                const t = param.time;
+                if (mainChart !== sourceChart) {
+                    if (candleCloseMap.has(t)) {
+                        try { mainChart.setCrosshairPosition(candleCloseMap.get(t), t, candleSeries); } catch(e) {}
+                    } else if (t === nextDateStr) {
+                        const fOpt = optHistMap.get(nextDateStr) || {};
+                        const cVal = (currentOptTrack === 'month') ? fOpt.month_call_res : fOpt.front_call_res;
+                        if (cVal) {
+                            try { mainChart.setCrosshairPosition(cVal, t, optCallSeries); } catch(e) {}
+                        }
+                    }
+                }
+                if (volChart !== sourceChart && volValSyncMap.has(t)) {
+                    try { volChart.setCrosshairPosition(volValSyncMap.get(t), t, volumeSeries); } catch(e) {}
+                }
+                if (foreignChart !== sourceChart && foreignValSyncMap.has(t)) {
+                    try { foreignChart.setCrosshairPosition(foreignValSyncMap.get(t), t, foreignSeries); } catch(e) {}
+                }
+                if (optLotsChart !== sourceChart && optNetLotsSyncMap.has(t)) {
+                    try { optLotsChart.setCrosshairPosition(optNetLotsSyncMap.get(t), t, optNetLotsSeries); } catch(e) {}
+                }
+                if (optAmountChart !== sourceChart && optAmtValSyncMap.has(t)) {
+                    try { optAmountChart.setCrosshairPosition(optAmtValSyncMap.get(t), t, optNetAmtSeries); } catch(e) {}
+                }
+            } finally {
+                isSyncingCrosshair = false;
+            }
+        }
+
+        // 監聽所有 5 張圖表之十字線移動，達成點擊/滑動任意圖表皆全圖貫穿同步
+        allCharts.forEach(chart => {
+            chart.subscribeCrosshairMove((param) => {
+                updateCrosshairTooltips(param);
+                syncCrosshair(chart, param);
+            });
         });
 
-        // 視窗 Resize 自適應
+        // 確保 5 張圖表右側價格軸寬度嚴格對齊，達成垂直十字標示線 100% 絕對垂直貫穿對齊
+        let currentSyncedWidth = 100;
+        function syncPriceScaleWidths() {
+            let maxW = 100;
+            allCharts.forEach(c => {
+                try {
+                    const w = c.priceScale('right').width();
+                    if (w > maxW) maxW = w;
+                } catch(e) {}
+            });
+            if (maxW !== currentSyncedWidth) {
+                currentSyncedWidth = maxW;
+                allCharts.forEach(c => {
+                    try {
+                        c.priceScale('right').applyOptions({ minimumWidth: currentSyncedWidth });
+                    } catch(e) {}
+                });
+            }
+        }
+        setTimeout(syncPriceScaleWidths, 80);
+
+        // 視窗 Resize 自適應與坐標軸寬度重新對齊
         window.addEventListener('resize', () => {
             mainChart.applyOptions({ width: mainEl.clientWidth });
             volChart.applyOptions({ width: volEl.clientWidth });
             foreignChart.applyOptions({ width: foreignEl.clientWidth });
             optLotsChart.applyOptions({ width: optLotsEl.clientWidth });
             optAmountChart.applyOptions({ width: optAmountEl.clientWidth });
+            syncPriceScaleWidths();
         });
 
         // 預設縮放到最近 90 個交易日
