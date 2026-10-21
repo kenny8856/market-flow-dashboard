@@ -435,10 +435,26 @@
             },
             rightPriceScale: {
                 borderColor: 'rgba(255, 255, 255, 0.1)',
+                minimumWidth: 100,
             },
             crosshair: {
                 mode: LightweightCharts.CrosshairMode.Normal,
-            }
+            },
+            handleScroll: {
+                mouseWheel: true,
+                pressedMouseMove: true,
+                horzTouchDrag: true,
+                vertTouchDrag: true,
+            },
+            handleScale: {
+                axisPressedMouseMove: true,
+                mouseWheel: true,
+                pinch: true,
+            },
+            kineticScroll: {
+                touch: true,
+                mouse: true,
+            },
         };
 
         // 1. 建立主圖 (K線 + 雙軌動態加權防線)
@@ -691,15 +707,20 @@
 
         // 十字線全圖時間軸聯動 (Crosshair Sync Across All 5 Charts)
         const allCharts = [mainChart, volChart, foreignChart, top5Chart, top10Chart];
-        allCharts.forEach((c) => {
-            c.timeScale().subscribeVisibleTimeRangeChange(() => {
-                const range = c.timeScale().getVisibleRange();
-                if (!range) return;
-                allCharts.forEach((other) => {
-                    if (other !== c) {
-                        other.timeScale().setVisibleRange(range);
-                    }
-                });
+        let isSyncingRange = false;
+        allCharts.forEach((c1) => {
+            c1.timeScale().subscribeVisibleLogicalRangeChange((range) => {
+                if (isSyncingRange || !range) return;
+                isSyncingRange = true;
+                try {
+                    allCharts.forEach((c2) => {
+                        if (c1 !== c2) {
+                            c2.timeScale().setVisibleLogicalRange(range);
+                        }
+                    });
+                } finally {
+                    isSyncingRange = false;
+                }
             });
         });
 
