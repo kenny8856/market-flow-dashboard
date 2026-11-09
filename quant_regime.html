@@ -11,7 +11,7 @@
         // 🚀 自動版本同步與瀏覽器快取自癒機制 (Auto Cache-Busting & Hot-Reload)
         (function() {
             var CURRENT_DATE = "2026-11-06";
-            var CURRENT_TS = 1794204729;
+            var CURRENT_TS = 1794208314;
             function checkVersion() {
                 var s = document.createElement('script');
                 s.src = 'version.js?_t=' + Date.now();
@@ -1408,7 +1408,201 @@
         }
         .iframe-container { height: 800px; }
         }
+
+
+        /* Portfolio Lifecycle Tracker Styles */
+        .tracker-section {
+            margin-top: 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+        .tracker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+        }
+        .tracker-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tracker-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+        .tracker-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+        .t-stat-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        .t-stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+        .t-stat-val {
+            font-size: 20px;
+            font-weight: 700;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        .tracker-filter-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+        .t-filter-btn {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .t-filter-btn:hover {
+            background: #334155;
+            color: #fff;
+        }
+        .t-filter-btn.active {
+            background: var(--indigo-accent);
+            border-color: var(--indigo-accent);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+        }
+        .tracker-table-wrap {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            -webkit-overflow-scrolling: touch;
+        }
+        .tracker-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+        }
+        .tracker-table th {
+            background: #1e293b;
+            color: var(--text-secondary);
+            font-weight: 600;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+        .tracker-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            white-space: nowrap;
+        }
+        .tracker-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .tracker-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .t-page-btn {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: var(--text-primary);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .t-page-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+        .t-page-btn:not(:disabled):hover {
+            background: #334155;
+            color: #fff;
+        }
+        .t-badge-long {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 11px;
+        }
+        .t-badge-short {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 11px;
+        }
+        .t-status-holding {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .t-status-tp {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        .t-status-sl {
+            background: rgba(100, 116, 139, 0.2);
+            color: #94a3b8;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 12px;
+        }
+        .t-status-time {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
     </style>
+
 </head>
 <body>
     <div class="container">
@@ -1671,23 +1865,112 @@
             </div>
         </div>
 
+        
+    <!-- Portfolio Lifecycle Tracker Component -->
+    <div class="tracker-section" id="portfolio-tracker-macro">
+        <div class="tracker-header">
+            <div>
+                <div class="tracker-title">
+                    <span>📜 機構動能策略：歷史持倉生命週期追蹤與實盤勝率看板</span>
+                    <span style="font-size: 12px; background: rgba(99, 102, 241, 0.15); color: #818cf8; padding: 2px 8px; border-radius: 6px; font-weight: normal;">全週期動態狀態機 ｜ 虛擬客戶端分頁</span>
+                </div>
+                <div class="tracker-subtitle">
+                    每日盤後自動登記入選標的，真實跟蹤 T+1~T+15 實盤動態。核心紀律：嚴格執行高賺賠比 (R:R ≥ 1:3.5)，達標停利 (+11%~+14%) 或跌破關鍵位防守 (-2.5%~-3.5%) 即刻結案。
+                </div>
+            </div>
+            <div style="font-size: 12px; color: var(--text-muted);">
+                本地資料庫安全存儲 • 零延遲記憶系統
+            </div>
+        </div>
+
+        <!-- 5 大量化戰果指標卡 -->
+        <div class="tracker-stats-grid">
+            <div class="t-stat-card">
+                <span class="t-stat-label">🎯 累積追蹤樣本</span>
+                <span class="t-stat-val" style="color: var(--text-primary);">51 <span style="font-size: 13px; font-weight: normal; color: var(--text-muted);">筆</span></span>
+            </div>
+            <div class="t-stat-card">
+                <span class="t-stat-label">🔵 當前持倉監控中</span>
+                <span class="t-stat-val" style="color: var(--accent-blue);">15 <span style="font-size: 13px; font-weight: normal; color: var(--text-muted);">檔</span></span>
+            </div>
+            <div class="t-stat-card">
+                <span class="t-stat-label">🏆 已結案勝率</span>
+                <span class="t-stat-val" style="color: #f59e0b;">30.6% <span style="font-size: 12px; font-weight: normal; color: var(--text-muted);">(11勝/36結案)</span></span>
+            </div>
+            <div class="t-stat-card">
+                <span class="t-stat-label">⚖️ 實質平均賺賠比</span>
+                <span class="t-stat-val" style="color: #ec4899;">4.19 : 1 <span style="font-size: 12px; font-weight: normal; color: var(--text-muted);">(+13.0% / -3.1%)</span></span>
+            </div>
+            <div class="t-stat-card">
+                <span class="t-stat-label">📈 累計已實現淨報酬</span>
+                <span class="t-stat-val" style="color: #ef4444;">+65.53%</span>
+            </div>
+        </div>
+
+        <!-- 狀態篩選按鈕列 -->
+        <div class="tracker-filter-bar">
+            <span style="font-size: 13px; color: var(--text-secondary); margin-right: 4px;">🏷️ 生命狀態快篩：</span>
+            <button class="t-filter-btn active" data-status="ALL" onclick="filterTrackerStatus('ALL', this)">全部紀錄 (51)</button>
+            <button class="t-filter-btn" data-status="HOLDING" onclick="filterTrackerStatus('HOLDING', this)">🔵 持倉監控中 (15)</button>
+            <button class="t-filter-btn" data-status="TAKE_PROFIT" onclick="filterTrackerStatus('TAKE_PROFIT', this)">🟢 停利達成 (11)</button>
+            <button class="t-filter-btn" data-status="STOP_LOSS" onclick="filterTrackerStatus('STOP_LOSS', this)">🔴 觸及停損 (25)</button>
+            <button class="t-filter-btn" data-status="TIME_STOP" onclick="filterTrackerStatus('TIME_STOP', this)">⏱️ 時間停損 (0)</button>
+        </div>
+
+        <!-- 虛擬分頁資料表格 -->
+        <div class="tracker-table-wrap">
+            <table class="tracker-table">
+                <thead>
+                    <tr>
+                        <th>入選日期</th>
+                        <th>標的代碼/名稱</th>
+                        <th>方向</th>
+                        <th>進場參考價</th>
+                        <th>停利目標 (+11~14%)</th>
+                        <th>防守停損 (-2.5~3.5%)</th>
+                        <th>現價/結案價</th>
+                        <th>持倉天數</th>
+                        <th>報酬率</th>
+                        <th>生命週期狀態</th>
+                        <th>結案日期</th>
+                    </tr>
+                </thead>
+                <tbody id="trackerTableBody_macro">
+                    <!-- 由 JavaScript 動態分頁渲染 (每頁 10 筆) -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 分頁導覽控制器 -->
+        <div class="tracker-pagination">
+            <div style="display: flex; gap: 8px;">
+                <button class="t-page-btn t-btn-prev" onclick="changeTrackerPage(-1)">‹ 上一頁</button>
+                <button class="t-page-btn t-btn-next" onclick="changeTrackerPage(1)">下一頁 ›</button>
+            </div>
+            <div class="t-page-info" style="font-size: 13px; color: var(--text-secondary); font-family: monospace;">
+                第 1 / 1 頁 (共 51 筆)
+            </div>
+        </div>
+    </div>
+    
+
         </div> <!-- End tab-macro -->
 
         <div id="tab-taiex" class="tab-content">
             <div class="iframe-container">
-                <iframe src="stock_TAIEX.html?v=1794204729" style="width:100%; height:100%; border:none;"></iframe>
+                <iframe src="stock_TAIEX.html?v=1794208314" style="width:100%; height:100%; border:none;"></iframe>
             </div>
         </div>
 
         <div id="tab-tpex" class="tab-content">
             <div class="iframe-container">
-                <iframe src="stock_TPEx.html?v=1794204729" style="width:100%; height:100%; border:none;"></iframe>
+                <iframe src="stock_TPEx.html?v=1794208314" style="width:100%; height:100%; border:none;"></iframe>
             </div>
         </div>
 
         <div id="tab-tx" class="tab-content">
             <div class="iframe-container">
-                <iframe src="stock_TX.html?v=1794204729" style="width:100%; height:100%; border:none;"></iframe>
+                <iframe src="stock_TX.html?v=1794208314" style="width:100%; height:100%; border:none;"></iframe>
             </div>
         </div>
 
@@ -2731,239 +3014,6 @@
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-long">LONG #3</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🌟 機構多因子共振 (Tier 1)</span>
-                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 69.7% ｜ 中段箱型整理區 (季線乖離 +2.5%)">🟡 中位階 (70%)</span>
-                    <a href="stock_1102.html" class="stock-title-link" onclick="openStockModal('1102', '亞泥', event)" title="點擊快速彈窗查看 1102 亞泥 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
-                        <span class="stock-id">1102</span>
-                        <span class="stock-name">亞泥</span>
-                        <span class="stock-market">TWSE</span>
-                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
-                    </a>
-                </div>
-                <div class="stock-price-group">
-                    <span class="price-val text-bull">36.55</span>
-                    <span class="ret-badge ret-bull">20D +1.8%</span>
-                </div>
-            </div>
-            
-            <div class="chips-grid">
-                <div class="chip-item">
-                    <span class="chip-label">投信連動</span>
-                    <span class="chip-val text-bull">連買 0 日</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">外資動向</span>
-                    <span class="chip-val text-bear">連賣 1 日</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">時序狀態</span>
-                    <span class="chip-val font-mono" style="color: #10b981;">買九推進 (3/9 天)</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">量能動能</span>
-                    <span class="chip-val font-mono">1.25x (5MA均量)</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">核心防守 POC</span>
-                    <span class="chip-val font-mono text-bull">37.99 元</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">均線排列</span>
-                    <span class="chip-val font-mono">5M:37.3 | 20M:37.5</span>
-                </div>
-            </div>
-            
-            
-            <div class="vp-box">
-                <div class="vp-header">
-                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
-                    <span class="vp-badge vp-badge-inside">處於密集區內部 (籌碼震盪換手帶)</span>
-                </div>
-                <div class="vp-metrics-row font-mono">
-                    <div>POC 最大量核心價: <strong class="text-bull">35.06 元</strong></div>
-                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">34.26 ~ 37.99 元</strong></div>
-                </div>
-                <div class="vp-pos-desc">
-                    💡 <strong>定價與避巴邏輯：</strong>現價處於 60日密集換手區間 (34.26~37.99元)，POC核心密集價為 35.06元，等待突破/跌破邊緣再行動態進場。
-                </div>
-            </div>
-            
-            
-            <div class="execution-box box-long">
-                <div class="exec-title">
-                    <span>⚡ 模組 3：籌碼密集區精準定價與風控指示 (避免追高雙巴)</span>
-                    <span class="rr-tag">風報比 1 : 3.5</span>
-                </div>
-                <div class="exec-grid">
-                    <div class="exec-col">
-                        <span class="exec-label">🎯 密集區進場點 (避免雙巴)</span>
-                        <span class="exec-val text-bull">36.55 元</span>
-                        <span class="exec-sub">回測機構防守位 35.93元 守穩開倉</span>
-                    </div>
-                    <div class="exec-col">
-                        <span class="exec-label">🛑 密集區防守停損</span>
-                        <span class="exec-val text-bear">35.27 元</span>
-                        <span class="exec-sub">最大回撤 -3.5%</span>
-                    </div>
-                    <div class="exec-col">
-                        <span class="exec-label">🏆 波段停利目標</span>
-                        <span class="exec-val text-bull">41.03 元</span>
-                        <span class="exec-sub">預期利潤 +12.3%</span>
-                    </div>
-                </div>
-                <div class="exec-warning">
-                    ⚠️ <strong>離場警示：</strong>收盤失守關鍵防守位 (35.27元) 或 法人連 3 賣即刻無條件出場
-                </div>
-            </div>
-
-            
-            <div class="warrant-box">
-                <div class="warrant-title">
-                    <span>🎯 個股關聯權證多空分析 (Warrant Flow)</span>
-                    <span class="warrant-tag font-bold">🔴 認購主力壓倒性重押</span>
-                </div>
-                <div class="warrant-grid">
-                    <div class="warrant-item">
-                        <span class="w-label">認購成交總額</span>
-                        <span class="w-val text-bull">1.5 萬元 <small>(100.0%, 5檔)</small></span>
-                    </div>
-                    <div class="warrant-item">
-                        <span class="w-label">認售成交總額</span>
-                        <span class="w-val text-bear">0.0 萬元 <small>(0.0%, 0檔)</small></span>
-                    </div>
-                    <div class="warrant-item">
-                        <span class="w-label">權證多空金額比</span>
-                        <span class="w-val font-mono">認購 100.0% : 認售 0.0%</span>
-                    </div>
-                </div>
-            </div>
-            
-            
-    <div class="xiaoge-warrant-box">
-        <div class="xiaoge-header">
-            <div class="xiaoge-title">
-                <span>🎯 etfinfo_Go 多因子量化權證推薦 (認購 CALL)</span>
-            </div>
-            <div class="xiaoge-subtitle">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分) + 流動性與風控修正</div>
-        </div>
-        <div class="xiaoge-table-wrapper">
-            <table class="xiaoge-table">
-                <thead>
-                    <tr>
-                        <th>綜合評分</th>
-                        <th>權證名稱</th>
-                        <th>買/賣價</th>
-                        <th>履約價(價內外)</th>
-                        <th>剩餘天數</th>
-                        <th>實質槓桿(Delta)</th>
-                        <th>價差比(日損)</th>
-                        <th>差槓比</th>
-                        <th>流通比</th>
-                        <th>券商</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">75.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">035295</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">亞泥凱基64購01</div>
-            </td>
-            <td>1.59 / 1.60</td>
-            <td>
-                <span>45.00</span>
-                <small class="text-muted">(-18.1%)</small>
-            </td>
-            <td class="text-bull"><strong>163</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">3.53x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.15</div>
-            </td>
-            <td>
-                <span>0.62%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.75%</div>
-            </td>
-            <td><span class="badge-diff-lever-relax">0.176%</span></td>
-            <td class="text-bull">0.0%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
-        </tr>
-        
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">65.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">082000</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">亞泥永豐64購01</div>
-            </td>
-            <td>0.76 / 0.77</td>
-            <td>
-                <span>45.00</span>
-                <small class="text-muted">(-18.1%)</small>
-            </td>
-            <td class="text-bull"><strong>168</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">3.29x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.07</div>
-            </td>
-            <td>
-                <span>1.30%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.70%</div>
-            </td>
-            <td><span class="badge-diff-lever-relax">0.396%</span></td>
-            <td class="text-bull">1.3%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">永豐</span></td>
-        </tr>
-        
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">48.0分</div>
-                <span style="background:#334155;color:#cbd5e1;padding:3px 6px;border-radius:4px;font-size:10px;">標準流通</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">034566</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">亞泥國票65購01</div>
-            </td>
-            <td>1.07 / 1.09</td>
-            <td>
-                <span>54.00</span>
-                <small class="text-muted">(-31.8%)</small>
-            </td>
-            <td class="text-bull"><strong>192</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">3.49x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.10</div>
-            </td>
-            <td>
-                <span>1.83%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.84%</div>
-            </td>
-            <td><span class="">0.525%</span></td>
-            <td class="text-bull">0.0%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">國票</span></td>
-        </tr>
-        
-                </tbody>
-            </table>
-        </div>
-        
-    <div class="xiaoge-table-footer">
-        ⚠️ <strong>實戰黃金法則</strong>：優先挑選 <strong>差槓比 &lt; 0.3% (翠綠色)</strong> + <strong>剩餘天數 &gt; 90天</strong> + <strong>價外 3%~15%</strong> 之標的。差槓比代表「現股需上漲多少%才能弭平權證一檔買賣價差」，數值越低勝率越高！
-    </div>
-    
-    </div>
-    
-        </div>
-        
-        <div class="stock-card card-long" data-pos-tier="mid">
-            <div class="card-header">
-                <div class="stock-title-group">
-                    <span class="rank-tag rank-tag-long">LONG #4</span>
-                    <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🌟 機構多因子共振 (Tier 1)</span>
                     <span class="pos-tier-badge pos-tier-mid" title="近半年位階 61.0% ｜ 中段箱型整理區 (季線乖離 +0.1%)">🟡 中位階 (61%)</span>
                     <a href="stock_2816.html" class="stock-title-link" onclick="openStockModal('2816', '旺旺保', event)" title="點擊快速彈窗查看 2816 旺旺保 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
                         <span class="stock-id">2816</span>
@@ -3075,7 +3125,7 @@
         <div class="stock-card card-long" data-pos-tier="mid">
             <div class="card-header">
                 <div class="stock-title-group">
-                    <span class="rank-tag rank-tag-long">LONG #5</span>
+                    <span class="rank-tag rank-tag-long">LONG #4</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🌟 機構多因子共振 (Tier 1)</span>
                     <span class="pos-tier-badge pos-tier-mid" title="近半年位階 52.3% ｜ 中段箱型整理區 (季線乖離 +0.2%)">🟡 中位階 (52%)</span>
                     <a href="stock_1216.html" class="stock-title-link" onclick="openStockModal('1216', '統一', event)" title="點擊快速彈窗查看 1216 統一 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
@@ -3205,7 +3255,7 @@
         <div class="stock-card card-long" data-pos-tier="high">
             <div class="card-header">
                 <div class="stock-title-group">
-                    <span class="rank-tag rank-tag-long">LONG #6</span>
+                    <span class="rank-tag rank-tag-long">LONG #5</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🌟 機構多因子共振 (Tier 1)</span>
                     <span class="pos-tier-badge pos-tier-high" title="近半年位階 73.3% ｜ 逼近半年高檔過熱區 (季線乖離 +1.7%)">🔴 高位階 (73%)</span>
                     <a href="stock_2723.html" class="stock-title-link" onclick="openStockModal('2723', '美食-KY', event)" title="點擊快速彈窗查看 2723 美食-KY (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
@@ -3318,7 +3368,7 @@
         <div class="stock-card card-long" data-pos-tier="mid">
             <div class="card-header">
                 <div class="stock-title-group">
-                    <span class="rank-tag rank-tag-long">LONG #7</span>
+                    <span class="rank-tag rank-tag-long">LONG #6</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🌟 機構多因子共振 (Tier 1)</span>
                     <span class="pos-tier-badge pos-tier-mid" title="近半年位階 61.9% ｜ 中段箱型整理區 (季線乖離 +0.6%)">🟡 中位階 (62%)</span>
                     <a href="stock_2207.html" class="stock-title-link" onclick="openStockModal('2207', '和泰車', event)" title="點擊快速彈窗查看 2207 和泰車 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
@@ -3428,356 +3478,10 @@
         
         </div>
         
-        <div class="stock-card card-long" data-pos-tier="mid">
-            <div class="card-header">
-                <div class="stock-title-group">
-                    <span class="rank-tag rank-tag-long">LONG #8</span>
-                    <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🌟 機構多因子共振 (Tier 1)</span>
-                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 67.2% ｜ 中段箱型整理區 (季線乖離 +0.6%)">🟡 中位階 (67%)</span>
-                    <a href="stock_2851.html" class="stock-title-link" onclick="openStockModal('2851', '中再保', event)" title="點擊快速彈窗查看 2851 中再保 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
-                        <span class="stock-id">2851</span>
-                        <span class="stock-name">中再保</span>
-                        <span class="stock-market">TWSE</span>
-                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
-                    </a>
-                </div>
-                <div class="stock-price-group">
-                    <span class="price-val text-bull">46.45</span>
-                    <span class="ret-badge ret-bull">20D +-2.7%</span>
-                </div>
-            </div>
-            
-            <div class="chips-grid">
-                <div class="chip-item">
-                    <span class="chip-label">投信連動</span>
-                    <span class="chip-val text-bull">連買 0 日</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">外資動向</span>
-                    <span class="chip-val text-bear">連賣 1 日</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">時序狀態</span>
-                    <span class="chip-val font-mono" style="color: #10b981;">買9 轉折確立</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">量能動能</span>
-                    <span class="chip-val font-mono">0.90x (5MA均量)</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">核心防守 POC</span>
-                    <span class="chip-val font-mono text-bull">46.23 元</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">均線排列</span>
-                    <span class="chip-val font-mono">5M:48.3 | 20M:49.4</span>
-                </div>
-            </div>
-            
-            
-            <div class="vp-box">
-                <div class="vp-header">
-                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
-                    <span class="vp-badge vp-badge-inside">處於密集區內部 (籌碼震盪換手帶)</span>
-                </div>
-                <div class="vp-metrics-row font-mono">
-                    <div>POC 最大量核心價: <strong class="text-bull">46.23 元</strong></div>
-                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">44.17 ~ 49.65 元</strong></div>
-                </div>
-                <div class="vp-pos-desc">
-                    💡 <strong>定價與避巴邏輯：</strong>現價處於 60日密集換手區間 (44.17~49.65元)，POC核心密集價為 46.23元，等待突破/跌破邊緣再行動態進場。
-                </div>
-            </div>
-            
-            
-            <div class="execution-box box-long">
-                <div class="exec-title">
-                    <span>⚡ 模組 3：籌碼密集區精準定價與風控指示 (避免追高雙巴)</span>
-                    <span class="rr-tag">風報比 1 : 3.5</span>
-                </div>
-                <div class="exec-grid">
-                    <div class="exec-col">
-                        <span class="exec-label">🎯 密集區進場點 (避免雙巴)</span>
-                        <span class="exec-val text-bull">46.45 元</span>
-                        <span class="exec-sub">回測機構防守位 46.23元 守穩開倉</span>
-                    </div>
-                    <div class="exec-col">
-                        <span class="exec-label">🛑 密集區防守停損</span>
-                        <span class="exec-val text-bear">45.29 元</span>
-                        <span class="exec-sub">最大回撤 -2.5%</span>
-                    </div>
-                    <div class="exec-col">
-                        <span class="exec-label">🏆 波段停利目標</span>
-                        <span class="exec-val text-bull">50.51 元</span>
-                        <span class="exec-sub">預期利潤 +8.7%</span>
-                    </div>
-                </div>
-                <div class="exec-warning">
-                    ⚠️ <strong>離場警示：</strong>收盤失守關鍵防守位 (45.29元) 或 法人連 3 賣即刻無條件出場
-                </div>
-            </div>
-
-            
-            <div class="warrant-box">
-                <div class="warrant-title">
-                    <span>🎯 個股關聯權證多空分析 (Warrant Flow)</span>
-                    <span class="warrant-tag font-bold">🔴 認購主力壓倒性重押</span>
-                </div>
-                <div class="warrant-grid">
-                    <div class="warrant-item">
-                        <span class="w-label">認購成交總額</span>
-                        <span class="w-val text-bull">42.9 萬元 <small>(100.0%, 14檔)</small></span>
-                    </div>
-                    <div class="warrant-item">
-                        <span class="w-label">認售成交總額</span>
-                        <span class="w-val text-bear">0.0 萬元 <small>(0.0%, 0檔)</small></span>
-                    </div>
-                    <div class="warrant-item">
-                        <span class="w-label">權證多空金額比</span>
-                        <span class="w-val font-mono">認購 100.0% : 認售 0.0%</span>
-                    </div>
-                </div>
-            </div>
-            
-            
-    <div class="xiaoge-warrant-box">
-        <div class="xiaoge-header">
-            <div class="xiaoge-title">
-                <span>🎯 etfinfo_Go 多因子量化權證推薦 (認購 CALL)</span>
-            </div>
-            <div class="xiaoge-subtitle">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分) + 流動性與風控修正</div>
-        </div>
-        <div class="xiaoge-table-wrapper">
-            <table class="xiaoge-table">
-                <thead>
-                    <tr>
-                        <th>綜合評分</th>
-                        <th>權證名稱</th>
-                        <th>買/賣價</th>
-                        <th>履約價(價內外)</th>
-                        <th>剩餘天數</th>
-                        <th>實質槓桿(Delta)</th>
-                        <th>價差比(日損)</th>
-                        <th>差槓比</th>
-                        <th>流通比</th>
-                        <th>券商</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">71.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">086373</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">中再保永豐64購01</div>
-            </td>
-            <td>0.83 / 0.84</td>
-            <td>
-                <span>55.00</span>
-                <small class="text-muted">(-15.4%)</small>
-            </td>
-            <td class="text-bull"><strong>157</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">3.49x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.06</div>
-            </td>
-            <td>
-                <span>1.19%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.72%</div>
-            </td>
-            <td><span class="badge-diff-lever-relax">0.341%</span></td>
-            <td class="text-bull">5.8%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">永豐</span></td>
-        </tr>
-        
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">65.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">074563</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">中再保國票65購01</div>
-            </td>
-            <td>0.77 / 0.78</td>
-            <td>
-                <span>57.00</span>
-                <small class="text-muted">(-18.3%)</small>
-            </td>
-            <td class="text-bull"><strong>179</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">2.91x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.05</div>
-            </td>
-            <td>
-                <span>1.28%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.62%</div>
-            </td>
-            <td><span class="badge-diff-lever-relax">0.439%</span></td>
-            <td class="text-bull">1.7%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">國票</span></td>
-        </tr>
-        
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">62.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">033577</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">中再保國票65購02</div>
-            </td>
-            <td>0.98 / 0.99</td>
-            <td>
-                <span>74.00</span>
-                <small class="text-muted">(-37.1%)</small>
-            </td>
-            <td class="text-bull"><strong>190</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">3.57x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.08</div>
-            </td>
-            <td>
-                <span>1.01%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.96%</div>
-            </td>
-            <td><span class="badge-diff-lever-relax">0.283%</span></td>
-            <td class="text-bull">0.0%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">國票</span></td>
-        </tr>
-        
-                </tbody>
-            </table>
-        </div>
-        
-    <div class="xiaoge-table-footer">
-        ⚠️ <strong>實戰黃金法則</strong>：優先挑選 <strong>差槓比 &lt; 0.3% (翠綠色)</strong> + <strong>剩餘天數 &gt; 90天</strong> + <strong>價外 3%~15%</strong> 之標的。差槓比代表「現股需上漲多少%才能弭平權證一檔買賣價差」，數值越低勝率越高！
-    </div>
-    
-    </div>
-    
-        </div>
-        
-        <div class="stock-card card-long" data-pos-tier="mid">
-            <div class="card-header">
-                <div class="stock-title-group">
-                    <span class="rank-tag rank-tag-long">LONG #9</span>
-                    <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🌟 機構多因子共振 (Tier 1)</span>
-                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 61.9% ｜ 中段箱型整理區 (季線乖離 +3.6%)">🟡 中位階 (62%)</span>
-                    <a href="stock_2023.html" class="stock-title-link" onclick="openStockModal('2023', '燁輝', event)" title="點擊快速彈窗查看 2023 燁輝 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
-                        <span class="stock-id">2023</span>
-                        <span class="stock-name">燁輝</span>
-                        <span class="stock-market">TWSE</span>
-                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
-                    </a>
-                </div>
-                <div class="stock-price-group">
-                    <span class="price-val text-bull">14.60</span>
-                    <span class="ret-badge ret-bull">20D +5.0%</span>
-                </div>
-            </div>
-            
-            <div class="chips-grid">
-                <div class="chip-item">
-                    <span class="chip-label">投信連動</span>
-                    <span class="chip-val text-bull">連買 0 日</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">外資動向</span>
-                    <span class="chip-val text-bull">買超</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">時序狀態</span>
-                    <span class="chip-val font-mono" style="color: #10b981;">買九推進 (1/9 天)</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">量能動能</span>
-                    <span class="chip-val text-bull font-bold">1.60x (5MA均量)</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">核心防守 POC</span>
-                    <span class="chip-val font-mono text-bull">14.98 元</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">均線排列</span>
-                    <span class="chip-val font-mono">5M:14.8 | 20M:14.6</span>
-                </div>
-            </div>
-            
-            
-            <div class="vp-box">
-                <div class="vp-header">
-                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
-                    <span class="vp-badge vp-badge-inside">處於密集區內部 (籌碼震盪換手帶)</span>
-                </div>
-                <div class="vp-metrics-row font-mono">
-                    <div>POC 最大量核心價: <strong class="text-bull">13.85 元</strong></div>
-                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">13.55 ~ 14.61 元</strong></div>
-                </div>
-                <div class="vp-pos-desc">
-                    💡 <strong>定價與避巴邏輯：</strong>現價處於 60日密集換手區間 (13.55~14.61元)，POC核心密集價為 13.85元，等待突破/跌破邊緣再行動態進場。
-                </div>
-            </div>
-            
-            
-            <div class="execution-box box-long">
-                <div class="exec-title">
-                    <span>⚡ 模組 3：籌碼密集區精準定價與風控指示 (避免追高雙巴)</span>
-                    <span class="rr-tag">風報比 1 : 3.49</span>
-                </div>
-                <div class="exec-grid">
-                    <div class="exec-col">
-                        <span class="exec-label">🎯 密集區進場點 (避免雙巴)</span>
-                        <span class="exec-val text-bull">14.60 元</span>
-                        <span class="exec-sub">回測機構防守位 14.18元 守穩開倉</span>
-                    </div>
-                    <div class="exec-col">
-                        <span class="exec-label">🛑 密集區防守停損</span>
-                        <span class="exec-val text-bear">14.09 元</span>
-                        <span class="exec-sub">最大回撤 -3.5%</span>
-                    </div>
-                    <div class="exec-col">
-                        <span class="exec-label">🏆 波段停利目標</span>
-                        <span class="exec-val text-bull">16.38 元</span>
-                        <span class="exec-sub">預期利潤 +12.2%</span>
-                    </div>
-                </div>
-                <div class="exec-warning">
-                    ⚠️ <strong>離場警示：</strong>收盤失守關鍵防守位 (14.09元) 或 法人連 3 賣即刻無條件出場
-                </div>
-            </div>
-
-            
-            <div class="warrant-box warrant-box-empty">
-                <span class="warrant-tag">⚪ 本標的尚無活絡權證交易 (主力以現貨/個股期為主)</span>
-            </div>
-            
-            
-        <div class="xiaoge-warrant-box">
-            <div class="xiaoge-header">
-                <div class="xiaoge-title">
-                    <span>🎯 etfinfo_Go 多因子量化權證推薦 (認購 CALL)</span>
-                </div>
-                <div class="xiaoge-subtitle">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分)</div>
-            </div>
-            <div class="xiaoge-empty-strict">
-                <div class="empty-strict-title">💡 系統判定本檔股票「無值得推薦之優質權證」</div>
-                <div class="empty-strict-desc">
-                    全市場流通權證皆因 <strong>即將到期(剩餘天數&lt;30天)、深度價外、仙股無流動性、或差槓比過高(&gt;1.5%)</strong> 遭系統淘汰。<br>
-                    🛡️ <strong>實戰紀律</strong>：寧可直接操作現股，絕不妥協買進劣質權證承擔不合理之時間價值流失與摩擦成本！
-                </div>
-            </div>
-        </div>
-        
-        </div>
-        
         <div class="stock-card card-long" data-pos-tier="high">
             <div class="card-header">
                 <div class="stock-title-group">
-                    <span class="rank-tag rank-tag-long">LONG #10</span>
+                    <span class="rank-tag rank-tag-long">LONG #7</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🌟 機構多因子共振 (Tier 1)</span>
                     <span class="pos-tier-badge pos-tier-high" title="近半年位階 70.7% ｜ 逼近半年高檔過熱區 (季線乖離 +2.8%)">🔴 高位階 (71%)</span>
                     <a href="stock_2801.html" class="stock-title-link" onclick="openStockModal('2801', '彰銀', event)" title="點擊快速彈窗查看 2801 彰銀 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
@@ -3951,7 +3655,554 @@
     
         </div>
         
+        <div class="stock-card card-long" data-pos-tier="mid">
+            <div class="card-header">
+                <div class="stock-title-group">
+                    <span class="rank-tag rank-tag-long">LONG #8</span>
+                    <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🌟 機構多因子共振 (Tier 1)</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 65.2% ｜ 中段箱型整理區 (季線乖離 +3.0%)">🟡 中位階 (65%)</span>
+                    <a href="stock_3705.html" class="stock-title-link" onclick="openStockModal('3705', '永信', event)" title="點擊快速彈窗查看 3705 永信 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
+                        <span class="stock-id">3705</span>
+                        <span class="stock-name">永信</span>
+                        <span class="stock-market">TWSE</span>
+                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
+                    </a>
+                </div>
+                <div class="stock-price-group">
+                    <span class="price-val text-bull">58.80</span>
+                    <span class="ret-badge ret-bull">20D +2.4%</span>
+                </div>
+            </div>
+            
+            <div class="chips-grid">
+                <div class="chip-item">
+                    <span class="chip-label">投信連動</span>
+                    <span class="chip-val text-bull">連買 0 日</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">外資動向</span>
+                    <span class="chip-val text-bull">買超</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">時序狀態</span>
+                    <span class="chip-val font-mono" style="color: #10b981;">買九推進 (3/9 天)</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">量能動能</span>
+                    <span class="chip-val text-bull font-bold">1.81x (5MA均量)</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">核心防守 POC</span>
+                    <span class="chip-val font-mono text-bull">59.46 元</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">均線排列</span>
+                    <span class="chip-val font-mono">5M:59.4 | 20M:59.7</span>
+                </div>
+            </div>
+            
+            
+            <div class="vp-box">
+                <div class="vp-header">
+                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
+                    <span class="vp-badge vp-badge-inside">處於密集區內部 (籌碼震盪換手帶)</span>
+                </div>
+                <div class="vp-metrics-row font-mono">
+                    <div>POC 最大量核心價: <strong class="text-bull">56.04 元</strong></div>
+                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">53.23 ~ 59.75 元</strong></div>
+                </div>
+                <div class="vp-pos-desc">
+                    💡 <strong>定價與避巴邏輯：</strong>現價處於 60日密集換手區間 (53.23~59.75元)，POC核心密集價為 56.04元，等待突破/跌破邊緣再行動態進場。
+                </div>
+            </div>
+            
+            
+            <div class="execution-box box-long">
+                <div class="exec-title">
+                    <span>⚡ 模組 3：籌碼密集區精準定價與風控指示 (避免追高雙巴)</span>
+                    <span class="rr-tag">風報比 1 : 3.5</span>
+                </div>
+                <div class="exec-grid">
+                    <div class="exec-col">
+                        <span class="exec-label">🎯 密集區進場點 (避免雙巴)</span>
+                        <span class="exec-val text-bull">58.80 元</span>
+                        <span class="exec-sub">回測機構防守位 57.33元 守穩開倉</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🛑 密集區防守停損</span>
+                        <span class="exec-val text-bear">56.74 元</span>
+                        <span class="exec-sub">最大回撤 -3.5%</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🏆 波段停利目標</span>
+                        <span class="exec-val text-bull">66.01 元</span>
+                        <span class="exec-sub">預期利潤 +12.3%</span>
+                    </div>
+                </div>
+                <div class="exec-warning">
+                    ⚠️ <strong>離場警示：</strong>收盤失守關鍵防守位 (56.74元) 或 法人連 3 賣即刻無條件出場
+                </div>
+            </div>
+
+            
+            <div class="warrant-box warrant-box-empty">
+                <span class="warrant-tag">⚪ 本標的尚無活絡權證交易 (主力以現貨/個股期為主)</span>
+            </div>
+            
+            
+        <div class="xiaoge-warrant-box">
+            <div class="xiaoge-header">
+                <div class="xiaoge-title">
+                    <span>🎯 etfinfo_Go 多因子量化權證推薦 (認購 CALL)</span>
+                </div>
+                <div class="xiaoge-subtitle">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分)</div>
+            </div>
+            <div class="xiaoge-empty-strict">
+                <div class="empty-strict-title">💡 系統判定本檔股票「無值得推薦之優質權證」</div>
+                <div class="empty-strict-desc">
+                    全市場流通權證皆因 <strong>即將到期(剩餘天數&lt;30天)、深度價外、仙股無流動性、或差槓比過高(&gt;1.5%)</strong> 遭系統淘汰。<br>
+                    🛡️ <strong>實戰紀律</strong>：寧可直接操作現股，絕不妥協買進劣質權證承擔不合理之時間價值流失與摩擦成本！
+                </div>
+            </div>
         </div>
+        
+        </div>
+        
+        <div class="stock-card card-long" data-pos-tier="mid">
+            <div class="card-header">
+                <div class="stock-title-group">
+                    <span class="rank-tag rank-tag-long">LONG #9</span>
+                    <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🌟 機構多因子共振 (Tier 1)</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 67.5% ｜ 中段箱型整理區 (季線乖離 +40.1%)">🟡 中位階 (68%)</span>
+                    <a href="stock_4526.html" class="stock-title-link" onclick="openStockModal('4526', '東台', event)" title="點擊快速彈窗查看 4526 東台 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
+                        <span class="stock-id">4526</span>
+                        <span class="stock-name">東台</span>
+                        <span class="stock-market">TWSE</span>
+                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
+                    </a>
+                </div>
+                <div class="stock-price-group">
+                    <span class="price-val text-bull">49.35</span>
+                    <span class="ret-badge ret-bull">20D +47.5%</span>
+                </div>
+            </div>
+            
+            <div class="chips-grid">
+                <div class="chip-item">
+                    <span class="chip-label">投信連動</span>
+                    <span class="chip-val text-bull">連買 0 日</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">外資動向</span>
+                    <span class="chip-val text-bull">買超</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">時序狀態</span>
+                    <span class="chip-val font-mono" style="color: #10b981;">買九推進 (2/9 天)</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">量能動能</span>
+                    <span class="chip-val font-mono">0.80x (5MA均量)</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">核心防守 POC</span>
+                    <span class="chip-val font-mono text-bull">54.19 元</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">均線排列</span>
+                    <span class="chip-val font-mono">5M:54.9 | 20M:43.0</span>
+                </div>
+            </div>
+            
+            
+            <div class="vp-box">
+                <div class="vp-header">
+                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
+                    <span class="vp-badge vp-badge-inside">處於密集區內部 (籌碼震盪換手帶)</span>
+                </div>
+                <div class="vp-metrics-row font-mono">
+                    <div>POC 最大量核心價: <strong class="text-bull">54.19 元</strong></div>
+                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">38.56 ~ 58.60 元</strong></div>
+                </div>
+                <div class="vp-pos-desc">
+                    💡 <strong>定價與避巴邏輯：</strong>現價處於 60日密集換手區間 (38.56~58.60元)，POC核心密集價為 54.19元，等待突破/跌破邊緣再行動態進場。
+                </div>
+            </div>
+            
+            
+            <div class="execution-box box-long">
+                <div class="exec-title">
+                    <span>⚡ 模組 3：籌碼密集區精準定價與風控指示 (避免追高雙巴)</span>
+                    <span class="rr-tag">風報比 1 : 3.5</span>
+                </div>
+                <div class="exec-grid">
+                    <div class="exec-col">
+                        <span class="exec-label">🎯 密集區進場點 (避免雙巴)</span>
+                        <span class="exec-val text-bull">49.35 元</span>
+                        <span class="exec-sub">回踩關鍵支撐 47.13元 蓄勢起漲</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🛑 密集區防守停損</span>
+                        <span class="exec-val text-bear">47.13 元</span>
+                        <span class="exec-sub">最大回撤 -4.5%</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🏆 波段停利目標</span>
+                        <span class="exec-val text-bull">57.12 元</span>
+                        <span class="exec-sub">預期利潤 +15.7%</span>
+                    </div>
+                </div>
+                <div class="exec-warning">
+                    ⚠️ <strong>離場警示：</strong>收盤失守關鍵防守位 (47.13元) 或 法人連 3 賣即刻無條件出場
+                </div>
+            </div>
+
+            
+            <div class="warrant-box">
+                <div class="warrant-title">
+                    <span>🎯 個股關聯權證多空分析 (Warrant Flow)</span>
+                    <span class="warrant-tag font-bold">🔴 認購主力壓倒性重押</span>
+                </div>
+                <div class="warrant-grid">
+                    <div class="warrant-item">
+                        <span class="w-label">認購成交總額</span>
+                        <span class="w-val text-bull">226.1 萬元 <small>(100.0%, 23檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">認售成交總額</span>
+                        <span class="w-val text-bear">0.0 萬元 <small>(0.0%, 0檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">權證多空金額比</span>
+                        <span class="w-val font-mono">認購 100.0% : 認售 0.0%</span>
+                    </div>
+                </div>
+            </div>
+            
+            
+    <div class="xiaoge-warrant-box">
+        <div class="xiaoge-header">
+            <div class="xiaoge-title">
+                <span>🎯 etfinfo_Go 多因子量化權證推薦 (認購 CALL)</span>
+            </div>
+            <div class="xiaoge-subtitle">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分) + 流動性與風控修正</div>
+        </div>
+        <div class="xiaoge-table-wrapper">
+            <table class="xiaoge-table">
+                <thead>
+                    <tr>
+                        <th>綜合評分</th>
+                        <th>權證名稱</th>
+                        <th>買/賣價</th>
+                        <th>履約價(價內外)</th>
+                        <th>剩餘天數</th>
+                        <th>實質槓桿(Delta)</th>
+                        <th>價差比(日損)</th>
+                        <th>差槓比</th>
+                        <th>流通比</th>
+                        <th>券商</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">53.0分</div>
+                <span style="background:#334155;color:#cbd5e1;padding:3px 6px;border-radius:4px;font-size:10px;">標準流通</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">036632</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">東台國票66購01</div>
+            </td>
+            <td>2.92 / 3.43</td>
+            <td>
+                <span>61.00</span>
+                <small class="text-bull">(-11.2%)</small>
+            </td>
+            <td class="text-bull"><strong>231</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">1.57x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.10</div>
+            </td>
+            <td>
+                <span>55.98%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.23%</div>
+            </td>
+            <td><span class="">35.711%</span></td>
+            <td class="text-bull">0.3%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">國票</span></td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">43.0分</div>
+                <span style="background:#334155;color:#cbd5e1;padding:3px 6px;border-radius:4px;font-size:10px;">⚠️ 觀察中</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">030035</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">東台群益64購01</div>
+            </td>
+            <td>3.60 / 4.26</td>
+            <td>
+                <span>50.00</span>
+                <small class="text-muted">(+8.4%)</small>
+            </td>
+            <td class="text-bull"><strong>149</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">2.53x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.20</div>
+            </td>
+            <td>
+                <span>14.32%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.42%</div>
+            </td>
+            <td><span class="">5.665%</span></td>
+            <td class="text-bull">48.7%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">群益</span></td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">43.0分</div>
+                <span style="background:#334155;color:#cbd5e1;padding:3px 6px;border-radius:4px;font-size:10px;">⚠️ 觀察中</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">089908</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">東台元大64購01</div>
+            </td>
+            <td>5.30 / 6.75</td>
+            <td>
+                <span>37.25</span>
+                <small class="text-muted">(+45.5%)</small>
+            </td>
+            <td class="text-bull"><strong>149</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">1.96x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: 0.24</div>
+            </td>
+            <td>
+                <span>21.48%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.14%</div>
+            </td>
+            <td><span class="">10.985%</span></td>
+            <td class="text-bull">1.2%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">元大</span></td>
+        </tr>
+        
+                </tbody>
+            </table>
+        </div>
+        
+    <div class="xiaoge-table-footer">
+        ⚠️ <strong>實戰黃金法則</strong>：優先挑選 <strong>差槓比 &lt; 0.3% (翠綠色)</strong> + <strong>剩餘天數 &gt; 90天</strong> + <strong>價外 3%~15%</strong> 之標的。差槓比代表「現股需上漲多少%才能弭平權證一檔買賣價差」，數值越低勝率越高！
+    </div>
+    
+    </div>
+    
+        </div>
+        
+        <div class="stock-card card-long" data-pos-tier="mid">
+            <div class="card-header">
+                <div class="stock-title-group">
+                    <span class="rank-tag rank-tag-long">LONG #10</span>
+                    <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">🌟 機構多因子共振 (Tier 1)</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 57.0% ｜ 中段箱型整理區 (季線乖離 -0.9%)">🟡 中位階 (57%)</span>
+                    <a href="stock_6446.html" class="stock-title-link" onclick="openStockModal('6446', '藥華藥', event)" title="點擊快速彈窗查看 6446 藥華藥 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
+                        <span class="stock-id">6446</span>
+                        <span class="stock-name">藥華藥</span>
+                        <span class="stock-market">TWSE</span>
+                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
+                    </a>
+                </div>
+                <div class="stock-price-group">
+                    <span class="price-val text-bull">1270.00</span>
+                    <span class="ret-badge ret-bull">20D +5.4%</span>
+                </div>
+            </div>
+            
+            <div class="chips-grid">
+                <div class="chip-item">
+                    <span class="chip-label">投信連動</span>
+                    <span class="chip-val text-bull">連買 4 日</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">外資動向</span>
+                    <span class="chip-val text-bull">買超</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">時序狀態</span>
+                    <span class="chip-val font-mono" style="color: #10b981;">買13 倒數第 7/13 步</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">量能動能</span>
+                    <span class="chip-val text-bull font-bold">2.48x (5MA均量)</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">核心防守 POC</span>
+                    <span class="chip-val font-mono text-bull">1197.59 元</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">均線排列</span>
+                    <span class="chip-val font-mono">5M:1224.0 | 20M:1199.8</span>
+                </div>
+            </div>
+            
+            
+            <div class="vp-box">
+                <div class="vp-header">
+                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
+                    <span class="vp-badge vp-badge-inside">處於密集區內部 (籌碼震盪換手帶)</span>
+                </div>
+                <div class="vp-metrics-row font-mono">
+                    <div>POC 最大量核心價: <strong class="text-bull">1196.12 元</strong></div>
+                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">1146.25 ~ 1417.00 元</strong></div>
+                </div>
+                <div class="vp-pos-desc">
+                    💡 <strong>定價與避巴邏輯：</strong>現價處於 60日密集換手區間 (1146.25~1417.00元)，POC核心密集價為 1196.12元，等待突破/跌破邊緣再行動態進場。
+                </div>
+            </div>
+            
+            
+            <div class="execution-box box-long">
+                <div class="exec-title">
+                    <span>⚡ 模組 3：籌碼密集區精準定價與風控指示 (避免追高雙巴)</span>
+                    <span class="rr-tag">風報比 1 : 3.5</span>
+                </div>
+                <div class="exec-grid">
+                    <div class="exec-col">
+                        <span class="exec-label">🎯 密集區進場點 (避免雙巴)</span>
+                        <span class="exec-val text-bull">1270.00 元</span>
+                        <span class="exec-sub">回踩關鍵支撐 1212.85元 蓄勢起漲</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🛑 密集區防守停損</span>
+                        <span class="exec-val text-bear">1212.85 元</span>
+                        <span class="exec-sub">最大回撤 -4.5%</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🏆 波段停利目標</span>
+                        <span class="exec-val text-bull">1470.03 元</span>
+                        <span class="exec-sub">預期利潤 +15.8%</span>
+                    </div>
+                </div>
+                <div class="exec-warning">
+                    ⚠️ <strong>離場警示：</strong>收盤失守關鍵防守位 (1212.85元) 或 法人連 3 賣即刻無條件出場
+                </div>
+            </div>
+
+            
+            <div class="warrant-box warrant-box-empty">
+                <span class="warrant-tag">⚪ 本標的尚無活絡權證交易 (主力以現貨/個股期為主)</span>
+            </div>
+            
+            
+        <div class="xiaoge-warrant-box">
+            <div class="xiaoge-header">
+                <div class="xiaoge-title">
+                    <span>🎯 etfinfo_Go 多因子量化權證推薦 (認購 CALL)</span>
+                </div>
+                <div class="xiaoge-subtitle">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分)</div>
+            </div>
+            <div class="xiaoge-empty-strict">
+                <div class="empty-strict-title">💡 系統判定本檔股票「無值得推薦之優質權證」</div>
+                <div class="empty-strict-desc">
+                    全市場流通權證皆因 <strong>即將到期(剩餘天數&lt;30天)、深度價外、仙股無流動性、或差槓比過高(&gt;1.5%)</strong> 遭系統淘汰。<br>
+                    🛡️ <strong>實戰紀律</strong>：寧可直接操作現股，絕不妥協買進劣質權證承擔不合理之時間價值流失與摩擦成本！
+                </div>
+            </div>
+        </div>
+        
+        </div>
+        
+        </div>
+        
+    <!-- Portfolio Lifecycle Tracker Component -->
+    <div class="tracker-section" id="portfolio-tracker-longs">
+        <div class="tracker-header">
+            <div>
+                <div class="tracker-title">
+                    <span>📜 機構動能策略：歷史持倉生命週期追蹤與實盤勝率看板</span>
+                    <span style="font-size: 12px; background: rgba(99, 102, 241, 0.15); color: #818cf8; padding: 2px 8px; border-radius: 6px; font-weight: normal;">全週期動態狀態機 ｜ 虛擬客戶端分頁</span>
+                </div>
+                <div class="tracker-subtitle">
+                    每日盤後自動登記入選標的，真實跟蹤 T+1~T+15 實盤動態。核心紀律：嚴格執行高賺賠比 (R:R ≥ 1:3.5)，達標停利 (+11%~+14%) 或跌破關鍵位防守 (-2.5%~-3.5%) 即刻結案。
+                </div>
+            </div>
+            <div style="font-size: 12px; color: var(--text-muted);">
+                本地資料庫安全存儲 • 零延遲記憶系統
+            </div>
+        </div>
+
+        <!-- 5 大量化戰果指標卡 -->
+        <div class="tracker-stats-grid">
+            <div class="t-stat-card">
+                <span class="t-stat-label">🎯 累積追蹤樣本</span>
+                <span class="t-stat-val" style="color: var(--text-primary);">51 <span style="font-size: 13px; font-weight: normal; color: var(--text-muted);">筆</span></span>
+            </div>
+            <div class="t-stat-card">
+                <span class="t-stat-label">🔵 當前持倉監控中</span>
+                <span class="t-stat-val" style="color: var(--accent-blue);">15 <span style="font-size: 13px; font-weight: normal; color: var(--text-muted);">檔</span></span>
+            </div>
+            <div class="t-stat-card">
+                <span class="t-stat-label">🏆 已結案勝率</span>
+                <span class="t-stat-val" style="color: #f59e0b;">30.6% <span style="font-size: 12px; font-weight: normal; color: var(--text-muted);">(11勝/36結案)</span></span>
+            </div>
+            <div class="t-stat-card">
+                <span class="t-stat-label">⚖️ 實質平均賺賠比</span>
+                <span class="t-stat-val" style="color: #ec4899;">4.19 : 1 <span style="font-size: 12px; font-weight: normal; color: var(--text-muted);">(+13.0% / -3.1%)</span></span>
+            </div>
+            <div class="t-stat-card">
+                <span class="t-stat-label">📈 累計已實現淨報酬</span>
+                <span class="t-stat-val" style="color: #ef4444;">+65.53%</span>
+            </div>
+        </div>
+
+        <!-- 狀態篩選按鈕列 -->
+        <div class="tracker-filter-bar">
+            <span style="font-size: 13px; color: var(--text-secondary); margin-right: 4px;">🏷️ 生命狀態快篩：</span>
+            <button class="t-filter-btn active" data-status="ALL" onclick="filterTrackerStatus('ALL', this)">全部紀錄 (51)</button>
+            <button class="t-filter-btn" data-status="HOLDING" onclick="filterTrackerStatus('HOLDING', this)">🔵 持倉監控中 (15)</button>
+            <button class="t-filter-btn" data-status="TAKE_PROFIT" onclick="filterTrackerStatus('TAKE_PROFIT', this)">🟢 停利達成 (11)</button>
+            <button class="t-filter-btn" data-status="STOP_LOSS" onclick="filterTrackerStatus('STOP_LOSS', this)">🔴 觸及停損 (25)</button>
+            <button class="t-filter-btn" data-status="TIME_STOP" onclick="filterTrackerStatus('TIME_STOP', this)">⏱️ 時間停損 (0)</button>
+        </div>
+
+        <!-- 虛擬分頁資料表格 -->
+        <div class="tracker-table-wrap">
+            <table class="tracker-table">
+                <thead>
+                    <tr>
+                        <th>入選日期</th>
+                        <th>標的代碼/名稱</th>
+                        <th>方向</th>
+                        <th>進場參考價</th>
+                        <th>停利目標 (+11~14%)</th>
+                        <th>防守停損 (-2.5~3.5%)</th>
+                        <th>現價/結案價</th>
+                        <th>持倉天數</th>
+                        <th>報酬率</th>
+                        <th>生命週期狀態</th>
+                        <th>結案日期</th>
+                    </tr>
+                </thead>
+                <tbody id="trackerTableBody_longs">
+                    <!-- 由 JavaScript 動態分頁渲染 (每頁 10 筆) -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 分頁導覽控制器 -->
+        <div class="tracker-pagination">
+            <div style="display: flex; gap: 8px;">
+                <button class="t-page-btn t-btn-prev" onclick="changeTrackerPage(-1)">‹ 上一頁</button>
+                <button class="t-page-btn t-btn-next" onclick="changeTrackerPage(1)">下一頁 ›</button>
+            </div>
+            <div class="t-page-info" style="font-size: 13px; color: var(--text-secondary); font-family: monospace;">
+                第 1 / 1 頁 (共 51 筆)
+            </div>
+        </div>
+    </div>
+    
         
         </div>
 
@@ -4213,194 +4464,17 @@
                 <div class="stock-title-group">
                     <span class="rank-tag rank-tag-short">SHORT #2</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4);">📉 機構破位對沖 (Tier 1)</span>
-                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 52.0% ｜ 中段箱型整理區 (季線乖離 -3.0%)">🟡 中位階 (52%)</span>
-                    <a href="stock_3029.html" class="stock-title-link" onclick="openStockModal('3029', '零壹', event)" title="點擊快速彈窗查看 3029 零壹 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
-                        <span class="stock-id">3029</span>
-                        <span class="stock-name">零壹</span>
+                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 42.0% ｜ 中段箱型整理區 (季線乖離 -2.8%)">🟡 中位階 (42%)</span>
+                    <a href="stock_4977.html" class="stock-title-link" onclick="openStockModal('4977', '眾達-KY', event)" title="點擊快速彈窗查看 4977 眾達-KY (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
+                        <span class="stock-id">4977</span>
+                        <span class="stock-name">眾達-KY</span>
                         <span class="stock-market">TWSE</span>
                         <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
                     </a>
                 </div>
                 <div class="stock-price-group">
-                    <span class="price-val text-bear">112.50</span>
-                    <span class="ret-badge ret-bear">破 60MA 季線 116.02</span>
-                </div>
-            </div>
-            
-            <div class="chips-grid">
-                <div class="chip-item">
-                    <span class="chip-label">投信連動</span>
-                    <span class="chip-val text-bear">連賣 2 日</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">外資動向</span>
-                    <span class="chip-val text-bull">連買 1 日</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">時序狀態</span>
-                    <span class="chip-val font-mono" style="color: #94a3b8;">買九推進 (5/9 天)</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">量能動能</span>
-                    <span class="chip-val text-bear font-bold">1.86x (5MA均量)</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">核心防守 POC</span>
-                    <span class="chip-val font-mono text-bear">118.44 元</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">均線排列</span>
-                    <span class="chip-val font-mono">20M:120.0 | 60M:116.0</span>
-                </div>
-            </div>
-            
-            
-            <div class="vp-box">
-                <div class="vp-header">
-                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
-                    <span class="vp-badge vp-badge-resistance">跌破密集區之下 (視為沉重套牢壓力)</span>
-                </div>
-                <div class="vp-metrics-row font-mono">
-                    <div>POC 最大量核心價: <strong class="text-bear">118.98 元</strong></div>
-                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">114.84 ~ 125.67 元</strong></div>
-                </div>
-                <div class="vp-pos-desc">
-                    💡 <strong>定價與避巴邏輯：</strong>現價跌破 60日密集區 (114.84~125.67元)，密集區累積大量套牢賣壓。反彈遇阻不過順勢放空，避免低接遭遇多殺多。
-                </div>
-            </div>
-            
-            
-            <div class="execution-box box-short">
-                <div class="exec-title">
-                    <span>⚡ 模組 3：籌碼密集區遇阻放空與風控指示</span>
-                    <span class="rr-tag">風報比 1 : 3.5</span>
-                </div>
-                <div class="exec-grid">
-                    <div class="exec-col">
-                        <span class="exec-label">🎯 密集區遇阻放空點</span>
-                        <span class="exec-val text-bear">112.50 元</span>
-                        <span class="exec-sub">反彈遇阻機構防守位 114.98元 遇阻放空</span>
-                    </div>
-                    <div class="exec-col">
-                        <span class="exec-label">🛑 密集區防守停損</span>
-                        <span class="exec-val text-bear">117.28 元</span>
-                        <span class="exec-sub">停損空間 +4.2%</span>
-                    </div>
-                    <div class="exec-col">
-                        <span class="exec-label">🏆 空單回補目標</span>
-                        <span class="exec-val text-bull">95.77 元</span>
-                        <span class="exec-sub">回補利潤 -14.9%</span>
-                    </div>
-                </div>
-                <div class="exec-warning">
-                    ⚠️ <strong>空單出場警示：</strong>盤中強勢站回關鍵防守位 (117.28元) 即無條件空單停損
-                </div>
-            </div>
-
-            
-            <div class="warrant-box">
-                <div class="warrant-title">
-                    <span>🎯 個股關聯權證多空分析 (Warrant Flow)</span>
-                    <span class="warrant-tag font-bold">🔴 認購主力壓倒性重押</span>
-                </div>
-                <div class="warrant-grid">
-                    <div class="warrant-item">
-                        <span class="w-label">認購成交總額</span>
-                        <span class="w-val text-bull">437.1 萬元 <small>(100.0%, 36檔)</small></span>
-                    </div>
-                    <div class="warrant-item">
-                        <span class="w-label">認售成交總額</span>
-                        <span class="w-val text-bear">0.0 萬元 <small>(0.0%, 1檔)</small></span>
-                    </div>
-                    <div class="warrant-item">
-                        <span class="w-label">權證多空金額比</span>
-                        <span class="w-val font-mono">認購 100.0% : 認售 0.0%</span>
-                    </div>
-                </div>
-            </div>
-            
-            
-    <div class="xiaoge-warrant-box">
-        <div class="xiaoge-header">
-            <div class="xiaoge-title">
-                <span>🎯 etfinfo_Go 多因子量化權證推薦 (認售 PUT)</span>
-            </div>
-            <div class="xiaoge-subtitle">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分) + 流動性與風控修正</div>
-        </div>
-        <div class="xiaoge-table-wrapper">
-            <table class="xiaoge-table">
-                <thead>
-                    <tr>
-                        <th>綜合評分</th>
-                        <th>權證名稱</th>
-                        <th>買/賣價</th>
-                        <th>履約價(價內外)</th>
-                        <th>剩餘天數</th>
-                        <th>實質槓桿(Delta)</th>
-                        <th>價差比(日損)</th>
-                        <th>差槓比</th>
-                        <th>流通比</th>
-                        <th>券商</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">65.0分</div>
-                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">04588T</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">零壹國票65售02</div>
-            </td>
-            <td>0.99 / 1.00</td>
-            <td>
-                <span>100.00</span>
-                <small class="text-bull">(-14.0%)</small>
-            </td>
-            <td class="text-bull"><strong>192</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">1.31x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: -0.01</div>
-            </td>
-            <td>
-                <span>1.00%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.45%</div>
-            </td>
-            <td><span class="badge-diff-lever-relax">0.764%</span></td>
-            <td class="text-bull">0.0%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">國票</span></td>
-        </tr>
-        
-                </tbody>
-            </table>
-        </div>
-        
-    <div class="xiaoge-table-footer">
-        ⚠️ <strong>實戰黃金法則</strong>：優先挑選 <strong>差槓比 &lt; 0.3% (翠綠色)</strong> + <strong>剩餘天數 &gt; 90天</strong> + <strong>價外 3%~15%</strong> 之標的。差槓比代表「現股需上漲多少%才能弭平權證一檔買賣價差」，數值越低勝率越高！
-    </div>
-    
-    </div>
-    
-        </div>
-        
-        <div class="stock-card card-short" data-pos-tier="mid">
-            <div class="card-header">
-                <div class="stock-title-group">
-                    <span class="rank-tag rank-tag-short">SHORT #3</span>
-                    <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4);">📉 機構破位對沖 (Tier 1)</span>
-                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 44.9% ｜ 中段箱型整理區 (季線乖離 -8.4%)">🟡 中位階 (45%)</span>
-                    <a href="stock_1326.html" class="stock-title-link" onclick="openStockModal('1326', '台化', event)" title="點擊快速彈窗查看 1326 台化 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
-                        <span class="stock-id">1326</span>
-                        <span class="stock-name">台化</span>
-                        <span class="stock-market">TWSE</span>
-                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
-                    </a>
-                </div>
-                <div class="stock-price-group">
-                    <span class="price-val text-bear">62.70</span>
-                    <span class="ret-badge ret-bear">破 60MA 季線 68.48</span>
+                    <span class="price-val text-bear">165.00</span>
+                    <span class="ret-badge ret-bear">破 60MA 季線 169.75</span>
                 </div>
             </div>
             
@@ -4411,23 +4485,23 @@
                 </div>
                 <div class="chip-item">
                     <span class="chip-label">外資動向</span>
-                    <span class="chip-val text-bull">連買 1 日</span>
+                    <span class="chip-val text-bear">賣超</span>
                 </div>
                 <div class="chip-item">
                     <span class="chip-label">時序狀態</span>
-                    <span class="chip-val font-mono" style="color: #94a3b8;">買九推進 (7/9 天)</span>
+                    <span class="chip-val font-mono" style="color: #94a3b8;">買九推進 (1/9 天)</span>
                 </div>
                 <div class="chip-item">
                     <span class="chip-label">量能動能</span>
-                    <span class="chip-val font-mono">1.35x (5MA均量)</span>
+                    <span class="chip-val text-bear font-bold">2.27x (5MA均量)</span>
                 </div>
                 <div class="chip-item">
                     <span class="chip-label">核心防守 POC</span>
-                    <span class="chip-val font-mono text-bear">70.71 元</span>
+                    <span class="chip-val font-mono text-bear">176.57 元</span>
                 </div>
                 <div class="chip-item">
                     <span class="chip-label">均線排列</span>
-                    <span class="chip-val font-mono">20M:74.2 | 60M:68.5</span>
+                    <span class="chip-val font-mono">20M:177.4 | 60M:169.8</span>
                 </div>
             </div>
             
@@ -4438,11 +4512,11 @@
                     <span class="vp-badge vp-badge-resistance">跌破密集區之下 (視為沉重套牢壓力)</span>
                 </div>
                 <div class="vp-metrics-row font-mono">
-                    <div>POC 最大量核心價: <strong class="text-bear">70.72 元</strong></div>
-                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">65.85 ~ 79.35 元</strong></div>
+                    <div>POC 最大量核心價: <strong class="text-bear">176.57 元</strong></div>
+                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">166.25 ~ 190.06 元</strong></div>
                 </div>
                 <div class="vp-pos-desc">
-                    💡 <strong>定價與避巴邏輯：</strong>現價跌破 60日密集區 (65.85~79.35元)，密集區累積大量套牢賣壓。反彈遇阻不過順勢放空，避免低接遭遇多殺多。
+                    💡 <strong>定價與避巴邏輯：</strong>現價跌破 60日密集區 (166.25~190.06元)，密集區累積大量套牢賣壓。反彈遇阻不過順勢放空，避免低接遭遇多殺多。
                 </div>
             </div>
             
@@ -4455,22 +4529,22 @@
                 <div class="exec-grid">
                     <div class="exec-col">
                         <span class="exec-label">🎯 密集區遇阻放空點</span>
-                        <span class="exec-val text-bear">62.70 元</span>
-                        <span class="exec-sub">反彈遇阻機構防守位 67.71元 遇阻放空</span>
+                        <span class="exec-val text-bear">165.00 元</span>
+                        <span class="exec-sub">反彈遇阻機構防守位 170.92元 遇阻放空</span>
                     </div>
                     <div class="exec-col">
                         <span class="exec-label">🛑 密集區防守停損</span>
-                        <span class="exec-val text-bear">65.71 元</span>
+                        <span class="exec-val text-bear">172.92 元</span>
                         <span class="exec-sub">停損空間 +4.8%</span>
                     </div>
                     <div class="exec-col">
                         <span class="exec-label">🏆 空單回補目標</span>
-                        <span class="exec-val text-bull">52.17 元</span>
+                        <span class="exec-val text-bull">137.28 元</span>
                         <span class="exec-sub">回補利潤 -16.8%</span>
                     </div>
                 </div>
                 <div class="exec-warning">
-                    ⚠️ <strong>空單出場警示：</strong>盤中強勢站回關鍵防守位 (65.71元) 即無條件空單停損
+                    ⚠️ <strong>空單出場警示：</strong>盤中強勢站回關鍵防守位 (172.92元) 即無條件空單停損
                 </div>
             </div>
 
@@ -4483,15 +4557,15 @@
                 <div class="warrant-grid">
                     <div class="warrant-item">
                         <span class="w-label">認購成交總額</span>
-                        <span class="w-val text-bull">409.8 萬元 <small>(99.6%, 169檔)</small></span>
+                        <span class="w-val text-bull">1,350.8 萬元 <small>(97.4%, 128檔)</small></span>
                     </div>
                     <div class="warrant-item">
                         <span class="w-label">認售成交總額</span>
-                        <span class="w-val text-bear">1.8 萬元 <small>(0.4%, 5檔)</small></span>
+                        <span class="w-val text-bear">35.6 萬元 <small>(2.6%, 4檔)</small></span>
                     </div>
                     <div class="warrant-item">
                         <span class="w-label">權證多空金額比</span>
-                        <span class="w-val font-mono">認購 99.6% : 認售 0.4%</span>
+                        <span class="w-val font-mono">認購 97.4% : 認售 2.6%</span>
                     </div>
                 </div>
             </div>
@@ -4524,28 +4598,28 @@
                     
         <tr>
             <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">48.0分</div>
-                <span style="background:#334155;color:#cbd5e1;padding:3px 6px;border-radius:4px;font-size:10px;">標準流通</span>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
             </td>
             <td>
-                <strong style="color:#ffffff; font-size:13px;">04944T</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">台化台新64售04</div>
+                <strong style="color:#ffffff; font-size:13px;">05111T</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">眾達台新65售02</div>
             </td>
-            <td>3.94 / 4.04</td>
+            <td>2.56 / 2.57</td>
             <td>
-                <span>80.00</span>
-                <small class="text-muted">(+13.9%)</small>
+                <span>170.00</span>
+                <small class="text-bull">(-4.7%)</small>
             </td>
-            <td class="text-bull"><strong>161</strong> 天</td>
+            <td class="text-bull"><strong>175</strong> 天</td>
             <td>
-                <strong style="color:var(--text-primary);">1.80x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: -0.11</div>
+                <strong style="color:var(--text-primary);">1.69x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: -0.02</div>
             </td>
             <td>
-                <span>2.48%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.29%</div>
+                <span>0.39%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.46%</div>
             </td>
-            <td><span class="">1.375%</span></td>
+            <td><span class="badge-diff-lever-relax">0.230%</span></td>
             <td class="text-bull">0.0%</td>
             <td><span style="color:var(--accent-blue); font-weight:700;">商9B0</span></td>
         </tr>
@@ -4565,212 +4639,7 @@
         <div class="stock-card card-short" data-pos-tier="mid">
             <div class="card-header">
                 <div class="stock-title-group">
-                    <span class="rank-tag rank-tag-short">SHORT #4</span>
-                    <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4);">📉 機構破位對沖 (Tier 1)</span>
-                    <span class="pos-tier-badge pos-tier-mid" title="近半年位階 40.2% ｜ 中段箱型整理區 (季線乖離 -4.6%)">🟡 中位階 (40%)</span>
-                    <a href="stock_1802.html" class="stock-title-link" onclick="openStockModal('1802', '台玻', event)" title="點擊快速彈窗查看 1802 台玻 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
-                        <span class="stock-id">1802</span>
-                        <span class="stock-name">台玻</span>
-                        <span class="stock-market">TWSE</span>
-                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
-                    </a>
-                </div>
-                <div class="stock-price-group">
-                    <span class="price-val text-bear">57.80</span>
-                    <span class="ret-badge ret-bear">破 60MA 季線 60.57</span>
-                </div>
-            </div>
-            
-            <div class="chips-grid">
-                <div class="chip-item">
-                    <span class="chip-label">投信連動</span>
-                    <span class="chip-val text-bear">連賣 1 日</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">外資動向</span>
-                    <span class="chip-val text-bull">連買 1 日</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">時序狀態</span>
-                    <span class="chip-val font-mono" style="color: #94a3b8;">買九推進 (2/9 天)</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">量能動能</span>
-                    <span class="chip-val font-mono">0.50x (5MA均量)</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">核心防守 POC</span>
-                    <span class="chip-val font-mono text-bear">66.50 元</span>
-                </div>
-                <div class="chip-item">
-                    <span class="chip-label">均線排列</span>
-                    <span class="chip-val font-mono">20M:64.5 | 60M:60.6</span>
-                </div>
-            </div>
-            
-            
-            <div class="vp-box">
-                <div class="vp-header">
-                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
-                    <span class="vp-badge vp-badge-resistance">跌破密集區之下 (視為沉重套牢壓力)</span>
-                </div>
-                <div class="vp-metrics-row font-mono">
-                    <div>POC 最大量核心價: <strong class="text-bear">66.50 元</strong></div>
-                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">60.37 ~ 69.68 元</strong></div>
-                </div>
-                <div class="vp-pos-desc">
-                    💡 <strong>定價與避巴邏輯：</strong>現價跌破 60日密集區 (60.37~69.68元)，密集區累積大量套牢賣壓。反彈遇阻不過順勢放空，避免低接遭遇多殺多。
-                </div>
-            </div>
-            
-            
-            <div class="execution-box box-short">
-                <div class="exec-title">
-                    <span>⚡ 模組 3：籌碼密集區遇阻放空與風控指示</span>
-                    <span class="rr-tag">風報比 1 : 3.5</span>
-                </div>
-                <div class="exec-grid">
-                    <div class="exec-col">
-                        <span class="exec-label">🎯 密集區遇阻放空點</span>
-                        <span class="exec-val text-bear">57.80 元</span>
-                        <span class="exec-sub">反彈遇阻機構防守位 61.47元 遇阻放空</span>
-                    </div>
-                    <div class="exec-col">
-                        <span class="exec-label">🛑 密集區防守停損</span>
-                        <span class="exec-val text-bear">60.57 元</span>
-                        <span class="exec-sub">停損空間 +4.8%</span>
-                    </div>
-                    <div class="exec-col">
-                        <span class="exec-label">🏆 空單回補目標</span>
-                        <span class="exec-val text-bull">48.10 元</span>
-                        <span class="exec-sub">回補利潤 -16.8%</span>
-                    </div>
-                </div>
-                <div class="exec-warning">
-                    ⚠️ <strong>空單出場警示：</strong>盤中強勢站回關鍵防守位 (60.57元) 即無條件空單停損
-                </div>
-            </div>
-
-            
-            <div class="warrant-box">
-                <div class="warrant-title">
-                    <span>🎯 個股關聯權證多空分析 (Warrant Flow)</span>
-                    <span class="warrant-tag font-bold">🔴 認購明顯佔優</span>
-                </div>
-                <div class="warrant-grid">
-                    <div class="warrant-item">
-                        <span class="w-label">認購成交總額</span>
-                        <span class="w-val text-bull">552.0 萬元 <small>(75.7%, 171檔)</small></span>
-                    </div>
-                    <div class="warrant-item">
-                        <span class="w-label">認售成交總額</span>
-                        <span class="w-val text-bear">177.4 萬元 <small>(24.3%, 8檔)</small></span>
-                    </div>
-                    <div class="warrant-item">
-                        <span class="w-label">權證多空金額比</span>
-                        <span class="w-val font-mono">認購 75.7% : 認售 24.3%</span>
-                    </div>
-                </div>
-            </div>
-            
-            
-    <div class="xiaoge-warrant-box">
-        <div class="xiaoge-header">
-            <div class="xiaoge-title">
-                <span>🎯 etfinfo_Go 多因子量化權證推薦 (認售 PUT)</span>
-            </div>
-            <div class="xiaoge-subtitle">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分) + 流動性與風控修正</div>
-        </div>
-        <div class="xiaoge-table-wrapper">
-            <table class="xiaoge-table">
-                <thead>
-                    <tr>
-                        <th>綜合評分</th>
-                        <th>權證名稱</th>
-                        <th>買/賣價</th>
-                        <th>履約價(價內外)</th>
-                        <th>剩餘天數</th>
-                        <th>實質槓桿(Delta)</th>
-                        <th>價差比(日損)</th>
-                        <th>差槓比</th>
-                        <th>流通比</th>
-                        <th>券商</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">41.0分</div>
-                <span style="background:#334155;color:#cbd5e1;padding:3px 6px;border-radius:4px;font-size:10px;">⚠️ 觀察中</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">05038T</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">台玻凱基64售05</div>
-            </td>
-            <td>1.33 / 1.54</td>
-            <td>
-                <span>50.00</span>
-                <small class="text-muted">(-27.0%)</small>
-            </td>
-            <td class="text-bull"><strong>168</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">1.96x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: -0.05</div>
-            </td>
-            <td>
-                <span>1.94%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.80%</div>
-            </td>
-            <td><span class="">0.988%</span></td>
-            <td class="text-bull">4.4%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">凱基</span></td>
-        </tr>
-        
-        <tr>
-            <td>
-                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">34.0分</div>
-                <span style="background:#334155;color:#cbd5e1;padding:3px 6px;border-radius:4px;font-size:10px;">⚠️ 觀察中</span>
-            </td>
-            <td>
-                <strong style="color:#ffffff; font-size:13px;">04045T</strong>
-                <div style="font-size:11px; color:var(--text-secondary);">台玻國票64售02</div>
-            </td>
-            <td>0.26 / 0.28</td>
-            <td>
-                <span>30.00</span>
-                <small class="text-muted">(-111.7%)</small>
-            </td>
-            <td class="text-bull"><strong>144</strong> 天</td>
-            <td>
-                <strong style="color:var(--text-primary);">2.34x</strong>
-                <div style="font-size:10px; color:var(--text-muted);">Delta: -0.01</div>
-            </td>
-            <td>
-                <span>3.57%</span>
-                <div style="font-size:10px; color:var(--text-muted);">Theta損: 1.69%</div>
-            </td>
-            <td><span class="">1.526%</span></td>
-            <td class="text-bull">7.9%</td>
-            <td><span style="color:var(--accent-blue); font-weight:700;">國票</span></td>
-        </tr>
-        
-                </tbody>
-            </table>
-        </div>
-        
-    <div class="xiaoge-table-footer">
-        ⚠️ <strong>實戰黃金法則</strong>：優先挑選 <strong>差槓比 &lt; 0.3% (翠綠色)</strong> + <strong>剩餘天數 &gt; 90天</strong> + <strong>價外 3%~15%</strong> 之標的。差槓比代表「現股需上漲多少%才能弭平權證一檔買賣價差」，數值越低勝率越高！
-    </div>
-    
-    </div>
-    
-        </div>
-        
-        <div class="stock-card card-short" data-pos-tier="mid">
-            <div class="card-header">
-                <div class="stock-title-group">
-                    <span class="rank-tag rank-tag-short">SHORT #5</span>
+                    <span class="rank-tag rank-tag-short">SHORT #3</span>
                     <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4);">📉 機構破位對沖 (Tier 1)</span>
                     <span class="pos-tier-badge pos-tier-mid" title="近半年位階 47.5% ｜ 中段箱型整理區 (季線乖離 +1.3%)">🟡 中位階 (48%)</span>
                     <a href="stock_6456.html" class="stock-title-link" onclick="openStockModal('6456', 'GIS-KY', event)" title="點擊快速彈窗查看 6456 GIS-KY (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
@@ -5000,6 +4869,416 @@
     
         </div>
         
+        <div class="stock-card card-short" data-pos-tier="high">
+            <div class="card-header">
+                <div class="stock-title-group">
+                    <span class="rank-tag rank-tag-short">SHORT #4</span>
+                    <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(148, 163, 184, 0.2); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.4);">⚠️ 弱勢籌碼調節 (Tier 2)</span>
+                    <span class="pos-tier-badge pos-tier-high" title="近半年位階 76.6% ｜ 逼近半年高檔過熱區 (季線乖離 -0.2%)">🔴 高位階 (77%)</span>
+                    <a href="stock_2881.html" class="stock-title-link" onclick="openStockModal('2881', '富邦金', event)" title="點擊快速彈窗查看 2881 富邦金 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
+                        <span class="stock-id">2881</span>
+                        <span class="stock-name">富邦金</span>
+                        <span class="stock-market">TWSE</span>
+                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
+                    </a>
+                </div>
+                <div class="stock-price-group">
+                    <span class="price-val text-bear">148.00</span>
+                    <span class="ret-badge ret-bear">破 60MA 季線 148.24</span>
+                </div>
+            </div>
+            
+            <div class="chips-grid">
+                <div class="chip-item">
+                    <span class="chip-label">投信連動</span>
+                    <span class="chip-val text-bear">連賣 1 日</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">外資動向</span>
+                    <span class="chip-val text-bull">連買 1 日</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">時序狀態</span>
+                    <span class="chip-val font-mono" style="color: #94a3b8;">買九推進 (5/9 天)</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">量能動能</span>
+                    <span class="chip-val text-bear font-bold">2.48x (5MA均量)</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">核心防守 POC</span>
+                    <span class="chip-val font-mono text-bear">153.74 元</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">均線排列</span>
+                    <span class="chip-val font-mono">20M:157.8 | 60M:148.2</span>
+                </div>
+            </div>
+            
+            
+            <div class="vp-box">
+                <div class="vp-header">
+                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
+                    <span class="vp-badge vp-badge-inside">處於密集區內部 (籌碼震盪換手帶)</span>
+                </div>
+                <div class="vp-metrics-row font-mono">
+                    <div>POC 最大量核心價: <strong class="text-bear">153.74 元</strong></div>
+                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">141.95 ~ 162.45 元</strong></div>
+                </div>
+                <div class="vp-pos-desc">
+                    💡 <strong>定價與避巴邏輯：</strong>現價處於 60日密集換手區間 (141.95~162.45元)，POC核心密集價為 153.74元，等待突破/跌破邊緣再行動態進場。
+                </div>
+            </div>
+            
+            
+            <div class="execution-box box-short">
+                <div class="exec-title">
+                    <span>⚡ 模組 3：籌碼密集區遇阻放空與風控指示</span>
+                    <span class="rr-tag">風報比 1 : 3.5</span>
+                </div>
+                <div class="exec-grid">
+                    <div class="exec-col">
+                        <span class="exec-label">🎯 密集區遇阻放空點</span>
+                        <span class="exec-val text-bear">148.00 元</span>
+                        <span class="exec-sub">反彈遇阻機構防守位 153.74元 遇阻放空</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🛑 密集區防守停損</span>
+                        <span class="exec-val text-bear">153.50 元</span>
+                        <span class="exec-sub">停損空間 +3.7%</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🏆 空單回補目標</span>
+                        <span class="exec-val text-bull">128.75 元</span>
+                        <span class="exec-sub">回補利潤 -13.0%</span>
+                    </div>
+                </div>
+                <div class="exec-warning">
+                    ⚠️ <strong>空單出場警示：</strong>盤中強勢站回關鍵防守位 (153.50元) 即無條件空單停損
+                </div>
+            </div>
+
+            
+            <div class="warrant-box">
+                <div class="warrant-title">
+                    <span>🎯 個股關聯權證多空分析 (Warrant Flow)</span>
+                    <span class="warrant-tag font-bold">🔴 認購明顯佔優</span>
+                </div>
+                <div class="warrant-grid">
+                    <div class="warrant-item">
+                        <span class="w-label">認購成交總額</span>
+                        <span class="w-val text-bull">420.4 萬元 <small>(73.7%, 49檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">認售成交總額</span>
+                        <span class="w-val text-bear">149.9 萬元 <small>(26.3%, 3檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">權證多空金額比</span>
+                        <span class="w-val font-mono">認購 73.7% : 認售 26.3%</span>
+                    </div>
+                </div>
+            </div>
+            
+            
+    <div class="xiaoge-warrant-box">
+        <div class="xiaoge-header">
+            <div class="xiaoge-title">
+                <span>🎯 etfinfo_Go 多因子量化權證推薦 (認售 PUT)</span>
+            </div>
+            <div class="xiaoge-subtitle">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分) + 流動性與風控修正</div>
+        </div>
+        <div class="xiaoge-table-wrapper">
+            <table class="xiaoge-table">
+                <thead>
+                    <tr>
+                        <th>綜合評分</th>
+                        <th>權證名稱</th>
+                        <th>買/賣價</th>
+                        <th>履約價(價內外)</th>
+                        <th>剩餘天數</th>
+                        <th>實質槓桿(Delta)</th>
+                        <th>價差比(日損)</th>
+                        <th>差槓比</th>
+                        <th>流通比</th>
+                        <th>券商</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">71.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">05188T</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">富邦金元大65售01</div>
+            </td>
+            <td>1.09 / 1.10</td>
+            <td>
+                <span>131.75</span>
+                <small class="text-muted">(-16.5%)</small>
+            </td>
+            <td class="text-bull"><strong>177</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">3.09x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: -0.02</div>
+            </td>
+            <td>
+                <span>0.91%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.65%</div>
+            </td>
+            <td><span class="badge-diff-lever-relax">0.294%</span></td>
+            <td class="text-bull">0.0%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">元大</span></td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">62.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">04516T</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">富邦金國票64售02</div>
+            </td>
+            <td>0.88 / 0.89</td>
+            <td>
+                <span>120.00</span>
+                <small class="text-muted">(-27.9%)</small>
+            </td>
+            <td class="text-bull"><strong>157</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">4.00x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: -0.02</div>
+            </td>
+            <td>
+                <span>1.12%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 1.00%</div>
+            </td>
+            <td><span class="badge-diff-lever-relax">0.280%</span></td>
+            <td class="text-bull">5.0%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">富邦</span></td>
+        </tr>
+        
+                </tbody>
+            </table>
+        </div>
+        
+    <div class="xiaoge-table-footer">
+        ⚠️ <strong>實戰黃金法則</strong>：優先挑選 <strong>差槓比 &lt; 0.3% (翠綠色)</strong> + <strong>剩餘天數 &gt; 90天</strong> + <strong>價外 3%~15%</strong> 之標的。差槓比代表「現股需上漲多少%才能弭平權證一檔買賣價差」，數值越低勝率越高！
+    </div>
+    
+    </div>
+    
+        </div>
+        
+        <div class="stock-card card-short" data-pos-tier="high">
+            <div class="card-header">
+                <div class="stock-title-group">
+                    <span class="rank-tag rank-tag-short">SHORT #5</span>
+                    <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: rgba(148, 163, 184, 0.2); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.4);">⚠️ 弱勢籌碼調節 (Tier 2)</span>
+                    <span class="pos-tier-badge pos-tier-high" title="近半年位階 71.1% ｜ 逼近半年高檔過熱區 (季線乖離 -3.1%)">🔴 高位階 (71%)</span>
+                    <a href="stock_2882.html" class="stock-title-link" onclick="openStockModal('2882', '國泰金', event)" title="點擊快速彈窗查看 2882 國泰金 (K線 / 九轉序列 / 13不連續 / 每日權證資金流)">
+                        <span class="stock-id">2882</span>
+                        <span class="stock-name">國泰金</span>
+                        <span class="stock-market">TWSE</span>
+                        <span class="stock-jump-badge">📊 個股K線/九轉/權證 ↗</span>
+                    </a>
+                </div>
+                <div class="stock-price-group">
+                    <span class="price-val text-bear">106.00</span>
+                    <span class="ret-badge ret-bear">破 60MA 季線 109.39</span>
+                </div>
+            </div>
+            
+            <div class="chips-grid">
+                <div class="chip-item">
+                    <span class="chip-label">投信連動</span>
+                    <span class="chip-val text-bear">連賣 0 日</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">外資動向</span>
+                    <span class="chip-val text-bear">賣超</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">時序狀態</span>
+                    <span class="chip-val font-mono" style="color: #94a3b8;">買九推進 (4/9 天)</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">量能動能</span>
+                    <span class="chip-val text-bear font-bold">1.82x (5MA均量)</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">核心防守 POC</span>
+                    <span class="chip-val font-mono text-bear">112.49 元</span>
+                </div>
+                <div class="chip-item">
+                    <span class="chip-label">均線排列</span>
+                    <span class="chip-val font-mono">20M:113.3 | 60M:109.4</span>
+                </div>
+            </div>
+            
+            
+            <div class="vp-box">
+                <div class="vp-header">
+                    <span>📊 90日 Volume Profile (成交量分佈與交易密集區)</span>
+                    <span class="vp-badge vp-badge-resistance">跌破密集區之下 (視為沉重套牢壓力)</span>
+                </div>
+                <div class="vp-metrics-row font-mono">
+                    <div>POC 最大量核心價: <strong class="text-bear">112.49 元</strong></div>
+                    <div>價值區間 (Value Area 70%): <strong style="color:var(--text-primary);">108.03 ~ 116.95 元</strong></div>
+                </div>
+                <div class="vp-pos-desc">
+                    💡 <strong>定價與避巴邏輯：</strong>現價跌破 60日密集區 (108.03~116.95元)，密集區累積大量套牢賣壓。反彈遇阻不過順勢放空，避免低接遭遇多殺多。
+                </div>
+            </div>
+            
+            
+            <div class="execution-box box-short">
+                <div class="exec-title">
+                    <span>⚡ 模組 3：籌碼密集區遇阻放空與風控指示</span>
+                    <span class="rr-tag">風報比 1 : 3.5</span>
+                </div>
+                <div class="exec-grid">
+                    <div class="exec-col">
+                        <span class="exec-label">🎯 密集區遇阻放空點</span>
+                        <span class="exec-val text-bear">106.00 元</span>
+                        <span class="exec-sub">反彈遇阻機構防守位 107.71元 遇阻放空</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🛑 密集區防守停損</span>
+                        <span class="exec-val text-bear">109.87 元</span>
+                        <span class="exec-sub">停損空間 +3.7%</span>
+                    </div>
+                    <div class="exec-col">
+                        <span class="exec-label">🏆 空單回補目標</span>
+                        <span class="exec-val text-bull">92.45 元</span>
+                        <span class="exec-sub">回補利潤 -12.8%</span>
+                    </div>
+                </div>
+                <div class="exec-warning">
+                    ⚠️ <strong>空單出場警示：</strong>盤中強勢站回關鍵防守位 (109.87元) 即無條件空單停損
+                </div>
+            </div>
+
+            
+            <div class="warrant-box">
+                <div class="warrant-title">
+                    <span>🎯 個股關聯權證多空分析 (Warrant Flow)</span>
+                    <span class="warrant-tag font-bold">🔴 認購明顯佔優</span>
+                </div>
+                <div class="warrant-grid">
+                    <div class="warrant-item">
+                        <span class="w-label">認購成交總額</span>
+                        <span class="w-val text-bull">605.7 萬元 <small>(78.6%, 67檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">認售成交總額</span>
+                        <span class="w-val text-bear">164.8 萬元 <small>(21.4%, 7檔)</small></span>
+                    </div>
+                    <div class="warrant-item">
+                        <span class="w-label">權證多空金額比</span>
+                        <span class="w-val font-mono">認購 78.6% : 認售 21.4%</span>
+                    </div>
+                </div>
+            </div>
+            
+            
+    <div class="xiaoge-warrant-box">
+        <div class="xiaoge-header">
+            <div class="xiaoge-title">
+                <span>🎯 etfinfo_Go 多因子量化權證推薦 (認售 PUT)</span>
+            </div>
+            <div class="xiaoge-subtitle">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分) + 流動性與風控修正</div>
+        </div>
+        <div class="xiaoge-table-wrapper">
+            <table class="xiaoge-table">
+                <thead>
+                    <tr>
+                        <th>綜合評分</th>
+                        <th>權證名稱</th>
+                        <th>買/賣價</th>
+                        <th>履約價(價內外)</th>
+                        <th>剩餘天數</th>
+                        <th>實質槓桿(Delta)</th>
+                        <th>價差比(日損)</th>
+                        <th>差槓比</th>
+                        <th>流通比</th>
+                        <th>券商</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">79.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">05109T</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">國泰金國票65售02</div>
+            </td>
+            <td>1.09 / 1.10</td>
+            <td>
+                <span>100.00</span>
+                <small class="text-bull">(-11.0%)</small>
+            </td>
+            <td class="text-bull"><strong>175</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">3.19x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: -0.03</div>
+            </td>
+            <td>
+                <span>0.91%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.59%</div>
+            </td>
+            <td><span class="badge-diff-lever-relax">0.286%</span></td>
+            <td class="text-bull">4.8%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">國泰</span></td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div style="font-size:14px;font-weight:700;color:#facc15;margin-bottom:4px;">73.0分</div>
+                <span class="badge-xiaoge-relax">🛡️ 低時間損耗</span>
+            </td>
+            <td>
+                <strong style="color:#ffffff; font-size:13px;">05064T</strong>
+                <div style="font-size:11px; color:var(--text-secondary);">國泰金元大64售03</div>
+            </td>
+            <td>0.93 / 0.94</td>
+            <td>
+                <span>97.54</span>
+                <small class="text-bull">(-13.8%)</small>
+            </td>
+            <td class="text-bull"><strong>170</strong> 天</td>
+            <td>
+                <strong style="color:var(--text-primary);">2.82x</strong>
+                <div style="font-size:10px; color:var(--text-muted);">Delta: -0.02</div>
+            </td>
+            <td>
+                <span>1.06%</span>
+                <div style="font-size:10px; color:var(--text-muted);">Theta損: 0.62%</div>
+            </td>
+            <td><span class="badge-diff-lever-relax">0.376%</span></td>
+            <td class="text-bull">0.4%</td>
+            <td><span style="color:var(--accent-blue); font-weight:700;">元大</span></td>
+        </tr>
+        
+                </tbody>
+            </table>
+        </div>
+        
+    <div class="xiaoge-table-footer">
+        ⚠️ <strong>實戰黃金法則</strong>：優先挑選 <strong>差槓比 &lt; 0.3% (翠綠色)</strong> + <strong>剩餘天數 &gt; 90天</strong> + <strong>價外 3%~15%</strong> 之標的。差槓比代表「現股需上漲多少%才能弭平權證一檔買賣價差」，數值越低勝率越高！
+    </div>
+    
+    </div>
+    
+        </div>
+        
         </div>
         
         </div>
@@ -5043,7 +5322,7 @@
         
         <!-- Footer -->
         <div class="footer">
-            TW-Stock Quantitative Research System • 100% 離線純自給自足 (純 SVG 向量圖形) • 產出時間: 2026-11-09 14:12:09
+            TW-Stock Quantitative Research System • 100% 離線純自給自足 (純 SVG 向量圖形) • 產出時間: 2026-11-09 15:11:54
         </div>
     </div>
 
@@ -5072,7 +5351,7 @@
             });
         }
         function copyPlan() {
-            const text = "【台股投行機構 3 模組實戰計畫】基準日: 2026-11-06\n============================================================\n[模組 1: 市場狀態] 做空狀態 (Risk-Off / Short Regime) | 總曝險上限: 0% (全面防禦避險 / 啟動放空)\n市場季線寬度: 10.43% | 加權維持率: 151.92% | 櫃買維持率: 143.86%\n大盤融資金額: 加權 5,340.53億 (-423.56億) | 櫃買 1,699.74億 (-140.62億)\nTX 特法結構: 前五大 +26,061口 (近月 +27,684 / 遠月 -1,623)\n外資期貨淨空單: -99,930口 (-7,925.59億元)\n[溫度計與聯動配置] 評分: 58.5分 (中性偏多 (Moderate Bull)) | 聯動: 投行多因子共振掃描模式 (多方共 10 檔 ｜ 空方共 5 檔) | 認購佔比: 47.5%\n\n🟢【做多標的池 (共 10 檔 ｜ Volume Profile 密集區定價 + 權證嚴選推薦)】\n#1 2610 華航 | [🟡 中位階 (46%)] 現價: 21.20 | 密集區進場: 21.20 | 停損: 20.46 (-3.5%) | 目標: 23.79 (+12.2%) | POC: 20.34 | 首選權證: 037369 華航凱基65購01(差槓比0.264%, 槓桿3.34x, 天數175天)\n#2 5876 上海商銀 | [🟡 中位階 (69%)] 現價: 51.00 | 密集區進場: 51.00 | 停損: 49.22 (-3.5%) | 目標: 57.23 (+12.2%) | POC: 48.89 | 權證: 無合規標的(建議直接操作現股)\n#3 1102 亞泥 | [🟡 中位階 (70%)] 現價: 36.55 | 密集區進場: 36.55 | 停損: 35.27 (-3.5%) | 目標: 41.03 (+12.3%) | POC: 35.06 | 首選權證: 035295 亞泥凱基64購01(差槓比0.176%, 槓桿3.53x, 天數163天)\n#4 2816 旺旺保 | [🟡 中位階 (61%)] 現價: 39.55 | 密集區進場: 39.55 | 停損: 38.26 (-3.3%) | 目標: 44.06 (+11.4%) | POC: 39.83 | 權證: 無合規標的(建議直接操作現股)\n#5 1216 統一 | [🟡 中位階 (52%)] 現價: 76.80 | 密集區進場: 76.80 | 停損: 74.11 (-3.5%) | 目標: 86.21 (+12.3%) | POC: 75.59 | 權證: 無合規標的(建議直接操作現股)\n#6 2723 美食-KY | [🔴 高位階 (73%)] 現價: 79.20 | 密集區進場: 79.20 | 停損: 76.43 (-3.5%) | 目標: 88.89 (+12.2%) | POC: 77.66 | 權證: 無合規標的(建議直接操作現股)\n#7 2207 和泰車 | [🟡 中位階 (62%)] 現價: 528.00 | 密集區進場: 528.00 | 停損: 511.10 (-3.2%) | 目標: 587.15 (+11.2%) | POC: 517.65 | 權證: 無合規標的(建議直接操作現股)\n#8 2851 中再保 | [🟡 中位階 (67%)] 現價: 46.45 | 密集區進場: 46.45 | 停損: 45.29 (-2.5%) | 目標: 50.51 (+8.7%) | POC: 46.23 | 首選權證: 086373 中再保永豐64購01(差槓比0.341%, 槓桿3.49x, 天數157天)\n#9 2023 燁輝 | [🟡 中位階 (62%)] 現價: 14.60 | 密集區進場: 14.60 | 停損: 14.09 (-3.5%) | 目標: 16.38 (+12.2%) | POC: 13.85 | 權證: 無合規標的(建議直接操作現股)\n#10 2801 彰銀 | [🔴 高位階 (71%)] 現價: 27.90 | 密集區進場: 27.90 | 停損: 27.20 (-2.5%) | 目標: 30.35 (+8.8%) | POC: 27.79 | 首選權證: 034579 彰銀國票66購01(差槓比0.333%, 槓桿3.31x, 天數224天)\n\n🔴【反向做空標的池 (共 5 檔 ｜ Volume Profile 破位定價 + 權證嚴選推薦)】\n#1 3231 緯創 | [🟡 中位階 (38%)] 現價: 160.00 | 密集區放空: 160.00 | 停損: 167.68 (+4.8%) | 回補: 133.12 (-16.8%) | POC: 187.77 | 首選權證: 04442T 緯創群益69售01(差槓比0.389%, 槓桿1.65x, 天數304天)\n#2 3029 零壹 | [🟡 中位階 (52%)] 現價: 112.50 | 密集區放空: 112.50 | 停損: 117.28 (+4.2%) | 回補: 95.77 (-14.9%) | POC: 118.98 | 首選權證: 04588T 零壹國票65售02(差槓比0.764%, 槓桿1.31x, 天數192天)\n#3 1326 台化 | [🟡 中位階 (45%)] 現價: 62.70 | 密集區放空: 62.70 | 停損: 65.71 (+4.8%) | 回補: 52.17 (-16.8%) | POC: 70.72 | 首選權證: 04944T 台化台新64售04(差槓比1.375%, 槓桿1.8x, 天數161天)\n#4 1802 台玻 | [🟡 中位階 (40%)] 現價: 57.80 | 密集區放空: 57.80 | 停損: 60.57 (+4.8%) | 回補: 48.10 (-16.8%) | POC: 66.50 | 首選權證: 05038T 台玻凱基64售05(差槓比0.988%, 槓桿1.96x, 天數168天)\n#5 6456 GIS-KY | [🟡 中位階 (48%)] 現價: 80.60 | 密集區放空: 80.60 | 停損: 82.78 (+2.7%) | 回補: 72.97 (-9.5%) | POC: 92.01 | 首選權證: 04738T GIS台新63售03(差槓比0.233%, 槓桿1.89x, 天數142天)\n=============================================================";
+            const text = "【台股投行機構 3 模組實戰計畫】基準日: 2026-11-06\n============================================================\n[模組 1: 市場狀態] 做空狀態 (Risk-Off / Short Regime) | 總曝險上限: 0% (全面防禦避險 / 啟動放空)\n市場季線寬度: 10.43% | 加權維持率: 151.92% | 櫃買維持率: 143.86%\n大盤融資金額: 加權 5,340.53億 (-423.56億) | 櫃買 1,699.74億 (-140.62億)\nTX 特法結構: 前五大 +26,061口 (近月 +27,684 / 遠月 -1,623)\n外資期貨淨空單: -99,930口 (-7,925.59億元)\n[溫度計與聯動配置] 評分: 58.5分 (中性偏多 (Moderate Bull)) | 聯動: 投行多因子共振掃描模式 (多方共 10 檔 ｜ 空方共 5 檔) | 認購佔比: 47.5%\n\n🟢【做多標的池 (共 10 檔 ｜ Volume Profile 密集區定價 + 權證嚴選推薦)】\n#1 2610 華航 | [🟡 中位階 (46%)] 現價: 21.20 | 密集區進場: 21.20 | 停損: 20.46 (-3.5%) | 目標: 23.79 (+12.2%) | POC: 20.34 | 首選權證: 037369 華航凱基65購01(差槓比0.264%, 槓桿3.34x, 天數175天)\n#2 5876 上海商銀 | [🟡 中位階 (69%)] 現價: 51.00 | 密集區進場: 51.00 | 停損: 49.22 (-3.5%) | 目標: 57.23 (+12.2%) | POC: 48.89 | 權證: 無合規標的(建議直接操作現股)\n#3 2816 旺旺保 | [🟡 中位階 (61%)] 現價: 39.55 | 密集區進場: 39.55 | 停損: 38.26 (-3.3%) | 目標: 44.06 (+11.4%) | POC: 39.83 | 權證: 無合規標的(建議直接操作現股)\n#4 1216 統一 | [🟡 中位階 (52%)] 現價: 76.80 | 密集區進場: 76.80 | 停損: 74.11 (-3.5%) | 目標: 86.21 (+12.3%) | POC: 75.59 | 權證: 無合規標的(建議直接操作現股)\n#5 2723 美食-KY | [🔴 高位階 (73%)] 現價: 79.20 | 密集區進場: 79.20 | 停損: 76.43 (-3.5%) | 目標: 88.89 (+12.2%) | POC: 77.66 | 權證: 無合規標的(建議直接操作現股)\n#6 2207 和泰車 | [🟡 中位階 (62%)] 現價: 528.00 | 密集區進場: 528.00 | 停損: 511.10 (-3.2%) | 目標: 587.15 (+11.2%) | POC: 517.65 | 權證: 無合規標的(建議直接操作現股)\n#7 2801 彰銀 | [🔴 高位階 (71%)] 現價: 27.90 | 密集區進場: 27.90 | 停損: 27.20 (-2.5%) | 目標: 30.35 (+8.8%) | POC: 27.79 | 首選權證: 034579 彰銀國票66購01(差槓比0.333%, 槓桿3.31x, 天數224天)\n#8 3705 永信 | [🟡 中位階 (65%)] 現價: 58.80 | 密集區進場: 58.80 | 停損: 56.74 (-3.5%) | 目標: 66.01 (+12.3%) | POC: 56.04 | 權證: 無合規標的(建議直接操作現股)\n#9 4526 東台 | [🟡 中位階 (68%)] 現價: 49.35 | 密集區進場: 49.35 | 停損: 47.13 (-4.5%) | 目標: 57.12 (+15.7%) | POC: 54.19 | 首選權證: 036632 東台國票66購01(差槓比35.711%, 槓桿1.57x, 天數231天)\n#10 6446 藥華藥 | [🟡 中位階 (57%)] 現價: 1270.00 | 密集區進場: 1270.00 | 停損: 1212.85 (-4.5%) | 目標: 1470.03 (+15.8%) | POC: 1196.12 | 權證: 無合規標的(建議直接操作現股)\n\n🔴【反向做空標的池 (共 5 檔 ｜ Volume Profile 破位定價 + 權證嚴選推薦)】\n#1 3231 緯創 | [🟡 中位階 (38%)] 現價: 160.00 | 密集區放空: 160.00 | 停損: 167.68 (+4.8%) | 回補: 133.12 (-16.8%) | POC: 187.77 | 首選權證: 04442T 緯創群益69售01(差槓比0.389%, 槓桿1.65x, 天數304天)\n#2 4977 眾達-KY | [🟡 中位階 (42%)] 現價: 165.00 | 密集區放空: 165.00 | 停損: 172.92 (+4.8%) | 回補: 137.28 (-16.8%) | POC: 176.57 | 首選權證: 05111T 眾達台新65售02(差槓比0.230%, 槓桿1.69x, 天數175天)\n#3 6456 GIS-KY | [🟡 中位階 (48%)] 現價: 80.60 | 密集區放空: 80.60 | 停損: 82.78 (+2.7%) | 回補: 72.97 (-9.5%) | POC: 92.01 | 首選權證: 04738T GIS台新63售03(差槓比0.233%, 槓桿1.89x, 天數142天)\n#4 2881 富邦金 | [🔴 高位階 (77%)] 現價: 148.00 | 密集區放空: 148.00 | 停損: 153.50 (+3.7%) | 回補: 128.75 (-13.0%) | POC: 153.74 | 首選權證: 05188T 富邦金元大65售01(差槓比0.294%, 槓桿3.09x, 天數177天)\n#5 2882 國泰金 | [🔴 高位階 (71%)] 現價: 106.00 | 密集區放空: 106.00 | 停損: 109.87 (+3.7%) | 回補: 92.45 (-12.8%) | POC: 112.49 | 首選權證: 05109T 國泰金國票65售02(差槓比0.286%, 槓桿3.19x, 天數175天)\n=============================================================";
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(text).then(function() {
                     alert("✓ 今日多空作戰計畫 (含權證分析) 已成功複製至剪貼簿！可直接貼至 Line 或 筆記本。");
@@ -5160,5 +5439,120 @@
             <iframe id="modalIframe" class="stock-modal-iframe" src="about:blank"></iframe>
         </div>
     </div>
+
+
+    <!-- Portfolio Lifecycle Client-Side Virtual Pagination Engine -->
+    <script>
+        const RAW_TRACKER_DATA = [{"id": 66, "stock_id": "2882", "stock_name": "國泰金", "market": "TWSE", "action": "SHORT", "entry_date": "2026-11-06", "entry_price": 106.0, "stop_loss": 109.87, "take_profit": 92.45, "rr_ratio": 3.5, "tier_badge": "⚠️ 弱勢籌碼調節 (Tier 2)", "status": "HOLDING", "close_date": null, "close_price": null, "realized_pnl_pct": 0.0, "holding_days": 0, "current_price": 106.0, "unrealized_pnl_pct": 0.0}, {"id": 65, "stock_id": "2881", "stock_name": "富邦金", "market": "TWSE", "action": "SHORT", "entry_date": "2026-11-06", "entry_price": 148.0, "stop_loss": 153.5, "take_profit": 128.75, "rr_ratio": 3.5, "tier_badge": "⚠️ 弱勢籌碼調節 (Tier 2)", "status": "HOLDING", "close_date": null, "close_price": null, "realized_pnl_pct": 0.0, "holding_days": 0, "current_price": 148.0, "unrealized_pnl_pct": 0.0}, {"id": 64, "stock_id": "6456", "stock_name": "GIS-KY", "market": "TWSE", "action": "SHORT", "entry_date": "2026-11-06", "entry_price": 80.6, "stop_loss": 82.78, "take_profit": 72.97, "rr_ratio": 3.5, "tier_badge": "📉 機構破位對沖 (Tier 1)", "status": "HOLDING", "close_date": null, "close_price": null, "realized_pnl_pct": 0.0, "holding_days": 0, "current_price": 80.6, "unrealized_pnl_pct": 0.0}, {"id": 63, "stock_id": "4977", "stock_name": "眾達-KY", "market": "TWSE", "action": "SHORT", "entry_date": "2026-11-06", "entry_price": 165.0, "stop_loss": 172.92, "take_profit": 137.28, "rr_ratio": 3.5, "tier_badge": "📉 機構破位對沖 (Tier 1)", "status": "HOLDING", "close_date": null, "close_price": null, "realized_pnl_pct": 0.0, "holding_days": 0, "current_price": 165.0, "unrealized_pnl_pct": 0.0}, {"id": 62, "stock_id": "3231", "stock_name": "緯創", "market": "TWSE", "action": "SHORT", "entry_date": "2026-11-06", "entry_price": 160.0, "stop_loss": 167.68, "take_profit": 133.12, "rr_ratio": 3.5, "tier_badge": "📉 機構破位對沖 (Tier 1)", "status": "HOLDING", "close_date": null, "close_price": null, "realized_pnl_pct": 0.0, "holding_days": 0, "current_price": 160.0, "unrealized_pnl_pct": 0.0}, {"id": 61, "stock_id": "6446", "stock_name": "藥華藥", "market": "TWSE", "action": "LONG", "entry_date": "2026-11-06", "entry_price": 1270.0, "stop_loss": 1212.85, "take_profit": 1470.03, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "HOLDING", "close_date": null, "close_price": null, "realized_pnl_pct": 0.0, "holding_days": 0, "current_price": 1270.0, "unrealized_pnl_pct": 0.0}, {"id": 60, "stock_id": "4526", "stock_name": "東台", "market": "TWSE", "action": "LONG", "entry_date": "2026-11-06", "entry_price": 49.35, "stop_loss": 47.13, "take_profit": 57.12, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "HOLDING", "close_date": null, "close_price": null, "realized_pnl_pct": 0.0, "holding_days": 0, "current_price": 49.35, "unrealized_pnl_pct": 0.0}, {"id": 59, "stock_id": "3705", "stock_name": "永信", "market": "TWSE", "action": "LONG", "entry_date": "2026-11-06", "entry_price": 58.8, "stop_loss": 56.74, "take_profit": 66.01, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "HOLDING", "close_date": null, "close_price": null, "realized_pnl_pct": 0.0, "holding_days": 0, "current_price": 58.8, "unrealized_pnl_pct": 0.0}, {"id": 58, "stock_id": "2801", "stock_name": "彰銀", "market": "TWSE", "action": "LONG", "entry_date": "2026-11-06", "entry_price": 27.9, "stop_loss": 27.2, "take_profit": 30.35, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "HOLDING", "close_date": null, "close_price": null, "realized_pnl_pct": 0.0, "holding_days": 0, "current_price": 27.9, "unrealized_pnl_pct": 0.0}, {"id": 57, "stock_id": "2207", "stock_name": "和泰車", "market": "TWSE", "action": "LONG", "entry_date": "2026-11-06", "entry_price": 528.0, "stop_loss": 511.1, "take_profit": 587.15, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "HOLDING", "close_date": null, "close_price": null, "realized_pnl_pct": 0.0, "holding_days": 0, "current_price": 528.0, "unrealized_pnl_pct": 0.0}, {"id": 56, "stock_id": "2723", "stock_name": "美食-KY", "market": "TWSE", "action": "LONG", "entry_date": "2026-11-06", "entry_price": 79.2, "stop_loss": 76.43, "take_profit": 88.89, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "HOLDING", "close_date": null, "close_price": null, "realized_pnl_pct": 0.0, "holding_days": 0, "current_price": 79.2, "unrealized_pnl_pct": 0.0}, {"id": 55, "stock_id": "1216", "stock_name": "統一", "market": "TWSE", "action": "LONG", "entry_date": "2026-11-06", "entry_price": 76.8, "stop_loss": 74.11, "take_profit": 86.21, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "HOLDING", "close_date": null, "close_price": null, "realized_pnl_pct": 0.0, "holding_days": 0, "current_price": 76.8, "unrealized_pnl_pct": 0.0}, {"id": 54, "stock_id": "2816", "stock_name": "旺旺保", "market": "TWSE", "action": "LONG", "entry_date": "2026-11-06", "entry_price": 39.55, "stop_loss": 38.26, "take_profit": 44.06, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "HOLDING", "close_date": null, "close_price": null, "realized_pnl_pct": 0.0, "holding_days": 0, "current_price": 39.55, "unrealized_pnl_pct": 0.0}, {"id": 53, "stock_id": "5876", "stock_name": "上海商銀", "market": "TWSE", "action": "LONG", "entry_date": "2026-11-06", "entry_price": 51.0, "stop_loss": 49.22, "take_profit": 57.23, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "HOLDING", "close_date": null, "close_price": null, "realized_pnl_pct": 0.0, "holding_days": 0, "current_price": 51.0, "unrealized_pnl_pct": 0.0}, {"id": 52, "stock_id": "2610", "stock_name": "華航", "market": "TWSE", "action": "LONG", "entry_date": "2026-11-06", "entry_price": 21.2, "stop_loss": 20.46, "take_profit": 23.79, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "HOLDING", "close_date": null, "close_price": null, "realized_pnl_pct": 0.0, "holding_days": 0, "current_price": 21.2, "unrealized_pnl_pct": 0.0}, {"id": 51, "stock_id": "3711", "stock_name": "日月光投控", "market": "TWSE", "action": "SHORT", "entry_date": "2026-10-30", "entry_price": 668.0, "stop_loss": 688.61, "take_profit": 595.87, "rr_ratio": 3.5, "tier_badge": "📉 機構破位對沖 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-02", "close_price": 688.61, "realized_pnl_pct": -3.09, "holding_days": 1, "current_price": 674.0, "unrealized_pnl_pct": -0.9}, {"id": 50, "stock_id": "2301", "stock_name": "光寶科", "market": "TWSE", "action": "SHORT", "entry_date": "2026-10-30", "entry_price": 240.5, "stop_loss": 252.04, "take_profit": 200.11, "rr_ratio": 3.5, "tier_badge": "📉 機構破位對沖 (Tier 1)", "status": "TAKE_PROFIT", "close_date": "2026-11-06", "close_price": 200.11, "realized_pnl_pct": 16.79, "holding_days": 5, "current_price": 198.0, "unrealized_pnl_pct": 17.67}, {"id": 49, "stock_id": "2421", "stock_name": "建準", "market": "TWSE", "action": "SHORT", "entry_date": "2026-10-30", "entry_price": 144.0, "stop_loss": 150.57, "take_profit": 121.01, "rr_ratio": 3.5, "tier_badge": "📉 機構破位對沖 (Tier 1)", "status": "TAKE_PROFIT", "close_date": "2026-11-06", "close_price": 121.01, "realized_pnl_pct": 15.97, "holding_days": 5, "current_price": 125.0, "unrealized_pnl_pct": 13.19}, {"id": 48, "stock_id": "0050", "stock_name": "元大台灣50", "market": "TWSE", "action": "SHORT", "entry_date": "2026-10-30", "entry_price": 104.95, "stop_loss": 108.62, "take_profit": 92.1, "rr_ratio": 3.5, "tier_badge": "📉 機構破位對沖 (Tier 1)", "status": "TAKE_PROFIT", "close_date": "2026-11-06", "close_price": 92.1, "realized_pnl_pct": 12.24, "holding_days": 5, "current_price": 92.5, "unrealized_pnl_pct": 11.86}, {"id": 47, "stock_id": "2206", "stock_name": "三陽工業", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-30", "entry_price": 63.8, "stop_loss": 61.82, "take_profit": 70.73, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-06", "close_price": 61.82, "realized_pnl_pct": -3.1, "holding_days": 5, "current_price": 61.8, "unrealized_pnl_pct": -3.13}, {"id": 46, "stock_id": "5269", "stock_name": "祥碩", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-30", "entry_price": 1465.0, "stop_loss": 1421.23, "take_profit": 1618.19, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-02", "close_price": 1421.23, "realized_pnl_pct": -2.99, "holding_days": 1, "current_price": 1400.0, "unrealized_pnl_pct": -4.44}, {"id": 45, "stock_id": "2618", "stock_name": "長榮航", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-30", "entry_price": 42.7, "stop_loss": 41.58, "take_profit": 46.62, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "TAKE_PROFIT", "close_date": "2026-11-05", "close_price": 46.62, "realized_pnl_pct": 9.18, "holding_days": 4, "current_price": 45.1, "unrealized_pnl_pct": 5.62}, {"id": 44, "stock_id": "1904", "stock_name": "正隆", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-30", "entry_price": 24.4, "stop_loss": 23.55, "take_profit": 27.37, "rr_ratio": 3.49, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-06", "close_price": 23.55, "realized_pnl_pct": -3.48, "holding_days": 5, "current_price": 23.5, "unrealized_pnl_pct": -3.69}, {"id": 43, "stock_id": "2002", "stock_name": "中鋼", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-30", "entry_price": 19.25, "stop_loss": 18.63, "take_profit": 21.42, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-06", "close_price": 18.63, "realized_pnl_pct": -3.22, "holding_days": 5, "current_price": 18.55, "unrealized_pnl_pct": -3.64}, {"id": 42, "stock_id": "4938", "stock_name": "和碩", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-30", "entry_price": 102.5, "stop_loss": 99.94, "take_profit": 111.46, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-02", "close_price": 99.94, "realized_pnl_pct": -2.5, "holding_days": 1, "current_price": 102.5, "unrealized_pnl_pct": 0.0}, {"id": 41, "stock_id": "2010", "stock_name": "春源", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-30", "entry_price": 22.9, "stop_loss": 22.18, "take_profit": 25.42, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-06", "close_price": 22.18, "realized_pnl_pct": -3.14, "holding_days": 5, "current_price": 22.7, "unrealized_pnl_pct": -0.87}, {"id": 40, "stock_id": "9945", "stock_name": "潤泰新", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-30", "entry_price": 29.05, "stop_loss": 28.03, "take_profit": 32.62, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-04", "close_price": 28.03, "realized_pnl_pct": -3.51, "holding_days": 3, "current_price": 27.85, "unrealized_pnl_pct": -4.13}, {"id": 39, "stock_id": "3005", "stock_name": "神基", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-30", "entry_price": 123.0, "stop_loss": 118.69, "take_profit": 138.09, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-04", "close_price": 118.69, "realized_pnl_pct": -3.5, "holding_days": 3, "current_price": 122.0, "unrealized_pnl_pct": -0.81}, {"id": 38, "stock_id": "2481", "stock_name": "強茂", "market": "TWSE", "action": "SHORT", "entry_date": "2026-10-22", "entry_price": 153.5, "stop_loss": 159.14, "take_profit": 133.76, "rr_ratio": 3.5, "tier_badge": "⚠️ 弱勢籌碼調節 (Tier 2)", "status": "TAKE_PROFIT", "close_date": "2026-11-03", "close_price": 133.76, "realized_pnl_pct": 12.86, "holding_days": 6, "current_price": 126.5, "unrealized_pnl_pct": 17.59}, {"id": 37, "stock_id": "1304", "stock_name": "台聚", "market": "TWSE", "action": "SHORT", "entry_date": "2026-10-22", "entry_price": 12.65, "stop_loss": 13.06, "take_profit": 11.21, "rr_ratio": 3.51, "tier_badge": "📉 機構破位對沖 (Tier 1)", "status": "TAKE_PROFIT", "close_date": "2026-11-06", "close_price": 11.21, "realized_pnl_pct": 11.38, "holding_days": 9, "current_price": 11.05, "unrealized_pnl_pct": 12.65}, {"id": 36, "stock_id": "2313", "stock_name": "華通", "market": "TWSE", "action": "SHORT", "entry_date": "2026-10-22", "entry_price": 224.5, "stop_loss": 235.28, "take_profit": 186.77, "rr_ratio": 3.5, "tier_badge": "📉 機構破位對沖 (Tier 1)", "status": "TAKE_PROFIT", "close_date": "2026-11-03", "close_price": 186.77, "realized_pnl_pct": 16.81, "holding_days": 6, "current_price": 186.0, "unrealized_pnl_pct": 17.15}, {"id": 35, "stock_id": "1101", "stock_name": "台泥", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-22", "entry_price": 27.95, "stop_loss": 26.97, "take_profit": 31.38, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-04", "close_price": 26.97, "realized_pnl_pct": -3.51, "holding_days": 7, "current_price": 27.25, "unrealized_pnl_pct": -2.5}, {"id": 34, "stock_id": "9945", "stock_name": "潤泰新", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-22", "entry_price": 29.6, "stop_loss": 28.86, "take_profit": 32.19, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-10-27", "close_price": 28.86, "realized_pnl_pct": -2.5, "holding_days": 1, "current_price": 29.25, "unrealized_pnl_pct": -1.18}, {"id": 33, "stock_id": "8016", "stock_name": "矽創", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-22", "entry_price": 294.5, "stop_loss": 287.14, "take_profit": 320.26, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-02", "close_price": 287.14, "realized_pnl_pct": -2.5, "holding_days": 5, "current_price": 279.0, "unrealized_pnl_pct": -5.26}, {"id": 32, "stock_id": "1808", "stock_name": "潤隆", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-22", "entry_price": 33.9, "stop_loss": 32.71, "take_profit": 38.06, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-05", "close_price": 32.71, "realized_pnl_pct": -3.51, "holding_days": 8, "current_price": 32.6, "unrealized_pnl_pct": -3.83}, {"id": 31, "stock_id": "1402", "stock_name": "遠東新", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-22", "entry_price": 28.9, "stop_loss": 27.89, "take_profit": 32.43, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-04", "close_price": 27.89, "realized_pnl_pct": -3.49, "holding_days": 7, "current_price": 28.05, "unrealized_pnl_pct": -2.94}, {"id": 30, "stock_id": "8081", "stock_name": "致新", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-22", "entry_price": 265.0, "stop_loss": 258.38, "take_profit": 288.17, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-03", "close_price": 258.38, "realized_pnl_pct": -2.5, "holding_days": 6, "current_price": 251.0, "unrealized_pnl_pct": -5.28}, {"id": 29, "stock_id": "3014", "stock_name": "聯陽", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-22", "entry_price": 141.0, "stop_loss": 136.06, "take_profit": 158.29, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-03", "close_price": 136.06, "realized_pnl_pct": -3.5, "holding_days": 6, "current_price": 132.0, "unrealized_pnl_pct": -6.38}, {"id": 28, "stock_id": "2617", "stock_name": "台航", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-22", "entry_price": 31.5, "stop_loss": 30.7, "take_profit": 34.3, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-03", "close_price": 30.7, "realized_pnl_pct": -2.54, "holding_days": 6, "current_price": 30.35, "unrealized_pnl_pct": -3.65}, {"id": 27, "stock_id": "2889", "stock_name": "國票金", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-22", "entry_price": 16.95, "stop_loss": 16.52, "take_profit": 18.45, "rr_ratio": 3.49, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-04", "close_price": 16.52, "realized_pnl_pct": -2.54, "holding_days": 7, "current_price": 16.55, "unrealized_pnl_pct": -2.36}, {"id": 26, "stock_id": "2393", "stock_name": "億光", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-22", "entry_price": 67.8, "stop_loss": 65.43, "take_profit": 76.09, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-03", "close_price": 65.43, "realized_pnl_pct": -3.5, "holding_days": 6, "current_price": 64.5, "unrealized_pnl_pct": -4.87}, {"id": 25, "stock_id": "2301", "stock_name": "光寶科", "market": "TWSE", "action": "SHORT", "entry_date": "2026-10-16", "entry_price": 264.5, "stop_loss": 271.11, "take_profit": 241.36, "rr_ratio": 3.5, "tier_badge": "📉 機構破位對沖 (Tier 1)", "status": "TAKE_PROFIT", "close_date": "2026-10-30", "close_price": 241.36, "realized_pnl_pct": 8.75, "holding_days": 8, "current_price": 240.5, "unrealized_pnl_pct": 9.07}, {"id": 24, "stock_id": "2454", "stock_name": "聯發科", "market": "TWSE", "action": "SHORT", "entry_date": "2026-10-16", "entry_price": 4250.0, "stop_loss": 4445.36, "take_profit": 3566.24, "rr_ratio": 3.5, "tier_badge": "📉 機構破位對沖 (Tier 1)", "status": "TAKE_PROFIT", "close_date": "2026-11-04", "close_price": 3566.24, "realized_pnl_pct": 16.09, "holding_days": 11, "current_price": 3715.0, "unrealized_pnl_pct": 12.59}, {"id": 23, "stock_id": "2316", "stock_name": "楠梓電", "market": "TWSE", "action": "SHORT", "entry_date": "2026-10-16", "entry_price": 162.5, "stop_loss": 166.56, "take_profit": 148.29, "rr_ratio": 3.5, "tier_badge": "📉 機構破位對沖 (Tier 1)", "status": "TAKE_PROFIT", "close_date": "2026-10-27", "close_price": 148.29, "realized_pnl_pct": 8.74, "holding_days": 5, "current_price": 147.0, "unrealized_pnl_pct": 9.54}, {"id": 22, "stock_id": "2383", "stock_name": "台光電", "market": "TWSE", "action": "SHORT", "entry_date": "2026-10-16", "entry_price": 5165.0, "stop_loss": 5333.49, "take_profit": 4575.29, "rr_ratio": 3.5, "tier_badge": "📉 機構破位對沖 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-10-22", "close_price": 5333.49, "realized_pnl_pct": -3.26, "holding_days": 4, "current_price": 5070.0, "unrealized_pnl_pct": 1.84}, {"id": 21, "stock_id": "2449", "stock_name": "京元電子", "market": "TWSE", "action": "SHORT", "entry_date": "2026-10-16", "entry_price": 275.0, "stop_loss": 286.09, "take_profit": 236.19, "rr_ratio": 3.5, "tier_badge": "📉 機構破位對沖 (Tier 1)", "status": "TAKE_PROFIT", "close_date": "2026-11-05", "close_price": 236.19, "realized_pnl_pct": 14.11, "holding_days": 12, "current_price": 228.5, "unrealized_pnl_pct": 16.91}, {"id": 20, "stock_id": "2610", "stock_name": "華航", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-16", "entry_price": 21.05, "stop_loss": 20.31, "take_profit": 23.64, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-10-20", "close_price": 20.31, "realized_pnl_pct": -3.52, "holding_days": 2, "current_price": 20.4, "unrealized_pnl_pct": -3.09}, {"id": 19, "stock_id": "2352", "stock_name": "佳世達", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-16", "entry_price": 29.3, "stop_loss": 28.57, "take_profit": 31.86, "rr_ratio": 3.51, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-10-19", "close_price": 28.57, "realized_pnl_pct": -2.49, "holding_days": 1, "current_price": 28.75, "unrealized_pnl_pct": -1.88}, {"id": 18, "stock_id": "2609", "stock_name": "陽明", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-16", "entry_price": 64.7, "stop_loss": 62.44, "take_profit": 72.61, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-10-20", "close_price": 62.44, "realized_pnl_pct": -3.49, "holding_days": 2, "current_price": 62.2, "unrealized_pnl_pct": -3.86}, {"id": 17, "stock_id": "1102", "stock_name": "亞泥", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-16", "entry_price": 38.2, "stop_loss": 36.86, "take_profit": 42.89, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-11-04", "close_price": 36.86, "realized_pnl_pct": -3.51, "holding_days": 11, "current_price": 36.9, "unrealized_pnl_pct": -3.4}, {"id": 16, "stock_id": "6414", "stock_name": "樺漢", "market": "TWSE", "action": "LONG", "entry_date": "2026-10-16", "entry_price": 404.5, "stop_loss": 394.39, "take_profit": 439.89, "rr_ratio": 3.5, "tier_badge": "🌟 機構多因子共振 (Tier 1)", "status": "STOP_LOSS", "close_date": "2026-10-19", "close_price": 394.39, "realized_pnl_pct": -2.5, "holding_days": 1, "current_price": 397.0, "unrealized_pnl_pct": -1.85}];
+        let currentTrackerFilter = 'ALL';
+        let currentTrackerPage = 1;
+        const TRACKER_PAGE_SIZE = 10;
+
+        function filterTrackerStatus(status, btn) {
+            currentTrackerFilter = status;
+            currentTrackerPage = 1;
+            document.querySelectorAll('.t-filter-btn').forEach(b => {
+                if (b.getAttribute('data-status') === status) {
+                    b.classList.add('active');
+                } else {
+                    b.classList.remove('active');
+                }
+            });
+            renderAllTrackers();
+        }
+
+        function changeTrackerPage(delta) {
+            const filtered = getFilteredTrackerData();
+            const totalPages = Math.max(1, Math.ceil(filtered.length / TRACKER_PAGE_SIZE));
+            const newPage = currentTrackerPage + delta;
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentTrackerPage = newPage;
+                renderAllTrackers();
+            }
+        }
+
+        function getFilteredTrackerData() {
+            if (currentTrackerFilter === 'ALL') return RAW_TRACKER_DATA;
+            return RAW_TRACKER_DATA.filter(r => r.status === currentTrackerFilter);
+        }
+
+        function renderAllTrackers() {
+            ['trackerTableBody_macro', 'trackerTableBody_longs'].forEach(tbId => {
+                const tbody = document.getElementById(tbId);
+                if (!tbody) return;
+                
+                const filtered = getFilteredTrackerData();
+                const total = filtered.length;
+                const totalPages = Math.max(1, Math.ceil(total / TRACKER_PAGE_SIZE));
+                if (currentTrackerPage > totalPages) currentTrackerPage = totalPages;
+                
+                const start = (currentTrackerPage - 1) * TRACKER_PAGE_SIZE;
+                const pageItems = filtered.slice(start, start + TRACKER_PAGE_SIZE);
+                
+                let html = '';
+                if (pageItems.length === 0) {
+                    html = '<tr><td colspan="11" style="text-align:center; padding: 24px; color: var(--text-muted);">無符合條件之紀錄</td></tr>';
+                } else {
+                    pageItems.forEach(r => {
+                        const isLong = r.action === 'LONG';
+                        const actionBadge = isLong ? '<span class="t-badge-long">多方</span>' : '<span class="t-badge-short">避險空</span>';
+                        
+                        let pnl = (r.status === 'HOLDING') ? r.unrealized_pnl_pct : r.realized_pnl_pct;
+                        let pnlColor = pnl > 0 ? '#ef4444' : (pnl < 0 ? '#10b981' : '#94a3b8');
+                        let pnlPrefix = pnl > 0 ? '+' : '';
+                        let pnlStr = `<span style="color:${pnlColor}; font-weight:700; font-family:monospace;">${pnlPrefix}${pnl.toFixed(2)}%</span>`;
+                        
+                        let statusBadge = '';
+                        if (r.status === 'HOLDING') {
+                            statusBadge = '<span class="t-status-holding">🔵 持倉中</span>';
+                        } else if (r.status === 'TAKE_PROFIT') {
+                            statusBadge = `<span class="t-status-tp">🟢 停利達成 (+${r.realized_pnl_pct.toFixed(1)}%)</span>`;
+                        } else if (r.status === 'STOP_LOSS') {
+                            statusBadge = `<span class="t-status-sl">🔴 觸及停損 (${r.realized_pnl_pct.toFixed(1)}%)</span>`;
+                        } else if (r.status === 'TIME_STOP') {
+                            statusBadge = `<span class="t-status-time">⏱️ 時間停損 (${r.realized_pnl_pct.toFixed(1)}%)</span>`;
+                        }
+                        
+                        const curOrClosePrice = (r.status === 'HOLDING') ? (r.current_price || r.entry_price) : (r.close_price || r.entry_price);
+                        const closeDateStr = r.close_date ? r.close_date : '<span style="color:var(--text-muted);">-</span>';
+                        
+                        html += `<tr>
+                            <td style="font-family:monospace; color:var(--text-secondary);">${r.entry_date}</td>
+                            <td><a href="javascript:void(0)" onclick="openStockModal('${r.stock_id}', '${r.stock_name}', event)" style="color:var(--accent-blue); text-decoration:none; font-weight:600;">${r.stock_id} ${r.stock_name}</a></td>
+                            <td>${actionBadge}</td>
+                            <td style="font-family:monospace;">$${r.entry_price.toFixed(2)}</td>
+                            <td style="font-family:monospace; color:#ef4444;">$${r.take_profit.toFixed(2)}</td>
+                            <td style="font-family:monospace; color:#10b981;">$${r.stop_loss.toFixed(2)}</td>
+                            <td style="font-family:monospace; font-weight:600;">$${curOrClosePrice.toFixed(2)}</td>
+                            <td style="text-align:center; font-family:monospace;">${r.holding_days} 天</td>
+                            <td>${pnlStr}</td>
+                            <td>${statusBadge}</td>
+                            <td style="font-family:monospace; color:var(--text-secondary); font-size:12px;">${closeDateStr}</td>
+                        </tr>`;
+                    });
+                }
+                tbody.innerHTML = html;
+                
+                const container = tbody.closest('.tracker-section');
+                if (container) {
+                    const pageInfo = container.querySelector('.t-page-info');
+                    if (pageInfo) pageInfo.innerText = `第 ${currentTrackerPage} / ${totalPages} 頁 (每頁 10 筆，總計 ${total} 筆)`;
+                    const btnPrev = container.querySelector('.t-btn-prev');
+                    if (btnPrev) btnPrev.disabled = (currentTrackerPage <= 1);
+                    const btnNext = container.querySelector('.t-btn-next');
+                    if (btnNext) btnNext.disabled = (currentTrackerPage >= totalPages);
+                }
+            });
+        }
+
+        // Initialize on load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', renderAllTrackers);
+        } else {
+            renderAllTrackers();
+        }
+    </script>
+
 </body>
+
 </html>
