@@ -287,7 +287,7 @@
                 <div class="header-title-box">
                     <span class="stock-main-title">2801 彰銀</span>
                     <span style="font-size:13px; color:var(--text-muted);">TWSE</span>
-                    <span class='badge-bull'>▲ LONG #7 結構走強</span>
+                    <span class='badge-bull'>▲ LONG #8 結構走強</span>
                     <span style="font-size: 13px; font-weight: 700; padding: 3px 9px; border-radius: 6px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); display: inline-flex; align-items: center; gap: 4px;" title="全市場多因子綜合量化熱度 (0-100)">
                         🔥 社群與市場熱度 67.2 分 <span style="font-size: 11px; opacity: 0.85;">(⚡ 溫和放量交投 (常態換手))</span>
                     </span>
@@ -295,23 +295,23 @@
             </div>
             <div class="stock-price-box">
                 <span class="stock-price text-bull">27.90</span>
-                <span class="stock-ret text-bull">5日: +0.50%</span>
+                <span class="stock-ret text-bull">5日: +1.30%</span>
             </div>
         </div>
 
         <!-- 關鍵量化指標卡片格 (8大核心維度) -->
         <div class="stats-grid">
             <div class="stat-item">
-                <div class="stat-label">🎯 POC 短期 (60日密集區)</div>
-                <div class="stat-value" style="color:#eab308;">27.97 元</div>
+                <div class="stat-label">🎯 POC 短期籌碼密集區</div>
+                <div class="stat-value" style="color:#eab308;">27.87 元</div>
             </div>
             <div class="stat-item">
-                <div class="stat-label">🎯 POC 中期 (120日波段)</div>
-                <div class="stat-value" style="color:#f97316;">23.93 元</div>
+                <div class="stat-label">🎯 POC 波段籌碼密集區</div>
+                <div class="stat-value" style="color:#f97316;">25.20 元</div>
             </div>
             <div class="stat-item">
-                <div class="stat-label">🎯 POC 長期 (240日年線)</div>
-                <div class="stat-value" style="color:#ec4899;">20.55 元</div>
+                <div class="stat-label">🎯 POC 宏觀籌碼密集區</div>
+                <div class="stat-value" style="color:#ec4899;">23.93 元</div>
             </div>
             <div class="stat-item">
                 <div class="stat-label">🔥 社群與市場熱度 (0-100)</div>
@@ -523,7 +523,7 @@
             candleSeries.setData(klineData);
             candleSeries.setMarkers(markersData);
 
-            const poc60 = 27.97;
+            const poc60 = 27.87;
             if (poc60 !== null) {
                 candleSeries.createPriceLine({
                     price: poc60,
@@ -531,10 +531,10 @@
                     lineWidth: 2,
                     lineStyle: LightweightCharts.LineStyle.Dotted,
                     axisLabelVisible: true,
-                    title: 'POC(60)'
+                    title: 'POC 短期'
                 });
             }
-            const poc120 = 23.93;
+            const poc120 = 25.2;
             if (poc120 !== null) {
                 candleSeries.createPriceLine({
                     price: poc120,
@@ -542,10 +542,10 @@
                     lineWidth: 2,
                     lineStyle: LightweightCharts.LineStyle.Dashed,
                     axisLabelVisible: true,
-                    title: 'POC(120)'
+                    title: 'POC 波段'
                 });
             }
-            const poc240 = 20.55;
+            const poc240 = 23.93;
             if (poc240 !== null) {
                 candleSeries.createPriceLine({
                     price: poc240,
@@ -553,7 +553,7 @@
                     lineWidth: 2,
                     lineStyle: LightweightCharts.LineStyle.LargeDashed,
                     axisLabelVisible: true,
-                    title: 'POC(240)'
+                    title: 'POC 宏觀'
                 });
             }
 

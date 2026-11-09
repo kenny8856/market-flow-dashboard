@@ -302,16 +302,16 @@
         <!-- 關鍵量化指標卡片格 (8大核心維度) -->
         <div class="stats-grid">
             <div class="stat-item">
-                <div class="stat-label">🎯 POC 短期 (60日密集區)</div>
-                <div class="stat-value" style="color:#eab308;">5995.80 元</div>
+                <div class="stat-label">🎯 POC 短期籌碼密集區</div>
+                <div class="stat-value" style="color:#eab308;">6884.55 元</div>
             </div>
             <div class="stat-item">
-                <div class="stat-label">🎯 POC 中期 (120日波段)</div>
-                <div class="stat-value" style="color:#f97316;">3864.00 元</div>
+                <div class="stat-label">🎯 POC 波段籌碼密集區</div>
+                <div class="stat-value" style="color:#f97316;">6394.75 元</div>
             </div>
             <div class="stat-item">
-                <div class="stat-label">🎯 POC 長期 (240日年線)</div>
-                <div class="stat-value" style="color:#ec4899;">2557.75 元</div>
+                <div class="stat-label">🎯 POC 宏觀籌碼密集區</div>
+                <div class="stat-value" style="color:#ec4899;">4024.05 元</div>
             </div>
             <div class="stat-item">
                 <div class="stat-label">🔥 社群與市場熱度 (0-100)</div>
@@ -617,7 +617,7 @@
             candleSeries.setData(klineData);
             candleSeries.setMarkers(markersData);
 
-            const poc60 = 5995.8;
+            const poc60 = 6884.55;
             if (poc60 !== null) {
                 candleSeries.createPriceLine({
                     price: poc60,
@@ -625,10 +625,10 @@
                     lineWidth: 2,
                     lineStyle: LightweightCharts.LineStyle.Dotted,
                     axisLabelVisible: true,
-                    title: 'POC(60)'
+                    title: 'POC 短期'
                 });
             }
-            const poc120 = 3864.0;
+            const poc120 = 6394.75;
             if (poc120 !== null) {
                 candleSeries.createPriceLine({
                     price: poc120,
@@ -636,10 +636,10 @@
                     lineWidth: 2,
                     lineStyle: LightweightCharts.LineStyle.Dashed,
                     axisLabelVisible: true,
-                    title: 'POC(120)'
+                    title: 'POC 波段'
                 });
             }
-            const poc240 = 2557.75;
+            const poc240 = 4024.05;
             if (poc240 !== null) {
                 candleSeries.createPriceLine({
                     price: poc240,
@@ -647,7 +647,7 @@
                     lineWidth: 2,
                     lineStyle: LightweightCharts.LineStyle.LargeDashed,
                     axisLabelVisible: true,
-                    title: 'POC(240)'
+                    title: 'POC 宏觀'
                 });
             }
 

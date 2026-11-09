@@ -287,7 +287,7 @@
                 <div class="header-title-box">
                     <span class="stock-main-title">1216 統一</span>
                     <span style="font-size:13px; color:var(--text-muted);">TWSE</span>
-                    <span class='badge-bull'>▲ LONG #4 結構走強</span>
+                    <span class='badge-bull'>▲ LONG #5 結構走強</span>
                     <span style="font-size: 13px; font-weight: 700; padding: 3px 9px; border-radius: 6px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); display: inline-flex; align-items: center; gap: 4px;" title="全市場多因子綜合量化熱度 (0-100)">
                         🔥 社群與市場熱度 48.6 分 <span style="font-size: 11px; opacity: 0.85;">(💧 量縮整理觀望 (低度討論))</span>
                     </span>
@@ -295,22 +295,22 @@
             </div>
             <div class="stock-price-box">
                 <span class="stock-price text-bull">76.80</span>
-                <span class="stock-ret text-bull">5日: +1.70%</span>
+                <span class="stock-ret text-bull">5日: +3.90%</span>
             </div>
         </div>
 
         <!-- 關鍵量化指標卡片格 (8大核心維度) -->
         <div class="stats-grid">
             <div class="stat-item">
-                <div class="stat-label">🎯 POC 短期 (60日密集區)</div>
+                <div class="stat-label">🎯 POC 短期籌碼密集區</div>
                 <div class="stat-value" style="color:#eab308;">79.57 元</div>
             </div>
             <div class="stat-item">
-                <div class="stat-label">🎯 POC 中期 (120日波段)</div>
-                <div class="stat-value" style="color:#f97316;">75.59 元</div>
+                <div class="stat-label">🎯 POC 波段籌碼密集區</div>
+                <div class="stat-value" style="color:#f97316;">75.69 元</div>
             </div>
             <div class="stat-item">
-                <div class="stat-label">🎯 POC 長期 (240日年線)</div>
+                <div class="stat-label">🎯 POC 宏觀籌碼密集區</div>
                 <div class="stat-value" style="color:#ec4899;">75.60 元</div>
             </div>
             <div class="stat-item">
@@ -497,10 +497,10 @@
                     lineWidth: 2,
                     lineStyle: LightweightCharts.LineStyle.Dotted,
                     axisLabelVisible: true,
-                    title: 'POC(60)'
+                    title: 'POC 短期'
                 });
             }
-            const poc120 = 75.59;
+            const poc120 = 75.69;
             if (poc120 !== null) {
                 candleSeries.createPriceLine({
                     price: poc120,
@@ -508,7 +508,7 @@
                     lineWidth: 2,
                     lineStyle: LightweightCharts.LineStyle.Dashed,
                     axisLabelVisible: true,
-                    title: 'POC(120)'
+                    title: 'POC 波段'
                 });
             }
             const poc240 = 75.6;
@@ -519,7 +519,7 @@
                     lineWidth: 2,
                     lineStyle: LightweightCharts.LineStyle.LargeDashed,
                     axisLabelVisible: true,
-                    title: 'POC(240)'
+                    title: 'POC 宏觀'
                 });
             }
 
