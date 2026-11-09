@@ -11,7 +11,7 @@
         // 🚀 自動版本同步與瀏覽器快取自癒機制 (Auto Cache-Busting & Hot-Reload)
         (function() {
             var CURRENT_DATE = "2026-11-06";
-            var CURRENT_TS = 1794214586;
+            var CURRENT_TS = 1794215473;
             function checkVersion() {
                 var s = document.createElement('script');
                 s.src = 'version.js?_t=' + Date.now();
@@ -1625,7 +1625,8 @@
                 <button class="tab-btn" onclick="switchTab(event, 'tab-taiex')">📈 加權指數</button>
                 <button class="tab-btn" onclick="switchTab(event, 'tab-tpex')">📈 櫃買指數</button>
                 <button class="tab-btn" onclick="switchTab(event, 'tab-tx')">🎯 臺股期貨</button>
-                <button class="tab-btn" onclick="switchTab(event, 'tab-longs')">🟢 多方標的 (10)</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-longs')">🟢 即時多方 (10)</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-reserve')">👀 強勢儲備 (33)</button>
                 <button class="tab-btn" onclick="switchTab(event, 'tab-shorts')">🔴 空方標的 (4)</button>
                 <button class="tab-btn" onclick="switchTab(event, 'tab-chips')">🔥 期貨與可轉債</button>
             </div>
@@ -1958,19 +1959,19 @@
 
         <div id="tab-taiex" class="tab-content">
             <div class="iframe-container">
-                <iframe src="stock_TAIEX.html?v=1794214586" style="width:100%; height:100%; border:none;"></iframe>
+                <iframe src="stock_TAIEX.html?v=1794215473" style="width:100%; height:100%; border:none;"></iframe>
             </div>
         </div>
 
         <div id="tab-tpex" class="tab-content">
             <div class="iframe-container">
-                <iframe src="stock_TPEx.html?v=1794214586" style="width:100%; height:100%; border:none;"></iframe>
+                <iframe src="stock_TPEx.html?v=1794215473" style="width:100%; height:100%; border:none;"></iframe>
             </div>
         </div>
 
         <div id="tab-tx" class="tab-content">
             <div class="iframe-container">
-                <iframe src="stock_TX.html?v=1794214586" style="width:100%; height:100%; border:none;"></iframe>
+                <iframe src="stock_TX.html?v=1794215473" style="width:100%; height:100%; border:none;"></iframe>
             </div>
         </div>
 
@@ -1992,6 +1993,13 @@
             <button class="pos-filter-btn active" onclick="filterPosTier('all', this, 'tab-longs')">全部低中位階 (10)</button>
             <button class="pos-filter-btn filter-low" onclick="filterPosTier('low', this, 'tab-longs')">🟢 僅看低位階 (0)</button>
             <button class="pos-filter-btn filter-mid" onclick="filterPosTier('mid', this, 'tab-longs')">🟡 中位階 (7)</button>
+        </div>
+
+        <div style="background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 10px 16px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div style="font-size: 13px; color: #e0f2fe;">
+                ⚡ <strong>投行即時下單池 (Tier 1)</strong>：精選當前最貼近核心防守點之 <strong>Top 10 檔</strong> 優先執行。另有 <strong>33 檔</strong> 強於大盤之優質候補標的已收納至專屬分頁。
+            </div>
+            <button class="pos-filter-btn" onclick="switchTab(event, 'tab-reserve')" style="padding: 5px 12px; font-size: 12px; background: rgba(56, 189, 248, 0.2); border-color: #38bdf8; color: #38bdf8;">切換至 👀 強勢儲備頁面 (33 檔) ➔</button>
         </div>
 
         <div class="cards-list">
@@ -3579,504 +3587,6 @@
         
         </div>
         
-        <div class="reserve-pool-container" style="margin-top: 32px; background: rgba(15, 23, 42, 0.75); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.25);">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px;">
-                <div>
-                    <div style="font-size:16px; font-weight:800; color:#38bdf8; display:flex; align-items:center; gap:8px;">
-                        <span>👀 強於大盤儲備池 (Tier 2 候補清單 • 共 33 檔)</span>
-                        <span style="font-size:11px; background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); padding:2px 8px; border-radius:4px;">Alpha 領先蓄勢</span>
-                    </div>
-                    <div style="font-size:12px; color:var(--text-secondary); margin-top:4px;">
-                        經由「強於大盤 Alpha 領先」與「不追高回踩確認」雙層嚴選，動能領先且籌碼乾淨。收納於第二梯隊隨時監控，待回踩關鍵支撐即升級進場。
-                    </div>
-                </div>
-                <button class="pos-filter-btn" onclick="toggleReservePool()" style="padding:6px 14px; font-size:12px;" id="btnToggleReserve">展開儲備清單 (33 檔) ▼</button>
-            </div>
-            <div id="reservePoolContent" style="display:none; overflow-x:auto;">
-                <table class="tracker-table" style="width:100%; font-size:12px;">
-                    <thead>
-                        <tr>
-                            <th>標的代碼</th>
-                            <th>標的名稱</th>
-                            <th>市場</th>
-                            <th>最新收盤</th>
-                            <th>波段動能</th>
-                            <th>次日建議限價</th>
-                            <th>關鍵防守位</th>
-                            <th>流動性訊號</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">6757</td>
-            <td><strong style="color:var(--text-primary);">台灣虎航</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">54.20 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+1.5%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">53.77 元</td>
-            <td style="font-family:monospace; color:#f87171;">52.30 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span><span class='badge-sweep' style='font-size:10px; margin-left:4px;'>⚡破底翻</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('6757', '台灣虎航', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">1476</td>
-            <td><strong style="color:var(--text-primary);">儒鴻</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">346.50 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+26.2%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">343.73 元</td>
-            <td style="font-family:monospace; color:#f87171;">334.37 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span><span class='badge-sweep' style='font-size:10px; margin-left:4px;'>⚡破底翻</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('1476', '儒鴻', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">1477</td>
-            <td><strong style="color:var(--text-primary);">聚陽</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">213.00 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+11.8%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">211.02 元</td>
-            <td style="font-family:monospace; color:#f87171;">205.54 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span><span class='badge-sweep' style='font-size:10px; margin-left:4px;'>⚡破底翻</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('1477', '聚陽', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">2886</td>
-            <td><strong style="color:var(--text-primary);">兆豐金</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">53.50 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+9.5%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">52.42 元</td>
-            <td style="font-family:monospace; color:#f87171;">51.62 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2886', '兆豐金', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">9910</td>
-            <td><strong style="color:var(--text-primary);">豐泰</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">69.60 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+1.2%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">69.04 元</td>
-            <td style="font-family:monospace; color:#f87171;">67.60 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span><span class='badge-sweep' style='font-size:10px; margin-left:4px;'>⚡破底翻</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('9910', '豐泰', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">4904</td>
-            <td><strong style="color:var(--text-primary);">遠傳</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">112.00 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+6.7%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">110.22 元</td>
-            <td style="font-family:monospace; color:#f87171;">108.08 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('4904', '遠傳', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">1101</td>
-            <td><strong style="color:var(--text-primary);">台泥</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">26.75 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+4.7%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">26.40 元</td>
-            <td style="font-family:monospace; color:#f87171;">25.81 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('1101', '台泥', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">2618</td>
-            <td><strong style="color:var(--text-primary);">長榮航</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">43.60 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+3.3%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">43.20 元</td>
-            <td style="font-family:monospace; color:#f87171;">42.07 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span><span class='badge-sweep' style='font-size:10px; margin-left:4px;'>⚡破底翻</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2618', '長榮航', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">3045</td>
-            <td><strong style="color:var(--text-primary);">台灣大</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">133.00 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+9.0%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">132.46 元</td>
-            <td style="font-family:monospace; color:#f87171;">129.67 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('3045', '台灣大', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">1712</td>
-            <td><strong style="color:var(--text-primary);">興農</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">40.40 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+1.9%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">40.33 元</td>
-            <td style="font-family:monospace; color:#f87171;">39.39 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span><span class='badge-sweep' style='font-size:10px; margin-left:4px;'>⚡破底翻</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('1712', '興農', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">2892</td>
-            <td><strong style="color:var(--text-primary);">第一金</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">40.95 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+5.8%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">40.95 元</td>
-            <td style="font-family:monospace; color:#f87171;">39.93 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2892', '第一金', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">1789</td>
-            <td><strong style="color:var(--text-primary);">神隆</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">20.15 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+7.2%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">19.99 元</td>
-            <td style="font-family:monospace; color:#f87171;">19.44 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span><span class='badge-sweep' style='font-size:10px; margin-left:4px;'>⚡破底翻</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('1789', '神隆', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">2607</td>
-            <td><strong style="color:var(--text-primary);">榮運</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">55.60 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+3.3%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">55.02 元</td>
-            <td style="font-family:monospace; color:#f87171;">53.65 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2607', '榮運', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">2880</td>
-            <td><strong style="color:var(--text-primary);">華南金</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">48.95 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+8.2%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">47.65 元</td>
-            <td style="font-family:monospace; color:#f87171;">47.23 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2880', '華南金', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">2891</td>
-            <td><strong style="color:var(--text-primary);">中信金</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">73.40 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+8.1%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">71.98 元</td>
-            <td style="font-family:monospace; color:#f87171;">70.78 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2891', '中信金', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">6214</td>
-            <td><strong style="color:var(--text-primary);">精誠</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">192.00 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+1.6%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">187.96 元</td>
-            <td style="font-family:monospace; color:#f87171;">183.67 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('6214', '精誠', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">4720</td>
-            <td><strong style="color:var(--text-primary);">德淵</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">27.10 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+42.3%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">26.88 元</td>
-            <td style="font-family:monospace; color:#f87171;">26.12 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('4720', '德淵', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">2412</td>
-            <td><strong style="color:var(--text-primary);">中華電</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">163.50 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+12.4%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">162.05 元</td>
-            <td style="font-family:monospace; color:#f87171;">157.78 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2412', '中華電', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">2884</td>
-            <td><strong style="color:var(--text-primary);">玉山金</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">47.00 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+3.6%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">45.89 元</td>
-            <td style="font-family:monospace; color:#f87171;">45.35 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2884', '玉山金', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">4938</td>
-            <td><strong style="color:var(--text-primary);">和碩</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">92.90 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+3.0%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">91.94 元</td>
-            <td style="font-family:monospace; color:#f87171;">88.72 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('4938', '和碩', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">6598</td>
-            <td><strong style="color:var(--text-primary);">ABC-KY</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">27.00 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+1.3%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">27.75 元</td>
-            <td style="font-family:monospace; color:#f87171;">26.32 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('6598', 'ABC-KY', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">9933</td>
-            <td><strong style="color:var(--text-primary);">中鼎</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">44.40 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+6.6%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">43.76 元</td>
-            <td style="font-family:monospace; color:#f87171;">42.40 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('9933', '中鼎', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">6689</td>
-            <td><strong style="color:var(--text-primary);">伊雲谷</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">71.50 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+11.4%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">69.90 元</td>
-            <td style="font-family:monospace; color:#f87171;">68.28 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('6689', '伊雲谷', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">2355</td>
-            <td><strong style="color:var(--text-primary);">敬鵬</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">47.25 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+14.4%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">46.87 元</td>
-            <td style="font-family:monospace; color:#f87171;">45.91 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2355', '敬鵬', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">2611</td>
-            <td><strong style="color:var(--text-primary);">志信</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">14.85 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+3.5%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">14.66 元</td>
-            <td style="font-family:monospace; color:#f87171;">14.33 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2611', '志信', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">4426</td>
-            <td><strong style="color:var(--text-primary);">利勤</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">8.40 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+9.7%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">8.33 元</td>
-            <td style="font-family:monospace; color:#f87171;">8.09 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('4426', '利勤', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">2480</td>
-            <td><strong style="color:var(--text-primary);">敦陽科</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">166.00 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+3.8%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">164.01 元</td>
-            <td style="font-family:monospace; color:#f87171;">158.71 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2480', '敦陽科', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">2516</td>
-            <td><strong style="color:var(--text-primary);">新建</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">16.20 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+6.9%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">15.98 元</td>
-            <td style="font-family:monospace; color:#f87171;">15.63 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2516', '新建', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">2453</td>
-            <td><strong style="color:var(--text-primary);">凌群</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">53.40 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+0.2%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">53.31 元</td>
-            <td style="font-family:monospace; color:#f87171;">52.06 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span><span class='badge-sweep' style='font-size:10px; margin-left:4px;'>⚡破底翻</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2453', '凌群', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">1201</td>
-            <td><strong style="color:var(--text-primary);">味全</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">12.50 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+7.8%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">12.40 元</td>
-            <td style="font-family:monospace; color:#f87171;">11.98 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('1201', '味全', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">1615</td>
-            <td><strong style="color:var(--text-primary);">大山</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">43.00 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+0.7%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">45.34 元</td>
-            <td style="font-family:monospace; color:#f87171;">41.92 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('1615', '大山', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">9103</td>
-            <td><strong style="color:var(--text-primary);">美德醫療-DR</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">5.13 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+3.8%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">5.32 元</td>
-            <td style="font-family:monospace; color:#f87171;">5.00 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('9103', '美德醫療-DR', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-        <tr>
-            <td style="font-weight:700; font-family:monospace;">5521</td>
-            <td><strong style="color:var(--text-primary);">工信</strong></td>
-            <td><span class="stock-market">TWSE</span></td>
-            <td style="font-weight:700; font-family:monospace;">10.90 元</td>
-            <td class="text-bull" style="font-weight:700; font-family:monospace;">+2.3%</td>
-            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">10.79 元</td>
-            <td style="font-family:monospace; color:#f87171;">10.52 元</td>
-            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
-            <td>
-                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('5521', '工信', event)">📊 診斷</button>
-            </td>
-        </tr>
-        
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        
     <!-- Portfolio Lifecycle Tracker Component -->
     <div class="tracker-section" id="portfolio-tracker-longs">
         <div class="tracker-header">
@@ -4166,6 +3676,550 @@
     </div>
     
         
+        </div>
+
+        <div id="tab-reserve" class="tab-content">
+            
+    <!-- Module 2 & 3: Reserve Long Targets (Tier 2 Dedicated Tab) -->
+    <div class="section-header" style="margin-bottom: 20px;">
+        <div>
+            <div class="section-title">
+                <span style="color: #38bdf8;">👀 模組 2 & 3：強於大盤儲備池 (Tier 2 候補名單 • 共 33 檔)</span>
+                <span style="font-size: 13px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 2px 8px; border-radius: 6px;">Alpha 領先蓄勢 ｜ 回踩防守監控 ｜ 拒絕追高</span>
+            </div>
+            <div class="section-desc">
+                投行多因子嚴選儲備池：全數通過「強於大盤 (RS Alpha 領先)」與「不追高回踩確認」雙層嚴選考驗。動能超越同期加權指數且籌碼乾淨沉澱，收納於此作為二級梯隊隨時監控，待回踩關鍵支撐位（建議限價）即升級進場！
+            </div>
+        </div>
+    </div>
+
+    <div class="reserve-pool-container" style="background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.25);">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px;">
+            <div style="font-size:13px; color:var(--text-secondary);">
+                💡 <strong>操作指引</strong>：每檔標的皆已精準計算次日建議限價掛單與關鍵防守位，點擊右側「📊 診斷」可秒開 K 線圖與立體籌碼分析。
+            </div>
+            <div style="font-size:13px; color:var(--accent-cyan); font-weight:700;">
+                共計收錄 33 檔強勢候補標的
+            </div>
+        </div>
+        <div class="tracker-table-wrap">
+            <table class="tracker-table" style="width:100%; font-size:12px;">
+                <thead>
+                    <tr>
+                        <th>序號</th>
+                        <th>標的代碼</th>
+                        <th>標的名稱</th>
+                        <th>市場</th>
+                        <th>最新收盤</th>
+                        <th>波段動能</th>
+                        <th>次日建議限價</th>
+                        <th>關鍵防守位</th>
+                        <th>流動性訊號</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#1</td>
+            <td style="font-weight:700; font-family:monospace;">6757</td>
+            <td><strong style="color:var(--text-primary);">台灣虎航</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">54.20 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+1.5%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">53.77 元</td>
+            <td style="font-family:monospace; color:#f87171;">52.30 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span><span class='badge-sweep' style='font-size:10px; margin-left:4px;'>⚡破底翻</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('6757', '台灣虎航', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#2</td>
+            <td style="font-weight:700; font-family:monospace;">1476</td>
+            <td><strong style="color:var(--text-primary);">儒鴻</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">346.50 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+26.2%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">343.73 元</td>
+            <td style="font-family:monospace; color:#f87171;">334.37 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span><span class='badge-sweep' style='font-size:10px; margin-left:4px;'>⚡破底翻</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('1476', '儒鴻', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#3</td>
+            <td style="font-weight:700; font-family:monospace;">1477</td>
+            <td><strong style="color:var(--text-primary);">聚陽</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">213.00 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+11.8%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">211.02 元</td>
+            <td style="font-family:monospace; color:#f87171;">205.54 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span><span class='badge-sweep' style='font-size:10px; margin-left:4px;'>⚡破底翻</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('1477', '聚陽', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#4</td>
+            <td style="font-weight:700; font-family:monospace;">2886</td>
+            <td><strong style="color:var(--text-primary);">兆豐金</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">53.50 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+9.5%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">52.42 元</td>
+            <td style="font-family:monospace; color:#f87171;">51.62 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2886', '兆豐金', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#5</td>
+            <td style="font-weight:700; font-family:monospace;">9910</td>
+            <td><strong style="color:var(--text-primary);">豐泰</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">69.60 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+1.2%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">69.04 元</td>
+            <td style="font-family:monospace; color:#f87171;">67.60 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span><span class='badge-sweep' style='font-size:10px; margin-left:4px;'>⚡破底翻</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('9910', '豐泰', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#6</td>
+            <td style="font-weight:700; font-family:monospace;">4904</td>
+            <td><strong style="color:var(--text-primary);">遠傳</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">112.00 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+6.7%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">110.22 元</td>
+            <td style="font-family:monospace; color:#f87171;">108.08 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('4904', '遠傳', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#7</td>
+            <td style="font-weight:700; font-family:monospace;">1101</td>
+            <td><strong style="color:var(--text-primary);">台泥</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">26.75 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+4.7%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">26.40 元</td>
+            <td style="font-family:monospace; color:#f87171;">25.81 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('1101', '台泥', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#8</td>
+            <td style="font-weight:700; font-family:monospace;">2618</td>
+            <td><strong style="color:var(--text-primary);">長榮航</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">43.60 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+3.3%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">43.20 元</td>
+            <td style="font-family:monospace; color:#f87171;">42.07 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span><span class='badge-sweep' style='font-size:10px; margin-left:4px;'>⚡破底翻</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2618', '長榮航', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#9</td>
+            <td style="font-weight:700; font-family:monospace;">3045</td>
+            <td><strong style="color:var(--text-primary);">台灣大</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">133.00 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+9.0%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">132.46 元</td>
+            <td style="font-family:monospace; color:#f87171;">129.67 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('3045', '台灣大', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#10</td>
+            <td style="font-weight:700; font-family:monospace;">1712</td>
+            <td><strong style="color:var(--text-primary);">興農</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">40.40 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+1.9%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">40.33 元</td>
+            <td style="font-family:monospace; color:#f87171;">39.39 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span><span class='badge-sweep' style='font-size:10px; margin-left:4px;'>⚡破底翻</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('1712', '興農', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#11</td>
+            <td style="font-weight:700; font-family:monospace;">2892</td>
+            <td><strong style="color:var(--text-primary);">第一金</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">40.95 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+5.8%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">40.95 元</td>
+            <td style="font-family:monospace; color:#f87171;">39.93 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2892', '第一金', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#12</td>
+            <td style="font-weight:700; font-family:monospace;">1789</td>
+            <td><strong style="color:var(--text-primary);">神隆</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">20.15 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+7.2%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">19.99 元</td>
+            <td style="font-family:monospace; color:#f87171;">19.44 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span><span class='badge-sweep' style='font-size:10px; margin-left:4px;'>⚡破底翻</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('1789', '神隆', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#13</td>
+            <td style="font-weight:700; font-family:monospace;">2607</td>
+            <td><strong style="color:var(--text-primary);">榮運</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">55.60 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+3.3%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">55.02 元</td>
+            <td style="font-family:monospace; color:#f87171;">53.65 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2607', '榮運', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#14</td>
+            <td style="font-weight:700; font-family:monospace;">2880</td>
+            <td><strong style="color:var(--text-primary);">華南金</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">48.95 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+8.2%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">47.65 元</td>
+            <td style="font-family:monospace; color:#f87171;">47.23 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2880', '華南金', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#15</td>
+            <td style="font-weight:700; font-family:monospace;">2891</td>
+            <td><strong style="color:var(--text-primary);">中信金</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">73.40 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+8.1%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">71.98 元</td>
+            <td style="font-family:monospace; color:#f87171;">70.78 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2891', '中信金', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#16</td>
+            <td style="font-weight:700; font-family:monospace;">6214</td>
+            <td><strong style="color:var(--text-primary);">精誠</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">192.00 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+1.6%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">187.96 元</td>
+            <td style="font-family:monospace; color:#f87171;">183.67 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('6214', '精誠', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#17</td>
+            <td style="font-weight:700; font-family:monospace;">4720</td>
+            <td><strong style="color:var(--text-primary);">德淵</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">27.10 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+42.3%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">26.88 元</td>
+            <td style="font-family:monospace; color:#f87171;">26.12 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('4720', '德淵', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#18</td>
+            <td style="font-weight:700; font-family:monospace;">2412</td>
+            <td><strong style="color:var(--text-primary);">中華電</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">163.50 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+12.4%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">162.05 元</td>
+            <td style="font-family:monospace; color:#f87171;">157.78 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2412', '中華電', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#19</td>
+            <td style="font-weight:700; font-family:monospace;">2884</td>
+            <td><strong style="color:var(--text-primary);">玉山金</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">47.00 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+3.6%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">45.89 元</td>
+            <td style="font-family:monospace; color:#f87171;">45.35 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2884', '玉山金', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#20</td>
+            <td style="font-weight:700; font-family:monospace;">4938</td>
+            <td><strong style="color:var(--text-primary);">和碩</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">92.90 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+3.0%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">91.94 元</td>
+            <td style="font-family:monospace; color:#f87171;">88.72 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('4938', '和碩', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#21</td>
+            <td style="font-weight:700; font-family:monospace;">6598</td>
+            <td><strong style="color:var(--text-primary);">ABC-KY</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">27.00 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+1.3%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">27.75 元</td>
+            <td style="font-family:monospace; color:#f87171;">26.32 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('6598', 'ABC-KY', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#22</td>
+            <td style="font-weight:700; font-family:monospace;">9933</td>
+            <td><strong style="color:var(--text-primary);">中鼎</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">44.40 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+6.6%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">43.76 元</td>
+            <td style="font-family:monospace; color:#f87171;">42.40 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('9933', '中鼎', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#23</td>
+            <td style="font-weight:700; font-family:monospace;">6689</td>
+            <td><strong style="color:var(--text-primary);">伊雲谷</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">71.50 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+11.4%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">69.90 元</td>
+            <td style="font-family:monospace; color:#f87171;">68.28 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('6689', '伊雲谷', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#24</td>
+            <td style="font-weight:700; font-family:monospace;">2355</td>
+            <td><strong style="color:var(--text-primary);">敬鵬</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">47.25 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+14.4%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">46.87 元</td>
+            <td style="font-family:monospace; color:#f87171;">45.91 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2355', '敬鵬', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#25</td>
+            <td style="font-weight:700; font-family:monospace;">2611</td>
+            <td><strong style="color:var(--text-primary);">志信</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">14.85 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+3.5%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">14.66 元</td>
+            <td style="font-family:monospace; color:#f87171;">14.33 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2611', '志信', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#26</td>
+            <td style="font-weight:700; font-family:monospace;">4426</td>
+            <td><strong style="color:var(--text-primary);">利勤</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">8.40 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+9.7%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">8.33 元</td>
+            <td style="font-family:monospace; color:#f87171;">8.09 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('4426', '利勤', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#27</td>
+            <td style="font-weight:700; font-family:monospace;">2480</td>
+            <td><strong style="color:var(--text-primary);">敦陽科</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">166.00 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+3.8%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">164.01 元</td>
+            <td style="font-family:monospace; color:#f87171;">158.71 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2480', '敦陽科', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#28</td>
+            <td style="font-weight:700; font-family:monospace;">2516</td>
+            <td><strong style="color:var(--text-primary);">新建</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">16.20 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+6.9%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">15.98 元</td>
+            <td style="font-family:monospace; color:#f87171;">15.63 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2516', '新建', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#29</td>
+            <td style="font-weight:700; font-family:monospace;">2453</td>
+            <td><strong style="color:var(--text-primary);">凌群</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">53.40 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+0.2%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">53.31 元</td>
+            <td style="font-family:monospace; color:#f87171;">52.06 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span><span class='badge-sweep' style='font-size:10px; margin-left:4px;'>⚡破底翻</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('2453', '凌群', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#30</td>
+            <td style="font-weight:700; font-family:monospace;">1201</td>
+            <td><strong style="color:var(--text-primary);">味全</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">12.50 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+7.8%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">12.40 元</td>
+            <td style="font-family:monospace; color:#f87171;">11.98 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('1201', '味全', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#31</td>
+            <td style="font-weight:700; font-family:monospace;">1615</td>
+            <td><strong style="color:var(--text-primary);">大山</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">43.00 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+0.7%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">45.34 元</td>
+            <td style="font-family:monospace; color:#f87171;">41.92 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('1615', '大山', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#32</td>
+            <td style="font-weight:700; font-family:monospace;">9103</td>
+            <td><strong style="color:var(--text-primary);">美德醫療-DR</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">5.13 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+3.8%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">5.32 元</td>
+            <td style="font-family:monospace; color:#f87171;">5.00 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('9103', '美德醫療-DR', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="font-weight:700; font-family:monospace; color:#38bdf8;">#33</td>
+            <td style="font-weight:700; font-family:monospace;">5521</td>
+            <td><strong style="color:var(--text-primary);">工信</strong></td>
+            <td><span class="stock-market">TWSE</span></td>
+            <td style="font-weight:700; font-family:monospace;">10.90 元</td>
+            <td class="text-bull" style="font-weight:700; font-family:monospace;">+2.3%</td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:700;">10.79 元</td>
+            <td style="font-family:monospace; color:#f87171;">10.52 元</td>
+            <td><span class="pos-tier-badge pos-tier-low">🟢 Alpha 領先</span></td>
+            <td>
+                <button class="pos-filter-btn" style="padding:4px 10px; font-size:11px;" onclick="openStockModal('5521', '工信', event)">📊 診斷</button>
+            </td>
+        </tr>
+        
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
         </div>
 
         <div id="tab-shorts" class="tab-content">
@@ -5055,7 +5109,7 @@
         
         <!-- Footer -->
         <div class="footer">
-            TW-Stock Quantitative Research System • 100% 離線純自給自足 (純 SVG 向量圖形) • 產出時間: 2026-11-09 16:56:26
+            TW-Stock Quantitative Research System • 100% 離線純自給自足 (純 SVG 向量圖形) • 產出時間: 2026-11-09 17:11:13
         </div>
     </div>
 
