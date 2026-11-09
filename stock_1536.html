@@ -557,10 +557,10 @@
             candleSeries.setData(klineData);
             candleSeries.setMarkers(markersData);
 
-            const poc60 = 44.26;
-            if (poc60 !== null) {
+            const pocShort = 44.26;
+            if (pocShort !== null) {
                 candleSeries.createPriceLine({
-                    price: poc60,
+                    price: pocShort,
                     color: '#eab308',
                     lineWidth: 2,
                     lineStyle: LightweightCharts.LineStyle.Dotted,
@@ -568,10 +568,10 @@
                     title: 'POC 短期'
                 });
             }
-            const poc120 = 46.5;
-            if (poc120 !== null) {
+            const pocMid = 46.5;
+            if (pocMid !== null) {
                 candleSeries.createPriceLine({
-                    price: poc120,
+                    price: pocMid,
                     color: '#f97316',
                     lineWidth: 2,
                     lineStyle: LightweightCharts.LineStyle.Dashed,
@@ -579,10 +579,10 @@
                     title: 'POC 波段'
                 });
             }
-            const poc240 = 51.21;
-            if (poc240 !== null) {
+            const pocLong = 51.21;
+            if (pocLong !== null) {
                 candleSeries.createPriceLine({
-                    price: poc240,
+                    price: pocLong,
                     color: '#ec4899',
                     lineWidth: 2,
                     lineStyle: LightweightCharts.LineStyle.LargeDashed,
