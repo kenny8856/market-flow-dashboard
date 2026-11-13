@@ -288,6 +288,8 @@
                     <span class="stock-main-title">TAIEX 加權指數</span>
                     <span style="font-size:13px; color:var(--text-muted);">TWSE</span>
                     <span class='badge-bull'>▲ LONG #0 結構走強</span>
+                    
+                    
                     <span style="font-size: 13px; font-weight: 700; padding: 3px 9px; border-radius: 6px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); display: inline-flex; align-items: center; gap: 4px;" title="全市場多因子綜合量化熱度 (0-100)">
                         🔥 社群與市場熱度 53.8 分 <span style="font-size: 11px; opacity: 0.85;">(⚡ 溫和放量交投 (常態換手))</span>
                     </span>
@@ -330,6 +332,7 @@
                 <div class="stat-label">🔥 今日權證多空比</div>
                 <div class="stat-value" style="font-size:15px;">認購 59.0% : 認售 41.0%</div>
             </div>
+            
             
             
         </div>
@@ -400,142 +403,14 @@
                 <span style="font-size:12px; color:var(--text-secondary);">每日 16:00 元大權證網直連 ｜ 天數 &gt; 120天 ｜ 差槓比 &lt; 0.3%~0.7%</span>
             </div>
             
-        <div class="xiaoge-warrant-box" style="border-left: 4px solid #ef4444; margin-top:12px;">
-            <div style="font-weight:700; color:#ef4444; font-size:14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
-                <span>🟢 做多優先：認購權證 (CALL) Top 3</span>
-                <span style="font-size:11px; color:var(--text-secondary); font-weight:normal;">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分)</span>
+            <div class="xiaoge-warrant-box" style="border-left: 4px solid #ef4444; margin-top:12px;">
+                <div style="font-weight:700; color:#ef4444; font-size:14px; margin-bottom:8px;">認購 CALL</div>
+                <div style="color:var(--text-muted); font-size:13px; text-align:center; padding:12px;">
+                    ⚠️ 本標的目前市場「無符合條件」之權證（剩餘天數不足 120 天或差槓比 &gt; 0.7%）。<br>
+                    💡 實戰操作紀律：寧可直接操作現股，絕不妥協買進未滿 120 天之短天期劣質權證承擔時間價值加速衰減！
+                </div>
             </div>
-            <div class="xiaoge-table-wrapper" style="overflow-x: auto; max-width: 100%; width: 100%;"><table class="xiaoge-table">
-                <thead>
-                    <tr>
-                        <th>評級 / 分數</th>
-                        <th>權證代碼 / 名稱</th>
-                        <th>委買 / 委賣</th>
-                        <th>履約價 (價外%)</th>
-                        <th>剩餘天數</th>
-                        <th>實質槓桿</th>
-                        <th>買賣價差比</th>
-                        <th>差槓比</th>
-                        <th>流通在外</th>
-                        <th>造市券商</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-            <tr>
-                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">83.0分</div><span class="badge-xiaoge-pass">⭐ 首選精選</span></td>
-                <td><strong>065013</strong> 臺股指富邦64購12</td>
-                <td>2.86 / 2.87</td>
-                <td>51888.88 (-14.7%)</td>
-                <td style="color:var(--bull-red); font-weight:700;">166 天</td>
-                <td><strong style="color:var(--text-primary);">5.61x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: 0.00</div></td>
-                <td>0.35%<div style="font-size:10px; color:var(--text-muted);">Theta損: 0.85%</div></td>
-                <td><span class="badge-diff-lever">0.062%</span></td>
-                <td>30.4%</td>
-                <td><strong style="color:var(--accent-blue);">富邦</strong></td>
-            </tr>
             
-            <tr>
-                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">83.0分</div><span class="badge-xiaoge-pass">⭐ 首選精選</span></td>
-                <td><strong>085269</strong> 臺股指國票64購01</td>
-                <td>1.26 / 1.27</td>
-                <td>48000.00 (-7.8%)</td>
-                <td style="color:var(--bull-red); font-weight:700;">148 天</td>
-                <td><strong style="color:var(--text-primary);">7.09x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: 0.00</div></td>
-                <td>0.79%<div style="font-size:10px; color:var(--text-muted);">Theta損: 0.82%</div></td>
-                <td><span class="badge-diff-lever">0.111%</span></td>
-                <td>4.3%</td>
-                <td><strong style="color:var(--accent-blue);">國票</strong></td>
-            </tr>
-            
-            <tr>
-                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">83.0分</div><span class="badge-xiaoge-pass">⭐ 首選精選</span></td>
-                <td><strong>067180</strong> 臺股指群益63購03</td>
-                <td>1.37 / 1.38</td>
-                <td>48000.00 (-7.8%)</td>
-                <td style="color:var(--bull-red); font-weight:700;">124 天</td>
-                <td><strong style="color:var(--text-primary);">5.68x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: 0.00</div></td>
-                <td>0.72%<div style="font-size:10px; color:var(--text-muted);">Theta損: 0.90%</div></td>
-                <td><span class="badge-diff-lever">0.127%</span></td>
-                <td>18.7%</td>
-                <td><strong style="color:var(--accent-blue);">群益</strong></td>
-            </tr>
-            
-                </tbody>
-            </table></div>
-            <div style="font-size:11px; color:var(--text-muted); margin-top:10px; line-height:1.5;">
-                ⚠️ <strong>實戰黃金法則</strong>：優先挑選 <strong>差槓比 &lt; 0.3% (翠綠色)</strong> + <strong>剩餘天數 ≥ 120天</strong> + <strong>價外 3%~15%</strong> 之標的。差槓比代表「現股需上漲多少%才能弭平權證一檔買賣價差」，數值越低勝率越高！
-            </div>
-        </div>
-        <div style='height:14px;'></div>
-        <div class="xiaoge-warrant-box" style="border-left: 4px solid #10b981; margin-top:12px;">
-            <div style="font-weight:700; color:#10b981; font-size:14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
-                <span>🔴 避險防守：認售權證 (PUT) Top 3</span>
-                <span style="font-size:11px; color:var(--text-secondary); font-weight:normal;">模型綜合評分：差槓比(30分) + 到期天數(20分) + 價內外(20分) + Delta(15分) + Theta(10分)</span>
-            </div>
-            <div class="xiaoge-table-wrapper" style="overflow-x: auto; max-width: 100%; width: 100%;"><table class="xiaoge-table">
-                <thead>
-                    <tr>
-                        <th>評級 / 分數</th>
-                        <th>權證代碼 / 名稱</th>
-                        <th>委買 / 委賣</th>
-                        <th>履約價 (價外%)</th>
-                        <th>剩餘天數</th>
-                        <th>實質槓桿</th>
-                        <th>買賣價差比</th>
-                        <th>差槓比</th>
-                        <th>流通在外</th>
-                        <th>造市券商</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-            <tr>
-                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">83.0分</div><span class="badge-xiaoge-pass">⭐ 首選精選</span></td>
-                <td><strong>04490T</strong> 臺股指國泰63售02</td>
-                <td>3.24 / 3.25</td>
-                <td>42000.03 (-5.4%)</td>
-                <td style="color:var(--bull-red); font-weight:700;">124 天</td>
-                <td><strong style="color:var(--text-primary);">4.94x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: -0.00</div></td>
-                <td>0.31%<div style="font-size:10px; color:var(--text-muted);">Theta損: 0.78%</div></td>
-                <td><span class="badge-diff-lever">0.063%</span></td>
-                <td>11.7%</td>
-                <td><strong style="color:var(--accent-blue);">國泰</strong></td>
-            </tr>
-            
-            <tr>
-                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">83.0分</div><span class="badge-xiaoge-pass">⭐ 首選精選</span></td>
-                <td><strong>05015T</strong> 臺股指群益64售12</td>
-                <td>1.60 / 1.61</td>
-                <td>42000.00 (-5.4%)</td>
-                <td style="color:var(--bull-red); font-weight:700;">161 天</td>
-                <td><strong style="color:var(--text-primary);">4.02x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: -0.00</div></td>
-                <td>0.62%<div style="font-size:10px; color:var(--text-muted);">Theta損: 0.57%</div></td>
-                <td><span class="badge-diff-lever">0.154%</span></td>
-                <td>3.6%</td>
-                <td><strong style="color:var(--accent-blue);">群益</strong></td>
-            </tr>
-            
-            <tr>
-                <td><div style="font-size:13px;font-weight:700;color:#facc15;margin-bottom:3px;">83.0分</div><span class="badge-xiaoge-pass">⭐ 首選精選</span></td>
-                <td><strong>04210T</strong> 臺股指元大63售39</td>
-                <td>1.20 / 1.21</td>
-                <td>42888.00 (-3.2%)</td>
-                <td style="color:var(--bull-red); font-weight:700;">127 天</td>
-                <td><strong style="color:var(--text-primary);">4.33x</strong><div style="font-size:10px; color:var(--text-muted);">Delta: -0.00</div></td>
-                <td>0.83%<div style="font-size:10px; color:var(--text-muted);">Theta損: 0.68%</div></td>
-                <td><span class="badge-diff-lever">0.192%</span></td>
-                <td>9.7%</td>
-                <td><strong style="color:var(--accent-blue);">元大</strong></td>
-            </tr>
-            
-                </tbody>
-            </table></div>
-            <div style="font-size:11px; color:var(--text-muted); margin-top:10px; line-height:1.5;">
-                ⚠️ <strong>實戰黃金法則</strong>：優先挑選 <strong>差槓比 &lt; 0.3% (翠綠色)</strong> + <strong>剩餘天數 ≥ 120天</strong> + <strong>價外 3%~15%</strong> 之標的。差槓比代表「現股需上漲多少%才能弭平權證一檔買賣價差」，數值越低勝率越高！
-            </div>
-        </div>
-        
         </div>
     </div>
 
